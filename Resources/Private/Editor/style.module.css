@@ -1,0 +1,26 @@
+/* stylelint-disable custom-property-pattern */
+
+.charCounter {
+    display: block;
+    text-align: right;
+    opacity: 0.8;
+    font-size: var(--fontSize-Small);
+    margin-bottom: -1.1em;
+    line-height: 1.1;
+    user-select: none;
+    transition:
+        color var(--transition-Default),
+        opacity var(--transition-Default);
+}
+
+.userInput:focus + .charCounter {
+    opacity: 1;
+}
+
+.errorColor {
+    color: var(--colors-Error);
+}
+
+.warningColor {
+    color: var(--colors-Warn);
+}
