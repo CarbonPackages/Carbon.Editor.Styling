@@ -1,0 +1,4 @@
+composer.json
+pnpm-lock.yaml
+Resources/Public/**/*
+CODE_OF_CONDUCT.md

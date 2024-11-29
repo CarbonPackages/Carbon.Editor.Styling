@@ -1,0 +1,48 @@
+{
+  "name": "carbon-neos-editor-styling",
+  "description": "Styling editors for Neos CMS",
+  "license": "GPL-3.0",
+  "author": "Jon Uhlmann",
+  "main": "Resources/Private/Editor/index.mjs",
+  "module": "Resources/Private/Editor/index.mjs",
+  "exports": {
+    ".": {
+      "require": null,
+      "import": "./Resources/Private/Editor/index.mjs"
+    },
+    "./TextAreaWithCounter": {
+      "require": null,
+      "import": "./Resources/Private/Editor/TextAreaWithCounter/index.jsx"
+    }
+  },
+  "files": [
+    "Resources/Private/Editor",
+    "!Resources/Private/Editor/manifest.mjs"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/CarbonPackages/Carbon.Editor.Styling.git"
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "watch": "node build.mjs --watch",
+    "pipeline": "pnpm install --silent;pnpm build"
+  },
+  "bugs": {
+    "url": "https://github.com/CarbonPackages/Carbon.Editor.Styling/issues"
+  },
+  "homepage": "https://github.com/CarbonPackages/Carbon.Editor.Styling#readme",
+  "dependencies": {
+    "carbon-neos-loadinganimation": "^1.1.1",
+    "clsx": "^2.1.1"
+  },
+  "devDependencies": {
+    "@neos-project/neos-ui-extensibility": "~8.3.10",
+    "esbuild": "^0.24.0",
+    "esbuild-plugin-lightningcss-modules": "^0.1.2",
+    "prettier": "^3.4.1"
+  },
+  "peerDependencies": {
+    "@neos-project/neos-ui-extensibility": "^8.3.0 || ^9.0.0"
+  }
+}

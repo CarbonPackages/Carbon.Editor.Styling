@@ -1,0 +1,16 @@
+{
+  "overrides": [
+    {
+      "files": ["*.yaml", "*.yml"],
+      "options": {
+        "singleQuote": true
+      }
+    },
+    {
+      "files": ["*.md"],
+      "options": {
+        "proseWrap": "always"
+      }
+    }
+  ]
+}
