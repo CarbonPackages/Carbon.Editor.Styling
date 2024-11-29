@@ -1,0 +1,18 @@
+Neos:
+  Neos:
+    Ui:
+      frontendConfiguration:
+        'Carbon.Editor.Styling.TextAreaWithCounter':
+          disabled: false
+          maxlength: null
+          readonly: false
+          placeholder: ''
+          minRows: 2
+          maxRows: 24
+          expandedRows: 6
+          showCounter: true
+          countPlaceholder: false
+          warningLengthMin: null
+          errorLengthMin: null
+          warningLengthMax: null
+          errorLengthMax: null

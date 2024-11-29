@@ -1,0 +1,17 @@
+Neos:
+  Neos:
+    userInterface:
+      translation:
+        autoInclude:
+          Carbon.Editor.Styling:
+            - 'Main'
+    Ui:
+      resources:
+        javascript:
+          Carbon.Editor.Styling:
+            resource: resource://Carbon.Editor.Styling/Public/Editor.js
+            attributes:
+              type: 'module'
+        stylesheets:
+          Carbon.Editor.Styling:
+            resource: resource://Carbon.Editor.Styling/Public/Editor.css

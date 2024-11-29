@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file original="" product-name="Carbon.Editor.Styling" source-language="en" target-language="de" datatype="plaintext">
+        <body>
+            <group id="numberOfChars" restype="x-gettext-plurals">
+                <trans-unit id="numberOfChars[0]" xml:space="preserve">
+                    <source>{0} char</source>
+                    <target>{0} Zeichen</target>
+                </trans-unit>
+                <trans-unit id="numberOfChars[1]" xml:space="preserve">
+                    <source>{0} chars</source>
+                    <target>{0} Zeichen</target>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+</xliff>
