@@ -12,6 +12,7 @@ Neos:
           expandedRows: 6
           showCounter: true
           countPlaceholder: false
+          allowLineBreaks: true
           warningLengthMin: null
           errorLengthMin: null
           warningLengthMax: null

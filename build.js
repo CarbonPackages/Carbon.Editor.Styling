@@ -1,0 +1,47 @@
+import esbuild from "esbuild";
+import extensibilityMap from "@neos-project/neos-ui-extensibility/extensibilityMap.json" assert { type: "json" };
+import stylexPlugin from "@stylexjs/esbuild-plugin";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const watch = process.argv.includes("--watch");
+const dev = process.argv.includes("--dev");
+const minify = !dev && !watch;
+
+/** @type {import("esbuild").BuildOptions} */
+const options = {
+    logLevel: "info",
+    bundle: true,
+    minify,
+    sourcemap: dev,
+    target: "es2020",
+    legalComments: "none",
+    entryPoints: { Editor: "Resources/Private/Editor/manifest.js" },
+    outdir: "Resources/Public",
+    alias: extensibilityMap,
+    format: "esm",
+    splitting: true,
+    metafile: true,
+    loader: {
+        ".js": "jsx",
+    },
+    plugins: [
+        stylexPlugin({
+            useCSSLayers: true,
+            dev: false,
+            generatedCSSFileName: path.resolve(__dirname, "Resources/Public/Editor.css"),
+            stylexImports: ["@stylexjs/stylex"],
+            unstable_moduleResolution: {
+                type: "commonJS",
+                rootDir: __dirname,
+            },
+        }),
+    ],
+};
+
+if (watch) {
+    esbuild.context(options).then((ctx) => ctx.watch());
+} else {
+    esbuild.build(options);
+}

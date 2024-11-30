@@ -1,4 +1,4 @@
-.PHONY: help install watch clean production build prettier
+.PHONY: help install watch clean production build dev prettier
 
 .DEFAULT_GOAL := production
 
@@ -26,6 +26,11 @@ watch:
 build:
 	make clean
 	pnpm build
+
+## Build development version
+dev:
+	make clean
+	pnpm dev
 
 # Define colors
 GREEN  := $(shell tput -Txterm setaf 2)

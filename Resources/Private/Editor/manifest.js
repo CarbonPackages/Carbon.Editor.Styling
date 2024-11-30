@@ -1,11 +1,11 @@
 import manifest from "@neos-project/neos-ui-extensibility";
 
-import { TextAreaWithCounter } from "./index.mjs";
+import { LazyTextAreaWithCounter } from "./index.js";
 
 manifest("Carbon.Editor.Styling:Editors", {}, (globalRegistry) => {
     const editorsRegistry = globalRegistry.get("inspector").get("editors");
 
     editorsRegistry.set("Carbon.Editor.Styling/TextAreaWithCounter", {
-        component: TextAreaWithCounter,
+        component: LazyTextAreaWithCounter,
     });
 });

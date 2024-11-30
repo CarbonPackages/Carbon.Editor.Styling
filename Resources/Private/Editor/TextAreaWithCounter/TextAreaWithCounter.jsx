@@ -1,9 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import { TextArea } from "@neos-project/react-ui-components";
 import { neos } from "@neos-project/neos-ui-decorators";
 import clsx from "clsx";
-import style from "../style.module.css";
+import * as stylex from "@stylexjs/stylex";
+
+const styles = stylex.create({
+    charCounter: (type, focus) => ({
+        display: "block",
+        textAlign: "right",
+        fontSize: "var(--fontSize-Small)",
+        marginBottom: "-1.1em",
+        lineHeight: 1.1,
+        userSelect: "none",
+        transition: "color var(--transition-Default), opacity var(--transition-Default)",
+        opacity: focus ? 1 : 0.8,
+        color: type ? `var(--colors-${type})` : null,
+    }),
+});
 
 const defaultOptions = {
     disabled: false,
@@ -15,6 +29,7 @@ const defaultOptions = {
     expandedRows: 6,
     showCounter: true,
     countPlaceholder: false,
+    allowLineBreaks: true,
     warningLengthMin: null,
     errorLengthMin: null,
     warningLengthMax: null,
@@ -22,6 +37,7 @@ const defaultOptions = {
 };
 
 function Editor({ id, value, commit, className, identifier, options, i18nRegistry, config }) {
+    const [focus, setFocus] = useState(false);
     const {
         disabled,
         maxlength,
@@ -32,6 +48,7 @@ function Editor({ id, value, commit, className, identifier, options, i18nRegistr
         expandedRows,
         showCounter,
         countPlaceholder,
+        allowLineBreaks,
         warningLengthMin,
         errorLengthMin,
         warningLengthMax,
@@ -54,23 +71,39 @@ function Editor({ id, value, commit, className, identifier, options, i18nRegistr
         "Main",
         charCount,
     );
-    const charCounterAdditionalClass = (() => {
+    const charCounterType = (() => {
         if ((errorLengthMin && charCount < errorLengthMin) || (errorLengthMax && charCount > errorLengthMax)) {
-            return style.errorColor;
+            return "Error";
         }
         if ((warningLengthMin && charCount < warningLengthMin) || (warningLengthMax && charCount > warningLengthMax)) {
-            return style.warningColor;
+            return "Warn";
         }
         return null;
     })();
+
+    const onKeyPress = (event) => {
+        if (allowLineBreaks) {
+            return;
+        }
+        if (event.key === "Enter") {
+            event.preventDefault();
+        }
+    };
 
     return (
         <>
             <TextArea
                 id={id}
                 value={value === null ? "" : value}
-                className={clsx(style.userInput, className)}
+                className={className}
+                onKeyPress={onKeyPress}
                 onChange={commit}
+                onFocus={() => {
+                    setFocus(true);
+                }}
+                onBlur={() => {
+                    setFocus(false);
+                }}
                 disabled={disabled}
                 maxLength={maxlength}
                 readOnly={readonly}
@@ -79,7 +112,7 @@ function Editor({ id, value, commit, className, identifier, options, i18nRegistr
                 maxRows={maxRows}
                 expandedRows={expandedRows}
             />
-            {showCounter && <span className={clsx(style.charCounter, charCounterAdditionalClass)}>{charCounter}</span>}
+            {showCounter && <span {...stylex.props(styles.charCounter(charCounterType, focus))}>{charCounter}</span>}
         </>
     );
 }
