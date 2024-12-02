@@ -17,3 +17,20 @@ Neos:
           errorLengthMin: null
           warningLengthMax: null
           errorLengthMax: null
+        'Carbon.Editor.Styling.BorderRadius':
+          placeholder: ''
+          disabled: false
+          readonly: false
+          allowMultiple: true
+          allowFullRounded: false
+          convertToRem: true
+
+          # false, big, or small
+          preview: false
+          # Has only a affect on big preview
+          previewAspectRatio: null
+
+          # min, max and fullRoundedValue are always in px
+          min: 0
+          max: 24
+          fullRoundedValue: 9999

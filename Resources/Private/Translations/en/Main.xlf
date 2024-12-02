@@ -10,6 +10,15 @@
                     <source>{0} characters</source>
                 </trans-unit>
             </group>
+            <trans-unit id="fullRounded" xml:space="preserve">
+                <source>Round</source>
+            </trans-unit>
+            <trans-unit id="radius" xml:space="preserve">
+                <source>Radius</source>>
+            </trans-unit>
+            <trans-unit id="radiusPerSide" xml:space="preserve">
+                <source>Radius per side</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>

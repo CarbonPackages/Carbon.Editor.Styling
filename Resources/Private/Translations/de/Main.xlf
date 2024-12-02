@@ -12,6 +12,18 @@
                     <target>{0} Zeichen</target>
                 </trans-unit>
             </group>
+            <trans-unit id="fullRounded" xml:space="preserve">
+                <source>Round</source>
+                <target>Rund</target>
+            </trans-unit>
+            <trans-unit id="radius" xml:space="preserve">
+                <source>Radius</source>
+                <target>Radius</target>
+            </trans-unit>
+            <trans-unit id="radiusPerSide" xml:space="preserve">
+                <source>Radius per side</source>
+                <target>Radius pro Seite</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
