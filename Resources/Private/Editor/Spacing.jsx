@@ -292,6 +292,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                                 }
                             }}
                             setFocus={selected == "top"}
+                            fakeFocus={selected == "bottom" && (syncedValue == "y" || syncedValue == "xy")}
                             onFocus={() => setSelected("top")}
                             onBlur={() => setPotentialAllSelected("top")}
                         />
@@ -313,6 +314,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                                 }
                             }}
                             setFocus={selected == "right"}
+                            fakeFocus={selected == "left" && (syncedValue == "x" || syncedValue == "xy")}
                             onFocus={() => setSelected("right")}
                             onBlur={() => setPotentialAllSelected("right")}
                         />
@@ -334,6 +336,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                                 }
                             }}
                             setFocus={selected == "bottom"}
+                            fakeFocus={selected == "top" && (syncedValue == "y" || syncedValue == "xy")}
                             onFocus={() => setSelected("bottom")}
                             onBlur={() => setPotentialAllSelected("bottom")}
                         />
@@ -355,6 +358,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                                 }
                             }}
                             setFocus={selected == "left"}
+                            fakeFocus={selected == "right" && (syncedValue == "x" || syncedValue == "xy")}
                             onFocus={() => setSelected("left")}
                             onBlur={() => setPotentialAllSelected("left")}
                         />
@@ -435,28 +439,8 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                                             top: "right",
                                             right: "bottom",
                                             bottom: "left",
-                                            left: "top",
-
-                                            xtop: "bottom",
-                                            xright: "bottom",
-                                            xbottom: "left",
-                                            xleft: "top",
-
-                                            ytop: "right",
-                                            yright: "left",
-                                            ybottom: "left",
-                                            yleft: "top",
-
-                                            xytop: "left",
-                                            xyright: "top",
-                                            xybottom: "left",
-                                            xyleft: "top",
                                         };
-                                        if (!selected || selected == "all") {
-                                            setSelected("top");
-                                            return;
-                                        }
-                                        setSelected(map[(syncedValue || "") + selected]);
+                                        setSelected(map[selected] || "top");
                                         return;
                                     }
 

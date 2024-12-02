@@ -64,6 +64,7 @@ function Component({
     onKeyPress,
     onKeyDown,
     type = "text",
+    fakeFocus,
     fakeValue,
     onFakeClick,
     disabled,
@@ -151,7 +152,7 @@ function Component({
         <div
             {...stylex.props(
                 append && [styles.flex, styles.inputLook, styles.basicLook],
-                append && isFocus && styles.focus,
+                append && (isFocus || fakeFocus) && styles.focus,
                 highlight && styles.highlight,
                 disabled && styles.disabled,
                 containerStyle,
@@ -181,7 +182,7 @@ function Component({
                     styles.basicLook,
                     isNumericInput && styles.numberInput,
                     !append && styles.inputLook,
-                    isFocus && styles.focus,
+                    (isFocus || fakeFocus) && styles.focus,
                     fakeValue && styles.hidden,
                     inputStyle,
                 )}
