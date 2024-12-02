@@ -1,4 +1,4 @@
-import { TextAreaWithCounter, LazyTextAreaWithCounter } from "./TextAreaWithCounter/index.js";
-import { BorderRadius, LazyBorderRadius } from "./BorderRadius/index.js";
+import TextAreaWithCounter from "./TextAreaWithCounter";
+import BorderRadius from "./BorderRadius";
 
-export { TextAreaWithCounter, LazyTextAreaWithCounter, BorderRadius, LazyBorderRadius };
+export { TextAreaWithCounter, BorderRadius };

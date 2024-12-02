@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { Button } from "@neos-project/react-ui-components";
-import { RoundedBox, Circle } from "../Icons";
-import { TextInput } from "../Components";
+import { RoundedBox, Circle } from "./Icons";
+import { TextInput } from "./Components";
 import { neos } from "@neos-project/neos-ui-decorators";
 import { useDebounce } from "use-debounce";
 import * as stylex from "@stylexjs/stylex";

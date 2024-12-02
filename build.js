@@ -17,12 +17,11 @@ const options = {
     sourcemap: dev,
     target: "es2020",
     legalComments: "none",
-    entryPoints: { Editor: "Resources/Private/Editor/manifest.js" },
+    entryPoints: ["Resources/Private/Editor/Editor.js", "Resources/Private/Editor/*.jsx"],
     outdir: "Resources/Public",
     alias: extensibilityMap,
     format: "esm",
     splitting: true,
-    metafile: true,
     loader: {
         ".js": "jsx",
     },

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import { TextArea } from "@neos-project/react-ui-components";
 import { neos } from "@neos-project/neos-ui-decorators";
-import clsx from "clsx";
 import * as stylex from "@stylexjs/stylex";
 
 const styles = stylex.create({
@@ -36,7 +35,7 @@ const defaultOptions = {
     errorLengthMax: null,
 };
 
-function Editor({ id, value, commit, className, identifier, options, i18nRegistry, config }) {
+function Editor({ id, value, commit, className, identifier, options, i18nRegistry, onEnterKey, config }) {
     const [focus, setFocus] = useState(false);
     const {
         disabled,
@@ -86,6 +85,7 @@ function Editor({ id, value, commit, className, identifier, options, i18nRegistr
             return;
         }
         if (event.key === "Enter") {
+            onEnterKey();
             event.preventDefault();
         }
     };
