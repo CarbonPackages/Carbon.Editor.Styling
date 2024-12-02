@@ -83,7 +83,7 @@ function Component({
         }
         if (isNumericInput) {
             // Replace , with . and remove all letters and spaces
-            newValue = newValue.replace(",", ".").replace(/[a-zA-Z\s]/g, '');
+            newValue = newValue.replace(",", ".").replace(/[a-zA-Z\s]/g, "");
             if (hasOperator(newValue)) {
                 if (endWithOperator(newValue)) {
                     return;
@@ -158,7 +158,13 @@ function Component({
                 <div {...stylex.props(!append && [styles.inputLook, styles.basicLook, styles.flex])}>{fakeValue}</div>
             ) : null}
             {fakeValue && onFakeClick ? (
-                <button type="button" onClick={onFakeClick} {...stylex.props(styles.input, !append && [styles.inputLook, styles.basicLook, styles.flex])}>{fakeValue}</button>
+                <button
+                    type="button"
+                    onClick={onFakeClick}
+                    {...stylex.props(styles.input, !append && [styles.inputLook, styles.basicLook, styles.flex])}
+                >
+                    {fakeValue}
+                </button>
             ) : null}
             <input
                 {...rest}
@@ -205,10 +211,10 @@ function Component({
                     if (isNumericInput && (key == "ArrowDown" || key == "ArrowUp")) {
                         const { metaKey, shiftKey, altKey } = event;
                         const operator = key == "ArrowDown" ? -1 : 1;
-                        let newValue = (parseFloat(state) || 0);
+                        let newValue = parseFloat(state) || 0;
                         // We have to handle the alt key differently, because of the rounding error in JavaScript
                         if (altKey) {
-                            newValue = ((newValue * 10) + operator) / 10;
+                            newValue = (newValue * 10 + operator) / 10;
                         } else {
                             const multiplier = shiftKey ? 10 : metaKey ? 100 : 1;
                             newValue = newValue + operator * multiplier;

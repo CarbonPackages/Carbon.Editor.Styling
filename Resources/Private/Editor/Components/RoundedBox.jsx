@@ -6,6 +6,7 @@ export default function RoundedBox({
     color = "currentColor",
     segmented = false,
     selected = null,
+    synced = false,
 }) {
     if (!segmented) {
         size = size || 12;
@@ -59,10 +60,24 @@ export default function RoundedBox({
     }
 
     size = size || 14;
-    const top = selected == "top" ? 1 : opacity;
-    const right = selected == "right" ? 1 : opacity;
-    const bottom = selected == "bottom" ? 1 : opacity;
-    const left = selected == "left" ? 1 : opacity;
+
+    let isTop = selected == "top";
+    let isRight = selected == "right";
+    let isBottom = selected == "bottom";
+    let isLeft = selected == "left";
+    if (synced == "y" || synced == "xy") {
+        isBottom = isTop ? true : isBottom;
+        isTop = isBottom ? true : isTop;
+    }
+    if (synced == "x" || synced == "xy") {
+        isRight = isLeft ? true : isRight;
+        isLeft = isRight ? true : isLeft;
+    }
+
+    const top = isTop ? 1 : opacity;
+    const right = isRight ? 1 : opacity;
+    const bottom = isBottom ? 1 : opacity;
+    const left = isLeft ? 1 : opacity;
 
     return (
         <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 12 12">

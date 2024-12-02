@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { Button } from "@neos-project/react-ui-components";
-import { RoundedBox, Circle } from "./Icons";
-import { TextInput } from "./Components";
+import { TextInput, RoundedBox, Circle } from "./Components";
+import { isSegmented, convertValue, limitToMinMax } from "./Helper";
 import { neos } from "@neos-project/neos-ui-decorators";
 import { useDebounce } from "use-debounce";
 import * as stylex from "@stylexjs/stylex";
@@ -22,7 +22,7 @@ const styles = stylex.create({
     },
     segmentedGrid: {
         display: "grid",
-        gridTemplateColumns: "repeat(2, 1fr)",
+        gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
         gap: "var(--spacing-Quarter)",
         width: "100%",
     },
@@ -86,9 +86,9 @@ function Editor({ id, value, commit, highlight, identifier, options, i18nRegistr
     const [potentailAllSelected] = useDebounce(_potentailAllSelected, 500);
 
     useEffect(() => {
-        const isSegmented = typeof value == "string" && value.includes(" ");
-        setSegmented(isSegmented);
-        setSelected(isSegmented && !selected ? "all" : selected);
+        const bool = isSegmented(value);
+        setSegmented(bool);
+        setSelected(bool && !selected ? "all" : selected);
     }, [value]);
 
     useEffect(() => {
@@ -124,16 +124,9 @@ function Editor({ id, value, commit, highlight, identifier, options, i18nRegistr
         }
         const valueIsString = typeof value == "string";
         const valueIsRem = valueIsString && value.includes("rem");
-        const convertValue = (input, rem = valueIsRem) => {
-            if (typeof input == "string") {
-                input = parseFloat(input);
-            }
-            const multiplier = rem ? 16 : 1;
-            return minMax(input * multiplier);
-        };
         if (typeof value == "number") {
             return {
-                main: convertValue(value, convertToRem),
+                main: convertValue(value, convertToRem, min, max),
             };
         }
         if (!valueIsString || !value) {
@@ -141,8 +134,8 @@ function Editor({ id, value, commit, highlight, identifier, options, i18nRegistr
                 main: min,
             };
         }
-        const values = value.split(" ").map((value) => convertValue(value));
-        if (values.length < 4) {
+        const values = value.split(" ").map((value) => convertValue(value, valueIsRem, min, max));
+        if (!allowMultiple || values.length < 4) {
             return {
                 main: values[0],
             };
@@ -152,7 +145,7 @@ function Editor({ id, value, commit, highlight, identifier, options, i18nRegistr
             topLeft: values[0],
             topRight: values[1],
             bottomRight: values[2],
-            botomLeft: values[3],
+            bottomLeft: values[3],
         };
     })();
 
@@ -167,7 +160,7 @@ function Editor({ id, value, commit, highlight, identifier, options, i18nRegistr
     const [topLeftInputValue, setTopLeftInputValue] = useState(fallbackToNull(values?.topLeft));
     const [topRightInputValue, setTopRightInputValue] = useState(fallbackToNull(values?.topRight));
     const [bottomRightInputValue, setBottomRightInputValue] = useState(fallbackToNull(values?.bottomRight));
-    const [bottomLeftInputValue, setBottomLeftInputValue] = useState(fallbackToNull(values?.botomLeft));
+    const [bottomLeftInputValue, setBottomLeftInputValue] = useState(fallbackToNull(values?.bottomLeft));
 
     function commitIfChanged(newValue) {
         if (newValue !== value) {
@@ -230,17 +223,7 @@ function Editor({ id, value, commit, highlight, identifier, options, i18nRegistr
 
     // Return the value if it is between min and max, otherwise return the min or max value
     function minMax(value) {
-        if (typeof value == "string") {
-            value = parseInt(value);
-        }
-        if (!value) {
-            value = 0;
-        }
-        value = Math.round(value);
-        if (!max) {
-            return Math.max(min, value);
-        }
-        return Math.min(Math.max(min, value), max);
+        return limitToMinMax(value, min, max);
     }
 
     useEffect(() => {
@@ -402,10 +385,10 @@ function Editor({ id, value, commit, highlight, identifier, options, i18nRegistr
                                         return;
                                     }
 
+                                    const newValue = rounded ? min : mainInputValue;
                                     setSegmented(true);
                                     setSelected("topLeft");
                                     setMainInputValue(null);
-                                    const newValue = rounded ? min : mainInputValue;
                                     setRounded(false);
                                     let commited = false;
                                     if (topLeftInputValue == null) {
