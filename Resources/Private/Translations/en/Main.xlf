@@ -19,6 +19,15 @@
             <trans-unit id="radiusPerSide" xml:space="preserve">
                 <source>Radius per side</source>
             </trans-unit>
+            <trans-unit id="globalSpacing" xml:space="preserve">
+                <source>Global spacing</source>
+            </trans-unit>
+            <trans-unit id="spacingPerSide" xml:space="preserve">
+                <source>Spacing per side</source>
+            </trans-unit>
+            <trans-unit id="snycValues" xml:space="preserve">
+                <source>Snycronize values</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>

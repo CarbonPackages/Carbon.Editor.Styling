@@ -24,6 +24,18 @@
                 <source>Radius per side</source>
                 <target>Radius pro Seite</target>
             </trans-unit>
+            <trans-unit id="globalSpacing" xml:space="preserve">
+                <source>Global spacing</source>
+                <target>Globaler Abstand</target>
+            </trans-unit>
+            <trans-unit id="spacingPerSide" xml:space="preserve">
+                <source>Spacing per side</source>
+                <target>Abstand pro Seite</target>
+            </trans-unit>
+            <trans-unit id="snycValues" xml:space="preserve">
+                <source>Snycronize values</source>
+                <target>Werte snycronisieren</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -5,6 +5,7 @@ import LoadingAnimation from "carbon-neos-loadinganimation/LoadingWithStyleX";
 const editors = {
     BorderRadius: () => import("./BorderRadius.jsx"),
     TextAreaWithCounter: () => import("./TextAreaWithCounter.jsx"),
+    Spacing: () => import("./Spacing.jsx"),
 };
 
 function generateLazyEditor(name) {

@@ -34,3 +34,12 @@ Neos:
           min: 0
           max: 24
           fullRoundedValue: 9999
+        'Carbon.Editor.Styling.Spacing':
+          disabled: false
+          readonly: false
+          allowMultiple: true
+          allowSync: true
+          convertToRem: false
+          min: 0
+          max: null
+          placeholder: ''
