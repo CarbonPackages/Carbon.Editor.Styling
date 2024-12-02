@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
 import { Button } from "@neos-project/react-ui-components";
-import { TextInput, RoundedBox, Circle } from "./Components";
+import TextInput from "./Components/TextInput";
+import RoundedBox from "./Components/RoundedBox";
+import BorderRadiusBox from "./Components/BorderRadiusBox";
+import Circle from "./Components/Circle";
 import { isSegmented, convertValue, limitToMinMax } from "./Helper";
 import { neos } from "@neos-project/neos-ui-decorators";
 import { useDebounce } from "use-debounce";
@@ -56,12 +58,12 @@ const styles = stylex.create({
         aspectRatio: aspectRatio || null,
         width: aspectRatio ? null : rounded ? 50 : "100%",
     }),
-    previewSmall: (middle) => ({
+    previewSmall: {
         height: 80,
         aspectRatio: 1,
         transform: "scale(0.5)",
         margin: -20,
-    }),
+    },
 });
 
 const defaultOptions = {
@@ -78,7 +80,7 @@ const defaultOptions = {
     fullRoundedValue: 9999,
 };
 
-function Editor({ id, value, commit, highlight, identifier, options, i18nRegistry, config, onEnterKey }) {
+function Editor({ id, value, commit, highlight, options, i18nRegistry, config, onEnterKey }) {
     const [segmented, setSegmented] = useState(null);
     const [selected, setSelected] = useState(null);
     const [mainFocus, setMainFocus] = useState(false);
@@ -212,13 +214,6 @@ function Editor({ id, value, commit, highlight, identifier, options, i18nRegistr
 
     function isRound(input) {
         return input == `${fullRoundedValue}px` || input == fullRoundedValue;
-    }
-
-    function getSingleValue(value) {
-        if (typeof value == "string") {
-            return minMax(value.split(" ")[0]);
-        }
-        return minMax(value);
     }
 
     // Return the value if it is between min and max, otherwise return the min or max value
@@ -363,7 +358,7 @@ function Editor({ id, value, commit, highlight, identifier, options, i18nRegistr
                             )}
                             {...stylex.props(styles.centerContent, readonly && styles.readonly)}
                         >
-                            {rounded ? <Circle /> : <RoundedBox segmented={false} selected={selected} />}
+                            {rounded ? <Circle /> : <RoundedBox selected={selected} />}
                         </Button>
                         {allowMultiple && (
                             <Button
@@ -415,14 +410,14 @@ function Editor({ id, value, commit, highlight, identifier, options, i18nRegistr
                                 title={i18nRegistry.translate("Carbon.Editor.Styling:Main:radiusPerSide")}
                                 {...stylex.props(styles.centerContent, readonly && styles.readonly)}
                             >
-                                <RoundedBox segmented={true} selected={selected} />
+                                <BorderRadiusBox selected={selected} />
                             </Button>
                         )}
                     </div>
                 )}
 
                 {!!preview && preview != "big" && (
-                    <div {...stylex.props(styles.preview(value, rounded), styles.previewSmall(!!segmented))}></div>
+                    <div {...stylex.props(styles.preview(value, rounded), styles.previewSmall)}></div>
                 )}
             </div>
             {preview == "big" && (

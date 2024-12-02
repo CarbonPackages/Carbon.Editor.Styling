@@ -67,6 +67,7 @@ function Component({
     fakeValue,
     onFakeClick,
     disabled,
+    // neos is set as prop because we don't want to pass it to the input element
     neos,
     highlight,
     allowFloat = false,

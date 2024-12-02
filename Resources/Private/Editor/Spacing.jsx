@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
 import { Button, Icon } from "@neos-project/react-ui-components";
-import { TextInput, RoundedBox, Circle } from "./Components";
+import TextInput from "./Components/TextInput";
+import RoundedBox from "./Components/RoundedBox";
+import SpacingBox from "./Components/SpacingBox";
 import { isSegmented, convertValue, limitToMinMax } from "./Helper";
 import { neos } from "@neos-project/neos-ui-decorators";
 import { useDebounce } from "use-debounce";
@@ -98,7 +99,7 @@ const defaultOptions = {
     placeholder: "",
 };
 
-function Editor({ id, value, commit, highlight, identifier, options, i18nRegistry, config, onEnterKey }) {
+function Editor({ id, value, commit, highlight, options, i18nRegistry, config, onEnterKey }) {
     const [segmented, setSegmented] = useState(null);
     const [selected, setSelected] = useState(null);
     const [mainFocus, setMainFocus] = useState(false);
@@ -192,7 +193,9 @@ function Editor({ id, value, commit, highlight, identifier, options, i18nRegistr
     const [rightInputValue, setRightInputValue] = useState(fallbackToNull(values?.right));
     const [bottomInputValue, setBottomInputValue] = useState(fallbackToNull(values?.bottom));
     const [leftInputValue, setLeftInputValue] = useState(fallbackToNull(values?.left));
-    const [syncedValue, setSyncedValue] = useState(values?.synced);
+    const [_syncedValue, setSyncedValue] = useState(values?.synced);
+    const [syncedValue] = useDebounce(_syncedValue, 1000);
+    const [syncButtonFocus, setSyncButtonFocus] = useState(false);
 
     function commitIfChanged(newValue) {
         if (newValue !== value) {
@@ -252,13 +255,6 @@ function Editor({ id, value, commit, highlight, identifier, options, i18nRegistr
             setRightInputValue(leftInputValue);
         }
     }, [syncedValue]);
-
-    function getSingleValue(value) {
-        if (typeof value == "string") {
-            return minMax(value.split(" ")[0]);
-        }
-        return minMax(value);
-    }
 
     // Return the value if it is between min and max, otherwise return the min or max value
     function minMax(value) {
@@ -367,24 +363,26 @@ function Editor({ id, value, commit, highlight, identifier, options, i18nRegistr
                                 type="button"
                                 {...stylex.props(styles.area("middle"), styles.syncButton)}
                                 title={i18nRegistry.translate("Carbon.Editor.Styling:Main:snycValues")}
+                                onBlur={() => setSyncButtonFocus(false)}
                                 onClick={() => {
+                                    setSyncButtonFocus(true);
                                     const map = {
                                         x: "y",
                                         y: "xy",
                                         xy: null,
                                     };
-                                    const newValue = syncedValue ? map[syncedValue] : "x";
+                                    const newValue = _syncedValue ? map[_syncedValue] : "x";
                                     setSyncedValue(newValue);
                                 }}
                             >
-                                {(syncedValue == "x" || syncedValue == "xy") && (
+                                {(_syncedValue == "x" || _syncedValue == "xy") && (
                                     <span {...stylex.props(styles.syncLineX)}></span>
                                 )}
-                                {(syncedValue == "y" || syncedValue == "xy") && (
+                                {(_syncedValue == "y" || _syncedValue == "xy") && (
                                     <span {...stylex.props(styles.syncLineY)}></span>
                                 )}
                                 <span {...stylex.props(styles.syncLineBackground)}></span>
-                                <Icon icon={syncedValue ? "lock" : "lock-open"} />
+                                <Icon icon={_syncedValue ? "lock" : "lock-open"} />
                             </button>
                         )}
                     </div>
@@ -427,7 +425,7 @@ function Editor({ id, value, commit, highlight, identifier, options, i18nRegistr
                             title={i18nRegistry.translate("Carbon.Editor.Styling:Main:globalSpacing")}
                             {...stylex.props(styles.centerContent, readonly && styles.readonly)}
                         >
-                            <RoundedBox segmented={false} selected={selected} />
+                            <RoundedBox selected={selected} />
                         </Button>
                         {allowMultiple && (
                             <Button
@@ -491,7 +489,7 @@ function Editor({ id, value, commit, highlight, identifier, options, i18nRegistr
                                 title={i18nRegistry.translate("Carbon.Editor.Styling:Main:spacingPerSide")}
                                 {...stylex.props(styles.centerContent, readonly && styles.readonly)}
                             >
-                                <RoundedBox mode="spacing" segmented={true} selected={selected} synced={syncedValue} />
+                                <SpacingBox selected={selected} useSyncValue={syncButtonFocus} synced={_syncedValue} />
                             </Button>
                         )}
                     </div>
