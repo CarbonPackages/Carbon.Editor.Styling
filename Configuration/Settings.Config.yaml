@@ -41,5 +41,5 @@ Neos:
           allowSync: true
           convertToRem: false
           min: 0
-          max: null
+          max: 999
           placeholder: ''
