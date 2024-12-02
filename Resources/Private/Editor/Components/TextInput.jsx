@@ -86,6 +86,9 @@ function Component({
             // Replace , with . and remove all letters and spaces
             newValue = newValue.replace(",", ".").replace(/[a-zA-Z\s]/g, "");
             if (hasOperator(newValue)) {
+                while (startWithOperator(newValue)) {
+                    newValue = newValue.substring(1);
+                }
                 if (endWithOperator(newValue)) {
                     return;
                 }
@@ -124,6 +127,10 @@ function Component({
 
     function hasOperator(value) {
         return value.includes("+") || value.includes("-") || value.includes("*") || value.includes("/");
+    }
+
+    function startWithOperator(value) {
+        return value.startsWith("*") || value.startsWith("/");
     }
 
     function endWithOperator(value) {
