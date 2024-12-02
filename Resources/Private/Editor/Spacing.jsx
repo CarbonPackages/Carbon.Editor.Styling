@@ -285,6 +285,11 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                             min={min}
                             max={max}
                             onChange={(value) => {
+                                if (syncedValue == "y" || syncedValue == "xy") {
+                                    setBottomInputValue(value);
+                                }
+                            }}
+                            onChangeDebounced={(value) => {
                                 value = minMax(value);
                                 setTopInputValue(value);
                                 if (syncedValue == "y" || syncedValue == "xy") {
@@ -307,6 +312,11 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                             min={min}
                             max={max}
                             onChange={(value) => {
+                                if (syncedValue == "x" || syncedValue == "xy") {
+                                    setLeftInputValue(value);
+                                }
+                            }}
+                            onChangeDebounced={(value) => {
                                 value = minMax(value);
                                 setRightInputValue(value);
                                 if (syncedValue == "x" || syncedValue == "xy") {
@@ -329,6 +339,11 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                             min={min}
                             max={max}
                             onChange={(value) => {
+                                if (syncedValue == "y" || syncedValue == "xy") {
+                                    setTopInputValue(value);
+                                }
+                            }}
+                            onChangeDebounced={(value) => {
                                 value = minMax(value);
                                 setBottomInputValue(value);
                                 if (syncedValue == "y" || syncedValue == "xy") {
@@ -351,6 +366,11 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                             min={min}
                             max={max}
                             onChange={(value) => {
+                                if (syncedValue == "x" || syncedValue == "xy") {
+                                    setRightInputValue(value);
+                                }
+                            }}
+                            onChangeDebounced={(value) => {
                                 value = minMax(value);
                                 setLeftInputValue(value);
                                 if (syncedValue == "x" || syncedValue == "xy") {
