@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Button } from "@neos-project/react-ui-components";
 import TextInput from "./Components/TextInput";
 import RoundedBox from "./Components/RoundedBox";
 import BorderRadiusBox from "./Components/BorderRadiusBox";
 import Circle from "./Components/Circle";
-import { isSegmented, convertValue, limitToMinMax } from "./Helper";
+import Dialog from "./Components/Dialog";
+import { isSegmented, getNumberAndUnit, limitToMinMax } from "./Helper";
 import { neos } from "@neos-project/neos-ui-decorators";
 import { useDebounce } from "use-debounce";
 import * as stylex from "@stylexjs/stylex";
@@ -71,7 +72,8 @@ const defaultOptions = {
     readonly: false,
     allowMultiple: false,
     allowFullRounded: false,
-    convertToRem: false,
+    allowPercentage: false,
+    convertPxToRem: false,
     preview: false,
     previewAspectRatio: null,
     min: 0,
@@ -104,7 +106,8 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
         readonly,
         allowMultiple,
         allowFullRounded,
-        convertToRem,
+        allowPercentage,
+        convertPxToRem,
         preview,
         previewAspectRatio,
         min,
@@ -122,21 +125,25 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
         if (isRound(value)) {
             return {
                 rounded: true,
+                main: {
+                    value: fullRoundedValue,
+                    unit: "px",
+                },
             };
         }
         const valueIsString = typeof value == "string";
-        const valueIsRem = valueIsString && value.includes("rem");
         if (typeof value == "number") {
+            value = convertPxToRem ? value * 16 : value;
             return {
-                main: convertValue(value, convertToRem, min, max),
+                main: getNumberAndUnit(value, min, max),
             };
         }
         if (!valueIsString || !value) {
             return {
-                main: min,
+                main: getNumberAndUnit(0, min, max),
             };
         }
-        const values = value.split(" ").map((value) => convertValue(value, valueIsRem, min, max));
+        const values = value.split(" ").map((value) => getNumberAndUnit(value, min, max, allowPercentage));
         if (!allowMultiple || values.length < 4) {
             return {
                 main: values[0],
@@ -151,18 +158,120 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
         };
     })();
 
-    function fallbackToNull(value) {
-        return typeof value == "number" ? value : null;
+    function getInitState(direction, key, fallback = null) {
+        if (fallback === null) {
+            fallback = key == "unit" ? "px" : null;
+        }
+        const config = values[direction];
+        if (!config) {
+            return fallback;
+        }
+        const value = config[key];
+        if (typeof value != "undefined") {
+            return value;
+        }
+        return fallback;
     }
 
+    // Main Input
     const [rounded, setRounded] = useState(values?.rounded || false);
-    const [mainInputValue, setMainInputValue] = useState(
-        values?.rounded ? fullRoundedValue : fallbackToNull(values?.main),
-    );
-    const [topLeftInputValue, setTopLeftInputValue] = useState(fallbackToNull(values?.topLeft));
-    const [topRightInputValue, setTopRightInputValue] = useState(fallbackToNull(values?.topRight));
-    const [bottomRightInputValue, setBottomRightInputValue] = useState(fallbackToNull(values?.bottomRight));
-    const [bottomLeftInputValue, setBottomLeftInputValue] = useState(fallbackToNull(values?.bottomLeft));
+    const [mainInputValue, setMainInputValue] = useState(getInitState("main", "value"));
+    const [mainUnit, setMainUnit] = useState(getInitState("main", "unit"));
+    const [mainMin, setMainMin] = useState(getInitState("main", "min", min));
+    const [mainMax, setMainMax] = useState(getInitState("main", "max", max));
+    useEffect(() => {
+        const isPercentage = mainUnit == "%";
+        setMainMin(isPercentage ? 0 : min);
+        setMainMax(isPercentage ? 100 : max);
+        if (mainInputValue) {
+            setTopLeftUnit(mainUnit);
+            setTopRightUnit(mainUnit);
+            setBottomRightUnit(mainUnit);
+            setBottomLeftUnit(mainUnit);
+        }
+    }, [mainUnit]);
+
+    // Top Left Input
+    const [topLeftInputValue, setTopLeftInputValue] = useState(getInitState("topLeft", "value"));
+    const [topLeftUnit, setTopLeftUnit] = useState(getInitState("topLeft", "unit"));
+    const [topLeftMin, setTopLeftMin] = useState(getInitState("topLeft", "min", min));
+    const [topLeftMax, setTopLeftMax] = useState(getInitState("topLeft", "max", max));
+
+    useEffect(() => {
+        const isPercentage = topLeftUnit == "%";
+        setTopLeftMin(isPercentage ? 0 : min);
+        setTopLeftMax(isPercentage ? 100 : max);
+    }, [topLeftUnit]);
+
+    // Top Right Input
+    const [topRightInputValue, setTopRightInputValue] = useState(getInitState("topRight", "value"));
+    const [topRightUnit, setTopRightUnit] = useState(getInitState("topRight", "unit"));
+    const [topRightMin, setTopRightMin] = useState(getInitState("topRight", "min", min));
+    const [topRightMax, setTopRightMax] = useState(getInitState("topRight", "max", max));
+    useEffect(() => {
+        const isPercentage = topRightUnit == "%";
+        setTopRightMin(isPercentage ? 0 : min);
+        setTopRightMax(isPercentage ? 100 : max);
+    }, [topRightUnit]);
+
+    // Bottom Right Input
+    const [bottomRightInputValue, setBottomRightInputValue] = useState(getInitState("bottomRight", "value"));
+    const [bottomRightUnit, setBottomRightUnit] = useState(getInitState("bottomRight", "unit"));
+    const [bottomRightMin, setBottomRightMin] = useState(getInitState("bottomRight", "min", min));
+    const [bottomRightMax, setBottomRightMax] = useState(getInitState("bottomRight", "max", max));
+    useEffect(() => {
+        const isPercentage = bottomRightUnit == "%";
+        setBottomRightMin(isPercentage ? 0 : min);
+        setBottomRightMax(isPercentage ? 100 : max);
+    }, [bottomRightUnit]);
+
+    // Bottom Left Input
+    const [bottomLeftInputValue, setBottomLeftInputValue] = useState(getInitState("bottomLeft", "value"));
+    const [bottomLeftUnit, setBottomLeftUnit] = useState(getInitState("bottomLeft", "unit"));
+    const [bottomLeftMin, setBottomLeftMin] = useState(getInitState("bottomLeft", "min", min));
+    const [bottomLeftMax, setBottomLeftMax] = useState(getInitState("bottomLeft", "max", max));
+    useEffect(() => {
+        const isPercentage = bottomLeftUnit == "%";
+        setBottomLeftMin(isPercentage ? 0 : min);
+        setBottomLeftMax(isPercentage ? 100 : max);
+    }, [bottomLeftUnit]);
+
+    // Commit main input
+    function commitMainValue() {
+        if (mainInputValue == null) {
+            return;
+        }
+        const isRounded = isRound(mainInputValue);
+        setRounded(isRounded);
+        if (isRounded) {
+            commitIfChanged(`${fullRoundedValue}px`);
+            return;
+        }
+        commitIfChanged(convertForCommit(mainInputValue, mainUnit));
+    }
+    useEffect(commitMainValue, [mainInputValue, mainUnit]);
+
+    // Commit multiple inputs
+    function commitMultipleValues() {
+        if (mainInputValue !== null) {
+            return;
+        }
+        const tl = convertForCommit(topLeftInputValue, topLeftUnit);
+        const tr = convertForCommit(topRightInputValue, topRightUnit);
+        const br = convertForCommit(bottomRightInputValue, bottomRightUnit);
+        const bl = convertForCommit(bottomLeftInputValue, bottomLeftUnit);
+        commitIfChanged(`${tl} ${tr} ${br} ${bl}`);
+    }
+    useEffect(commitMultipleValues, [
+        topLeftInputValue,
+        topRightInputValue,
+        bottomRightInputValue,
+        bottomLeftInputValue,
+        topLeftUnit,
+        topRightUnit,
+        bottomRightUnit,
+        bottomLeftUnit,
+    ]);
 
     function commitIfChanged(newValue) {
         if (newValue !== value) {
@@ -170,55 +279,21 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
         }
     }
 
-    function convertForCommit(number) {
-        const unit = convertToRem ? "rem" : "px";
-        const divider = convertToRem ? 16 : 1;
-        const convertedNumber = minMax(number) / divider;
+    function convertForCommit(number, unit) {
+        if (!number) {
+            return "0";
+        }
+        let divider = 1;
+        if (!unit || unit == "px") {
+            unit = convertPxToRem ? "rem" : "px";
+            divider = convertPxToRem ? 16 : 1;
+        }
+        const convertedNumber = number / divider;
         return convertedNumber == 0 ? "0" : `${convertedNumber}${unit}`;
     }
 
-    function commitSingleValue() {
-        const isRounded = isRound(mainInputValue);
-        setRounded(isRounded);
-        if (isRounded) {
-            commitIfChanged(`${fullRoundedValue}px`);
-            return;
-        }
-        commitIfChanged(convertForCommit(mainInputValue));
-    }
-
-    function commitMultipleValues() {
-        commitIfChanged(
-            `${convertForCommit(topLeftInputValue)} ${convertForCommit(topRightInputValue)} ${convertForCommit(bottomRightInputValue)} ${convertForCommit(bottomLeftInputValue)}`,
-        );
-    }
-
-    useEffect(() => {
-        if (mainInputValue == null) {
-            return;
-        }
-        commitSingleValue();
-    }, [mainInputValue]);
-
-    useEffect(() => {
-        if (
-            topLeftInputValue == null ||
-            topRightInputValue == null ||
-            bottomRightInputValue == null ||
-            bottomLeftInputValue == null
-        ) {
-            return;
-        }
-        commitMultipleValues();
-    }, [topLeftInputValue, topRightInputValue, bottomRightInputValue, bottomLeftInputValue]);
-
     function isRound(input) {
         return input == `${fullRoundedValue}px` || input == fullRoundedValue;
-    }
-
-    // Return the value if it is between min and max, otherwise return the min or max value
-    function minMax(value) {
-        return limitToMinMax(value, min, max);
     }
 
     useEffect(() => {
@@ -236,15 +311,16 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                         <TextInput
                             id={id}
                             value={topLeftInputValue}
-                            append="px"
+                            unit={topLeftUnit}
+                            unitSwitch={allowPercentage ? setTopLeftUnit : null}
                             readOnly={readonly}
                             placeholder={placeholder}
                             onEnterKey={onEnterKey}
                             type="number"
-                            min={min}
-                            max={max}
+                            min={topLeftMin}
+                            max={topLeftMax}
                             onChange={(value) => {
-                                setTopLeftInputValue(minMax(value));
+                                setTopLeftInputValue(limitToMinMax(value, topLeftMin, topLeftMax));
                             }}
                             setFocus={selected == "topLeft"}
                             onFocus={() => setSelected("topLeft")}
@@ -252,15 +328,16 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                         />
                         <TextInput
                             value={topRightInputValue}
-                            append="px"
+                            unit={topRightUnit}
+                            unitSwitch={allowPercentage ? setTopRightUnit : null}
                             readOnly={readonly}
                             placeholder={placeholder}
                             onEnterKey={onEnterKey}
                             type="number"
-                            min={min}
-                            max={max}
+                            min={topRightMin}
+                            max={topRightMax}
                             onChange={(value) => {
-                                setTopRightInputValue(minMax(value));
+                                setTopRightInputValue(limitToMinMax(value, topRightMin, topRightMax));
                             }}
                             setFocus={selected == "topRight"}
                             onFocus={() => setSelected("topRight")}
@@ -268,15 +345,16 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                         />
                         <TextInput
                             value={bottomLeftInputValue}
-                            append="px"
+                            unit={bottomLeftUnit}
+                            unitSwitch={allowPercentage ? setBottomLeftUnit : null}
                             readOnly={readonly}
                             placeholder={placeholder}
                             onEnterKey={onEnterKey}
                             type="number"
-                            min={min}
-                            max={max}
+                            min={bottomLeftMin}
+                            max={bottomLeftMax}
                             onChange={(value) => {
-                                setBottomLeftInputValue(minMax(value));
+                                setBottomLeftInputValue(limitToMinMax(value, bottomLeftMin, bottomLeftMax));
                             }}
                             setFocus={selected == "bottomLeft"}
                             onFocus={() => setSelected("bottomLeft")}
@@ -284,15 +362,16 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                         />
                         <TextInput
                             value={bottomRightInputValue}
-                            append="px"
+                            unit={bottomRightUnit}
+                            unitSwitch={allowPercentage ? setBottomRightUnit : null}
                             readOnly={readonly}
                             placeholder={placeholder}
                             onEnterKey={onEnterKey}
                             type="number"
-                            min={min}
-                            max={max}
+                            min={bottomRightMin}
+                            max={bottomRightMax}
                             onChange={(value) => {
-                                setBottomRightInputValue(minMax(value));
+                                setBottomRightInputValue(limitToMinMax(value, bottomRightMin, bottomRightMax));
                             }}
                             setFocus={selected == "bottomRight"}
                             onFocus={() => setSelected("bottomRight")}
@@ -303,23 +382,24 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                     <TextInput
                         id={id}
                         value={mainInputValue}
-                        append={rounded ? null : "px"}
+                        unit={rounded ? null : mainUnit}
+                        unitSwitch={allowPercentage ? setMainUnit : null}
                         readOnly={readonly}
                         placeholder={placeholder}
                         onEnterKey={onEnterKey}
                         type="number"
-                        min={min}
-                        max={max}
+                        min={mainMin}
+                        max={mainMax}
                         setFocus={mainFocus}
                         fakeValue={rounded ? i18nRegistry.translate("Carbon.Editor.Styling:Main:fullRounded") : null}
                         onFakeClick={() => {
-                            setMainInputValue(min);
+                            setMainInputValue(mainMin);
                             setTimeout(() => {
                                 setMainFocus(true);
                             }, 0);
                         }}
                         onChange={(value) => {
-                            setMainInputValue(minMax(value));
+                            setMainInputValue(limitToMinMax(value, mainMin, mainMax));
                         }}
                         onBlur={() => setMainFocus(false)}
                         containerStyle={styles.fullInput}
@@ -403,7 +483,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                                         commited = true;
                                     }
                                     if (!commited) {
-                                        commitMultipleValues();
+                                        setTimeout(commitMultipleValues, 0);
                                     }
                                 }}
                                 style="neutral"
@@ -415,7 +495,6 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                         )}
                     </div>
                 )}
-
                 {!!preview && preview != "big" && (
                     <div {...stylex.props(styles.preview(value, rounded), styles.previewSmall)}></div>
                 )}

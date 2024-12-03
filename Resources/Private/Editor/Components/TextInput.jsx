@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import UnitSwitch from "./UnitSwitch";
 import { useDebouncedCallback } from "use-debounce";
 import { neos } from "@neos-project/neos-ui-decorators";
 import * as stylex from "@stylexjs/stylex";
@@ -13,10 +14,12 @@ const styles = stylex.create({
         fontSize: "var(--fontSize-Base)",
         cursor: "text",
     },
-    inputLook: {
+    inputLook: (unitSwitch) => ({
         borderRadius: 2,
-        padding: "0 var(--fontSize-Base)",
-    },
+        paddingBlock: 0,
+        paddingLeft: "var(--fontSize-Base)",
+        paddingRight: unitSwitch ? 0 : "var(--fontSize-Base)",
+    }),
     input: {
         appearance: "none",
         width: "100%",
@@ -54,8 +57,10 @@ function Component({
     i18nRegistry,
     value,
     onChange,
+    onChangeDebounced,
     placeholder,
-    append,
+    unit,
+    unitSwitch,
     containerStyle,
     inputStyle,
     onFocus,
@@ -64,7 +69,6 @@ function Component({
     onKeyPress,
     onKeyDown,
     type = "text",
-    fakeFocus,
     fakeValue,
     onFakeClick,
     disabled,
@@ -79,11 +83,23 @@ function Component({
     const inputRef = useRef(null);
     const [state, setState] = useState(value);
     const [isFocus, setIsFocus] = useState(false);
-    const debounced = useDebouncedCallback((newValue) => {
-        if (!onChange) {
+    const [fakeFocus, setFakeFocus] = useState(!!rest.fakeFocus);
+    useEffect(() => {
+        setFakeFocus(!!rest.fakeFocus);
+    }, [rest.fakeFocus]);
+
+    useEffect(() => {
+        commitValue(state);
+    }, [rest.max, rest.min]);
+
+    function commitValue(newValue, force = false) {
+        if (!onChangeDebounced && !onChange) {
             return;
         }
-        if (isNumericInput) {
+        if (typeof newValue == "number") {
+            newValue = minMax(newValue);
+        }
+        if (isNumericInput && typeof newValue == "string") {
             // Replace , with . and remove all letters and spaces
             newValue = newValue.replace(",", ".").replace(/[a-zA-Z\s]/g, "");
             if (hasOperator(newValue)) {
@@ -106,13 +122,25 @@ function Component({
                 setState(newValue);
             }
         }
-        if (newValue != value) {
-            onChange(newValue);
+        if (force || newValue != value) {
+            if (onChangeDebounced) {
+                onChangeDebounced(newValue);
+            } else {
+                onChange(newValue);
+            }
         }
-    }, debounce);
+    }
+    const debounced = useDebouncedCallback(commitValue, debounce);
+
     useEffect(() => {
         setState(value);
     }, [value]);
+
+    useEffect(() => {
+        if (onChangeDebounced && onChange && state != value) {
+            onChange(state);
+        }
+    }, [state]);
 
     useEffect(() => {
         if (inputRef && inputRef.current && (rest.autoFocus || setFocus)) {
@@ -151,26 +179,28 @@ function Component({
     return (
         <div
             {...stylex.props(
-                append && [styles.flex, styles.inputLook, styles.basicLook],
-                append && (isFocus || fakeFocus) && styles.focus,
+                unit && [styles.flex, styles.inputLook(unitSwitch), styles.basicLook],
+                unit && (isFocus || fakeFocus) && styles.focus,
                 highlight && styles.highlight,
                 disabled && styles.disabled,
                 containerStyle,
             )}
             onClick={() => {
-                if (append && !fakeValue && !disabled) {
+                if (unit && !fakeValue && !disabled) {
                     inputRef?.current?.focus();
                 }
             }}
         >
             {fakeValue && !onFakeClick ? (
-                <div {...stylex.props(!append && [styles.inputLook, styles.basicLook, styles.flex])}>{fakeValue}</div>
+                <div {...stylex.props(!unit && [styles.inputLook(false), styles.basicLook, styles.flex])}>
+                    {fakeValue}
+                </div>
             ) : null}
             {fakeValue && onFakeClick ? (
                 <button
                     type="button"
                     onClick={onFakeClick}
-                    {...stylex.props(styles.input, !append && [styles.inputLook, styles.basicLook, styles.flex])}
+                    {...stylex.props(styles.input, !unit && [styles.inputLook(false), styles.basicLook, styles.flex])}
                 >
                     {fakeValue}
                 </button>
@@ -181,7 +211,7 @@ function Component({
                     styles.input,
                     styles.basicLook,
                     isNumericInput && styles.numberInput,
-                    !append && styles.inputLook,
+                    !unit && styles.inputLook(false),
                     (isFocus || fakeFocus) && styles.focus,
                     fakeValue && styles.hidden,
                     inputStyle,
@@ -260,7 +290,7 @@ function Component({
                 }}
                 ref={inputRef}
             />
-            {append}
+            {unitSwitch && unit ? <UnitSwitch unit={unit} onActive={setFakeFocus} onClick={unitSwitch} /> : unit}
         </div>
     );
 }

@@ -1,4 +1,5 @@
-import TextAreaWithCounter from "./TextAreaWithCounter";
 import BorderRadius from "./BorderRadius";
+import Spacing from "./Spacing";
+import TextAreaWithCounter from "./TextAreaWithCounter";
 
-export { TextAreaWithCounter, BorderRadius };
+export { BorderRadius, Spacing, TextAreaWithCounter };

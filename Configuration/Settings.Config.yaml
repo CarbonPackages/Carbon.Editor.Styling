@@ -21,25 +21,42 @@ Neos:
           placeholder: ''
           disabled: false
           readonly: false
+
+          # Allow mutliple values
           allowMultiple: true
+
+          # Allow full rounded value
           allowFullRounded: false
-          convertToRem: true
+
+          # Allow percentage values
+          allowPercentage: false
+
+          # Convert px values to rem when saving to content repository
+          convertPxToRem: true
 
           # false, big, or small
           preview: false
           # Has only a affect on big preview
           previewAspectRatio: null
 
-          # min, max and fullRoundedValue are always in px
+          # min, max and fullRoundedValue are always in px, even if convertPxToRem is true
+          # The full rounded value will be saved with the pixel unit in the database
+          # The other values will be converted and saved with the rem unit in the database if convertPxToRem is true
+          # If in percentage mode, min and max have no effect, there is always the range between 0 and 100
           min: 0
           max: 24
           fullRoundedValue: 9999
         'Carbon.Editor.Styling.Spacing':
           disabled: false
           readonly: false
+          placeholder: ''
           allowMultiple: true
           allowSync: true
-          convertToRem: false
+
+          # Convert px values to rem when saving to content repository
+          convertPxToRem: false
+
+          # min, max and fullRoundedValue are always in px, even if convertPxToRem is true
+          # The values will be converted and saved with the rem unit in the database if convertPxToRem is true
           min: 0
           max: 999
-          placeholder: ''

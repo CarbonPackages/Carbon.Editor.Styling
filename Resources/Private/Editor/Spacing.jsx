@@ -42,11 +42,13 @@ const styles = stylex.create({
         borderRadius: 0,
         gridTemplate: `"content" minmax(0, 1fr) / minmax(0, 1fr)`,
         placeItems: "center",
-        ":hover": {
-            color: "var(--colors-PrimaryBlue)",
+        fill: "currentColor",
+        ":where(:hover,:focus)": {
+            color: "var(--colors-PrimaryBlue) !important",
+            outline: 0,
         },
-        ":focus": {
-            outline: "1px solid var(--colors-PrimaryBlue)",
+        ":focus-visible": {
+            outline: "1px solid var(--colors-PrimaryBlue) !important",
         },
         ":where(*)>*": {
             gridArea: "content",
@@ -93,7 +95,7 @@ const defaultOptions = {
     readonly: false,
     allowMultiple: false,
     allowSync: true,
-    convertToRem: false,
+    convertPxToRem: false,
     min: 0,
     max: null,
     placeholder: "",
@@ -118,7 +120,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
         }
     }, [selected]);
 
-    const { disabled, readonly, allowMultiple, allowSync, convertToRem, min, max, placeholder } = {
+    const { disabled, readonly, allowMultiple, allowSync, convertPxToRem, min, max, placeholder } = {
         ...defaultOptions,
         ...config,
         ...options,
@@ -130,7 +132,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
         const valueIsRem = valueIsString && value.includes("rem");
         if (typeof value == "number") {
             return {
-                main: convertValue(value, convertToRem, min, max),
+                main: convertValue(value, min, max),
             };
         }
         if (!valueIsString || !value) {
@@ -138,7 +140,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                 main: min,
             };
         }
-        const values = value.split(" ").map((value) => convertValue(value, valueIsRem, min, max));
+        const values = value.split(" ").map((value) => convertValue(value, min, max));
         if (!allowMultiple || values.length == 1) {
             return {
                 main: values[0],
@@ -204,8 +206,8 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
     }
 
     function convertForCommit(number) {
-        const unit = convertToRem ? "rem" : "px";
-        const divider = convertToRem ? 16 : 1;
+        const unit = convertPxToRem ? "rem" : "px";
+        const divider = convertPxToRem ? 16 : 1;
         const convertedNumber = minMax(number) / divider;
         return convertedNumber == 0 ? "0" : `${convertedNumber}${unit}`;
     }
@@ -277,7 +279,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                             containerStyle={styles.area("top")}
                             id={id}
                             value={topInputValue}
-                            append="px"
+                            unit="px"
                             readOnly={readonly}
                             placeholder={placeholder}
                             onEnterKey={onEnterKey}
@@ -304,7 +306,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                         <TextInput
                             containerStyle={styles.area("right")}
                             value={rightInputValue}
-                            append="px"
+                            unit="px"
                             readOnly={readonly}
                             placeholder={placeholder}
                             onEnterKey={onEnterKey}
@@ -331,7 +333,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                         <TextInput
                             containerStyle={styles.area("bottom")}
                             value={bottomInputValue}
-                            append="px"
+                            unit="px"
                             readOnly={readonly}
                             placeholder={placeholder}
                             onEnterKey={onEnterKey}
@@ -358,7 +360,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                         <TextInput
                             containerStyle={styles.area("left")}
                             value={leftInputValue}
-                            append="px"
+                            unit="px"
                             readOnly={readonly}
                             placeholder={placeholder}
                             onEnterKey={onEnterKey}
@@ -414,7 +416,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                     <TextInput
                         id={id}
                         value={mainInputValue}
-                        append="px"
+                        unit="px"
                         readOnly={readonly}
                         placeholder={placeholder}
                         onEnterKey={onEnterKey}

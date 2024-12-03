@@ -1,24 +1,66 @@
 export const isSegmented = (value) => typeof value == "string" && value.includes(" ");
 
-export const convertValue = (input, rem, min, max) => {
+export function getNumberAndUnit(input, min, max, allowPercentage = false) {
+    const defaultUnit = "px";
     if (typeof input == "string") {
-        input = parseFloat(input);
+        const match = input.match(/^(-?\d*\.?\d+)(.*)$/);
+        const allowedUnits = [defaultUnit];
+        if (allowPercentage) {
+            allowedUnits.push("%");
+        }
+        if (match) {
+            let value = parseFloat(match[1]);
+            let unit = match[2];
+            if (allowPercentage && unit == "%") {
+                min = 0;
+                max = 100;
+            } else if (unit == "rem" || unit == "em") {
+                value = value * 16;
+            }
+            if (!allowedUnits.includes(unit)) {
+                unit = defaultUnit;
+            }
+
+            return {
+                value: limitToMinMax(value, min, max),
+                unit,
+                min,
+                max,
+            };
+        }
     }
-    const multiplier = rem ? 16 : 1;
-    return limitToMinMax(input * multiplier, min, max);
-};
+    if (!input || typeof input != "number") {
+        input = 0;
+    }
+    return {
+        value: limitToMinMax(input, min, max),
+        unit: defaultUnit,
+        min,
+        max,
+    };
+}
+
+export function convertValue(input, min, max) {
+    const { value } = getNumberAndUnit(input, min, max);
+    return value;
+}
 
 // Return the value if it is between min and max, otherwise return the min or max value
 export function limitToMinMax(value, min, max) {
     if (typeof value == "string") {
-        value = parseInt(value);
+        value = parseFloat(value);
     }
-    if (!value) {
+    if (!value || typeof value != "number") {
         value = 0;
     }
     value = Math.round(value);
-    if (!max) {
-        return Math.max(min, value);
+
+    if (typeof min == "number") {
+        value = Math.max(min, value);
     }
-    return Math.min(Math.max(min, value), max);
+    if (typeof max == "number") {
+        value = Math.min(max, value);
+    }
+
+    return value;
 }

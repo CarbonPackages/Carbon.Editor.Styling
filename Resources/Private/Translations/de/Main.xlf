@@ -36,6 +36,10 @@
                 <source>Snycronize values</source>
                 <target>Werte snycronisieren</target>
             </trans-unit>
+            <trans-unit id="changeToUnit" xml:space="preserve">
+                <source>Change unit to {0}</source>
+                <target>Wechsle Einheit zu {0}</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

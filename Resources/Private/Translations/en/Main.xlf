@@ -28,6 +28,9 @@
             <trans-unit id="snycValues" xml:space="preserve">
                 <source>Snycronize values</source>
             </trans-unit>
+            <trans-unit id="changeToUnit" xml:space="preserve">
+                <source>Change unit to {0}</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>
