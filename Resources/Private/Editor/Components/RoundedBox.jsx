@@ -1,11 +1,10 @@
 import React from "react";
 
-export default function RoundedBox({ selected = null }) {
+export default function RoundedBox({ style = {}, className }) {
     const size = 12;
     return (
-        <svg width={size} height={size} viewBox="0 0 10 10" fill="none">
+        <svg style={style} className={className} width={size} height={size} viewBox="0 0 10 10" fill="none">
             <path
-                opacity={selected ? 0.2 : 1}
                 fill="currentColor"
                 fill-rule="evenodd"
                 clip-rule="evenodd"

@@ -1,8 +1,8 @@
 import React from "react";
 
-export default function SpacingBox({ selected = null, synced = false, useSyncValue = false }) {
+export default function SpacingBox({ selected = null, synced = false, useSyncValue = false, style }) {
     const size = 14;
-    const opacity = !useSyncValue && selected == "all" ? 1 : 0.2;
+    const opacity = !useSyncValue && (!selected || selected == "all") ? 1 : 0.2;
 
     let isTop = selected == "top";
     let isRight = selected == "right";
@@ -35,7 +35,7 @@ export default function SpacingBox({ selected = null, synced = false, useSyncVal
     const left = isLeft ? 1 : opacity;
 
     return (
-        <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 12 12">
+        <svg style={style} xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 12 12">
             <path
                 d="M 3 0.75 C 3 0.336 3.336 0 3.75 0 L 8.25 0 C 8.664 0 9 0.336 9 0.75 L 9 0.75 C 9 1.164 8.664 1.5 8.25 1.5 L 3.75 1.5 C 3.336 1.5 3 1.164 3 0.75 Z"
                 fill="currentColor"

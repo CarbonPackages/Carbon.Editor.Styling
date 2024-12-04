@@ -10,14 +10,23 @@
                     <source>{0} characters</source>
                 </trans-unit>
             </group>
-            <trans-unit id="fullRounded" xml:space="preserve">
+            <trans-unit id="borderRadius.rounded" xml:space="preserve">
                 <source>Round</source>
             </trans-unit>
-            <trans-unit id="radius" xml:space="preserve">
-                <source>Radius</source>>
+            <trans-unit id="borderRadius.single" xml:space="preserve">
+                <source>Uniform radius</source>
             </trans-unit>
-            <trans-unit id="radiusPerSide" xml:space="preserve">
+            <trans-unit id="borderRadius.multiple" xml:space="preserve">
                 <source>Radius per side</source>
+            </trans-unit>
+            <trans-unit id="borderRadius.organic" xml:space="preserve">
+                <source>Organic radius</source>
+            </trans-unit>
+            <trans-unit id="showBigPreview" xml:space="preserve">
+                <source>Show big preview</source>
+            </trans-unit>
+            <trans-unit id="hideBigPreview" xml:space="preserve">
+                <source>Hide big preview</source>
             </trans-unit>
             <trans-unit id="globalSpacing" xml:space="preserve">
                 <source>Global spacing</source>

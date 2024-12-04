@@ -88,6 +88,14 @@ const styles = stylex.create({
     readonly: {
         pointerEvents: "none",
     },
+    svgButton: (active) => ({
+        ":where(*)>svg": {
+            opacity: active ? 1 : 0.2,
+        },
+        ":is(:hover,:focus)>svg": {
+            opacity: 1,
+        },
+    }),
 });
 
 const defaultOptions = {
@@ -447,22 +455,25 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                                 }
                                 setMainFocus(true);
                             }}
-                            style="neutral"
                             title={i18nRegistry.translate("Carbon.Editor.Styling:Main:globalSpacing")}
-                            {...stylex.props(styles.centerContent, readonly && styles.readonly)}
+                            className={
+                                stylex.props(
+                                    styles.svgButton(!segmented),
+                                    styles.centerContent,
+                                    readonly && styles.readonly,
+                                ).className
+                            }
                         >
-                            <RoundedBox selected={selected} />
+                            <RoundedBox selected={selected} style={stylex.props(styles.svgButton(!segmented)).style} />
                         </Button>
                         {allowMultiple && (
                             <Button
                                 onClick={() => {
                                     if (segmented) {
-                                        const map = {
-                                            top: "right",
-                                            right: "bottom",
-                                            bottom: "left",
-                                        };
-                                        setSelected(map[selected] || "top");
+                                        const order = ["top", "right", "bottom", "left"];
+                                        const currentIndex = order.indexOf(selected);
+                                        const nextIndex = (currentIndex + 1) % order.length;
+                                        setSelected(order[nextIndex]);
                                         return;
                                     }
 
@@ -491,11 +502,21 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                                         commitMultipleValues();
                                     }
                                 }}
-                                style="neutral"
                                 title={i18nRegistry.translate("Carbon.Editor.Styling:Main:spacingPerSide")}
-                                {...stylex.props(styles.centerContent, readonly && styles.readonly)}
+                                className={
+                                    stylex.props(
+                                        styles.svgButton(segmented),
+                                        styles.centerContent,
+                                        readonly && styles.readonly,
+                                    ).className
+                                }
                             >
-                                <SpacingBox selected={selected} useSyncValue={syncButtonFocus} synced={_syncedValue} />
+                                <SpacingBox
+                                    selected={selected}
+                                    useSyncValue={syncButtonFocus}
+                                    synced={_syncedValue}
+                                    style={stylex.props(styles.svgButton(segmented)).style}
+                                />
                             </Button>
                         )}
                     </div>

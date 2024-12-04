@@ -23,7 +23,11 @@ Neos:
           readonly: false
 
           # Allow mutliple values
-          allowMultiple: true
+          allowMultiple: false
+
+          # Allow organic shapes
+          # If true dialog will be shown to set multiple values and it is possible to create organic shapes
+          allowOrganic: false
 
           # Allow full rounded value
           allowFullRounded: false
@@ -34,9 +38,9 @@ Neos:
           # Convert px values to rem when saving to content repository
           convertPxToRem: true
 
-          # false, big, or small
-          preview: false
-          # Has only a affect on big preview
+          # true or false
+          preview: true
+          # Has only a affect on big preview (after the user has clicked on the small preview)
           previewAspectRatio: null
 
           # min, max and fullRoundedValue are always in px, even if convertPxToRem is true

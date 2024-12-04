@@ -14,7 +14,7 @@ const options = {
     logLevel: "info",
     bundle: true,
     minify,
-    sourcemap: dev,
+    sourcemap: watch,
     target: "es2020",
     legalComments: "none",
     entryPoints: ["Resources/Private/Editor/Editor.js", "Resources/Private/Editor/*.jsx"],

@@ -1,14 +1,18 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Button } from "@neos-project/react-ui-components";
+import React, { useState, useEffect, Suspense, lazy } from "react";
+import { Button, DropDown } from "@neos-project/react-ui-components";
 import TextInput from "./Components/TextInput";
 import RoundedBox from "./Components/RoundedBox";
 import BorderRadiusBox from "./Components/BorderRadiusBox";
+import ButtonAsInput from "./Components/ButtonAsInput";
 import Circle from "./Components/Circle";
 import Dialog from "./Components/Dialog";
-import { isSegmented, getNumberAndUnit, limitToMinMax } from "./Helper";
+import { getNumberAndUnit, limitToMinMax } from "./Helper";
 import { neos } from "@neos-project/neos-ui-decorators";
 import { useDebounce } from "use-debounce";
 import * as stylex from "@stylexjs/stylex";
+import LoadingAnimation from "carbon-neos-loadinganimation/LoadingWithStyleX";
+
+const LazyOrganicEditor = lazy(() => import("./Components/OrganicEditor"));
 
 const styles = stylex.create({
     container: {
@@ -51,19 +55,55 @@ const styles = stylex.create({
     preview: (borderRadius, rounded) => ({
         transition: "border-radius var(--transition-Slow) ease, width var(--transition-Slow) ease",
         background: "var(--colors-PrimaryBlue)",
-        margin: "var(--spacing-Full) auto 0",
-        height: 50,
+        height: 80,
         borderRadius: rounded ? "50%" : borderRadius,
     }),
     previewBig: (rounded, aspectRatio) => ({
+        margin: "var(--spacing-Full) auto 0",
+        display: "block",
         aspectRatio: aspectRatio || null,
-        width: aspectRatio ? null : rounded ? 50 : "100%",
+        width: aspectRatio ? null : rounded ? 80 : "100%",
     }),
     previewSmall: {
-        height: 80,
         aspectRatio: 1,
         transform: "scale(0.5)",
         margin: -20,
+    },
+    bigPreviewContainer: (show) => ({
+        display: "grid",
+        gridTemplateRows: show ? "1fr" : "0fr",
+        transition: "grid-template-rows var(--transition-Default) ease-in-out",
+    }),
+    bigPreviewButton: {
+        width: "100%",
+        height: "auto",
+        overflow: "hidden",
+        background: "transparent !important",
+        outline: "none !important",
+    },
+    dropdown: {
+        width: "auto !important",
+        alignSelf: "start",
+    },
+    dropdownHeader: {
+        position: "relative",
+    },
+    dropdownContent: {
+        right: 0,
+        left: "auto !important",
+        width: "max-content !important",
+        maxWidth: "220px !important",
+    },
+    dropdownButton: {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "start",
+        gap: "var(--spacing-Half)",
+        textAlign: "left",
+    },
+    dropdownSvg: {
+        minWidth: 15,
+        minHeight: 15,
     },
 });
 
@@ -71,28 +111,35 @@ const defaultOptions = {
     disabled: false,
     readonly: false,
     allowMultiple: false,
+    allowOrganic: false,
     allowFullRounded: false,
     allowPercentage: false,
     convertPxToRem: false,
-    preview: false,
+    preview: true,
     previewAspectRatio: null,
     min: 0,
-    max: null,
+    max: 24,
     placeholder: "",
     fullRoundedValue: 9999,
 };
 
 function Editor({ id, value, commit, highlight, options, i18nRegistry, config, onEnterKey }) {
-    const [segmented, setSegmented] = useState(null);
+    const [organicEditorOpen, setOrganicEditorOpen] = useState(false);
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+    const [bigPreview, setBigPreview] = useState(false);
     const [selected, setSelected] = useState(null);
     const [mainFocus, setMainFocus] = useState(false);
     const [_potentailAllSelected, setPotentialAllSelected] = useState(false);
     const [potentailAllSelected] = useDebounce(_potentailAllSelected, 500);
 
     useEffect(() => {
-        const bool = isSegmented(value);
-        setSegmented(bool);
-        setSelected(bool && !selected ? "all" : selected);
+        const newMode = getMode(value);
+        if (mode != newMode) {
+            setMode(newMode);
+        }
+        if (newMode == "multiple" && !selected) {
+            setSelected("all");
+        }
     }, [value]);
 
     useEffect(() => {
@@ -105,6 +152,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
         disabled,
         readonly,
         allowMultiple,
+        allowOrganic,
         allowFullRounded,
         allowPercentage,
         convertPxToRem,
@@ -122,35 +170,39 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
 
     // Content repository to editor
     const values = (() => {
-        if (isRound(value)) {
+        const mode = getMode(value);
+        if (mode == "rounded") {
             return {
-                rounded: true,
-                main: {
-                    value: fullRoundedValue,
-                    unit: "px",
-                },
-            };
-        }
-        const valueIsString = typeof value == "string";
-        if (typeof value == "number") {
-            value = convertPxToRem ? value * 16 : value;
-            return {
-                main: getNumberAndUnit(value, min, max),
-            };
-        }
-        if (!valueIsString || !value) {
-            return {
-                main: getNumberAndUnit(0, min, max),
-            };
-        }
-        const values = value.split(" ").map((value) => getNumberAndUnit(value, min, max, allowPercentage));
-        if (!allowMultiple || values.length < 4) {
-            return {
-                main: values[0],
+                mode,
             };
         }
 
+        if (mode == "organic") {
+            return {
+                mode,
+                organic: value,
+            };
+        }
+
+        if (mode == "single") {
+            let main = "";
+            if (typeof value == "number") {
+                main = getNumberAndUnit(convertPxToRem ? value * 16 : value, min, max);
+            } else if (typeof value != "string" || !value) {
+                main = getNumberAndUnit(0, min, max);
+            } else {
+                main = getNumberAndUnit(value, min, max, allowPercentage);
+            }
+            return {
+                mode,
+                main,
+            };
+        }
+
+        // Multiple mode is the last
+        const values = value.split(" ").map((value) => getNumberAndUnit(value, min, max, allowPercentage));
         return {
+            mode,
             topLeft: values[0],
             topRight: values[1],
             bottomRight: values[2],
@@ -173,8 +225,9 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
         return fallback;
     }
 
+    const [mode, setMode] = useState(values.mode);
+
     // Main Input
-    const [rounded, setRounded] = useState(values?.rounded || false);
     const [mainInputValue, setMainInputValue] = useState(getInitState("main", "value"));
     const [mainUnit, setMainUnit] = useState(getInitState("main", "unit"));
     const [mainMin, setMainMin] = useState(getInitState("main", "min", min));
@@ -183,13 +236,16 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
         const isPercentage = mainUnit == "%";
         setMainMin(isPercentage ? 0 : min);
         setMainMax(isPercentage ? 100 : max);
-        if (mainInputValue) {
+        if (mode == "single") {
             setTopLeftUnit(mainUnit);
             setTopRightUnit(mainUnit);
             setBottomRightUnit(mainUnit);
             setBottomLeftUnit(mainUnit);
         }
     }, [mainUnit]);
+
+    const [organicInputValue, setOrganicInputValue] = useState(getInitState("organic", "value"));
+    const [organicInputValueInDialog, setOrganicInputValueInDialog] = useState(getInitState("organic", "value"));
 
     // Top Left Input
     const [topLeftInputValue, setTopLeftInputValue] = useState(getInitState("topLeft", "value"));
@@ -236,24 +292,51 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
         setBottomLeftMax(isPercentage ? 100 : max);
     }, [bottomLeftUnit]);
 
-    // Commit main input
-    function commitMainValue() {
-        if (mainInputValue == null) {
-            return;
-        }
-        const isRounded = isRound(mainInputValue);
-        setRounded(isRounded);
-        if (isRounded) {
+    // Commit on mode change
+    useEffect(() => {
+        if (mode == "rounded") {
             commitIfChanged(`${fullRoundedValue}px`);
             return;
         }
-        commitIfChanged(convertForCommit(mainInputValue, mainUnit));
+        if (mode == "single") {
+            commitMainValue();
+            return;
+        }
+        if (mode == "organic") {
+            commitOrganicValue();
+            return;
+        }
+        if (mode == "multiple") {
+            commitMultipleValues();
+            return;
+        }
+    }, [mode]);
+
+    // Commit main input
+    function commitMainValue() {
+        if (mode == "single") {
+            commitIfChanged(convertForCommit(mainInputValue, mainUnit));
+        }
     }
     useEffect(commitMainValue, [mainInputValue, mainUnit]);
 
+    // Commit organic input
+    function commitOrganicValue() {
+        if (organicInputValue && mode == "organic") {
+            commitIfChanged(organicInputValue);
+        }
+    }
+    useEffect(commitOrganicValue, [organicInputValue]);
+
     // Commit multiple inputs
     function commitMultipleValues() {
-        if (mainInputValue !== null) {
+        if (
+            mode != "multiple" ||
+            topLeftInputValue == null ||
+            topRightInputValue == null ||
+            bottomRightInputValue == null ||
+            bottomLeftInputValue == null
+        ) {
             return;
         }
         const tl = convertForCommit(topLeftInputValue, topLeftUnit);
@@ -292,8 +375,21 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
         return convertedNumber == 0 ? "0" : `${convertedNumber}${unit}`;
     }
 
-    function isRound(input) {
-        return input == `${fullRoundedValue}px` || input == fullRoundedValue;
+    function getMode(input) {
+        if (allowFullRounded && input && (input == `${fullRoundedValue}px` || input == fullRoundedValue)) {
+            return "rounded";
+        }
+
+        if (typeof input == "string") {
+            if (allowOrganic && input.includes("/")) {
+                return "organic";
+            }
+            if (allowMultiple && value.includes(" ") && value.trim().split(" ").length == 4) {
+                return "multiple";
+            }
+        }
+
+        return "single";
     }
 
     useEffect(() => {
@@ -306,7 +402,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
     return (
         <>
             <div {...stylex.props(styles.container, highlight && styles.highlight, disabled && styles.disabled)}>
-                {segmented ? (
+                {mode == "multiple" && (
                     <div {...stylex.props(styles.segmentedGrid)}>
                         <TextInput
                             id={id}
@@ -378,11 +474,12 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                             onBlur={() => setPotentialAllSelected("bottomRight")}
                         />
                     </div>
-                ) : (
+                )}
+                {mode == "single" && (
                     <TextInput
                         id={id}
                         value={mainInputValue}
-                        unit={rounded ? null : mainUnit}
+                        unit={mainUnit}
                         unitSwitch={allowPercentage ? setMainUnit : null}
                         readOnly={readonly}
                         placeholder={placeholder}
@@ -391,13 +488,6 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                         min={mainMin}
                         max={mainMax}
                         setFocus={mainFocus}
-                        fakeValue={rounded ? i18nRegistry.translate("Carbon.Editor.Styling:Main:fullRounded") : null}
-                        onFakeClick={() => {
-                            setMainInputValue(mainMin);
-                            setTimeout(() => {
-                                setMainFocus(true);
-                            }, 0);
-                        }}
                         onChange={(value) => {
                             setMainInputValue(limitToMinMax(value, mainMin, mainMax));
                         }}
@@ -405,108 +495,188 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                         containerStyle={styles.fullInput}
                     />
                 )}
+                {mode == "rounded" && (
+                    <ButtonAsInput
+                        id={id}
+                        onClick={() => {
+                            setMode("single");
+                            setTimeout(() => {
+                                setMainFocus(true);
+                            }, 0);
+                        }}
+                    >
+                        {i18nRegistry.translate("Carbon.Editor.Styling:Main:borderRadius.rounded")}
+                    </ButtonAsInput>
+                )}
+                {mode == "organic" && (
+                    <ButtonAsInput>
+                        {i18nRegistry.translate("Carbon.Editor.Styling:Main:borderRadius.organic")}
+                    </ButtonAsInput>
+                )}
+
+                {allowOrganic && (
+                    <Dialog
+                        open={organicEditorOpen}
+                        title={i18nRegistry.translate("Carbon.Editor.Styling:Main:borderRadius.organic")}
+                        onApply={() => {
+                            setOrganicEditorOpen(false);
+                            if (mode != "organic") {
+                                setMode("organic");
+                            }
+                            setTimeout(() => {
+                                setOrganicInputValue(organicInputValueInDialog);
+                            }, 10);
+                        }}
+                        onCancel={() => setOrganicEditorOpen(false)}
+                    >
+                        {organicEditorOpen && (
+                            <Suspense fallback={<LoadingAnimation isLoading={true} />}>
+                                <LazyOrganicEditor onChange={setOrganicInputValueInDialog} />
+                            </Suspense>
+                        )}
+                    </Dialog>
+                )}
 
                 {(allowMultiple || allowFullRounded) && (
-                    <div {...stylex.props(styles.container, segmented && styles.flexColumn)}>
-                        <Button
-                            onClick={() => {
-                                if (segmented) {
-                                    setMainInputValue(topLeftInputValue);
-                                    setSelected(null);
-                                    setSegmented(false);
-                                    setTimeout(() => {
-                                        setMainFocus(true);
-                                    }, 0);
-                                    return;
-                                }
-                                if (allowFullRounded) {
-                                    const fullRounded = isRound(mainInputValue);
-                                    const newValue = fullRounded ? min : fullRoundedValue;
-                                    setMainInputValue(newValue);
-                                    if (fullRounded) {
-                                        setTimeout(() => {
-                                            setMainFocus(true);
-                                        }, 0);
-                                    }
-                                    return;
-                                }
-                                setMainFocus(true);
-                            }}
-                            style="neutral"
-                            title={i18nRegistry.translate(
-                                `Carbon.Editor.Styling:Main:${segmented || !allowFullRounded || rounded ? "radius" : "fullRounded"}`,
-                            )}
-                            {...stylex.props(styles.centerContent, readonly && styles.readonly)}
-                        >
-                            {rounded ? <Circle /> : <RoundedBox selected={selected} />}
-                        </Button>
-                        {allowMultiple && (
+                    <DropDown.Stateless
+                        title={i18nRegistry.translate(`Carbon.Editor.Styling:Main:borderRadius.${mode}`)}
+                        className={stylex.props(styles.dropdown, readonly && styles.readonly).className}
+                        isOpen={dropdownOpen}
+                        onToggle={() => setDropdownOpen(!dropdownOpen)}
+                        onClose={() => false}
+                    >
+                        <DropDown.Header className={stylex.props(styles.dropdownHeader).className}>
+                            {mode == "multiple" && <BorderRadiusBox selected={selected} />}
+                            {mode == "single" && <RoundedBox />}
+                            {mode == "rounded" && <Circle />}
+                            {mode == "organic" && <BorderRadiusBox organic={true} />}
+                        </DropDown.Header>
+                        <DropDown.Contents className={stylex.props(styles.dropdownContent).className}>
                             <Button
+                                className={stylex.props(styles.dropdownButton).className}
                                 onClick={() => {
-                                    if (segmented) {
-                                        if (selected == "topLeft") {
-                                            setSelected("topRight");
-                                            return;
-                                        }
-                                        if (selected == "topRight") {
-                                            setSelected("bottomLeft");
-                                            return;
-                                        }
-                                        if (selected == "bottomLeft") {
-                                            setSelected("bottomRight");
-                                            return;
-                                        }
-                                        setSelected("topLeft");
+                                    setDropdownOpen(false);
+                                    if (mode == "single") {
+                                        setMainFocus(true);
                                         return;
                                     }
 
-                                    const newValue = rounded ? min : mainInputValue;
-                                    setSegmented(true);
-                                    setSelected("topLeft");
-                                    setMainInputValue(null);
-                                    setRounded(false);
-                                    let commited = false;
-                                    if (topLeftInputValue == null) {
-                                        setTopLeftInputValue(newValue);
-                                        commited = true;
+                                    if (mode == "multiple") {
+                                        setSelected(null);
                                     }
-                                    if (topRightInputValue == null) {
-                                        setTopRightInputValue(newValue);
-                                        commited = true;
+                                    if (mainInputValue == null) {
+                                        setMainInputValue(mainMin);
                                     }
-                                    if (bottomRightInputValue == null) {
-                                        setBottomRightInputValue(newValue);
-                                        commited = true;
-                                    }
-                                    if (bottomLeftInputValue == null) {
-                                        setBottomLeftInputValue(newValue);
-                                        commited = true;
-                                    }
-                                    if (!commited) {
-                                        setTimeout(commitMultipleValues, 0);
-                                    }
+                                    setMode("single");
+                                    setTimeout(() => {
+                                        setMainFocus(true);
+                                    }, 0);
                                 }}
-                                style="neutral"
-                                title={i18nRegistry.translate("Carbon.Editor.Styling:Main:radiusPerSide")}
-                                {...stylex.props(styles.centerContent, readonly && styles.readonly)}
                             >
-                                <BorderRadiusBox selected={selected} />
+                                <RoundedBox {...stylex.props(styles.dropdownSvg)} />{" "}
+                                {i18nRegistry.translate("Carbon.Editor.Styling:Main:borderRadius.single")}
                             </Button>
-                        )}
-                    </div>
+                            {allowFullRounded && (
+                                <Button
+                                    className={stylex.props(styles.dropdownButton).className}
+                                    onClick={() => {
+                                        setDropdownOpen(false);
+                                        if (mode != "rounded") {
+                                            setMode("rounded");
+                                        }
+                                    }}
+                                >
+                                    <Circle {...stylex.props(styles.dropdownSvg)} />
+                                    {i18nRegistry.translate("Carbon.Editor.Styling:Main:borderRadius.rounded")}
+                                </Button>
+                            )}
+                            {allowMultiple && (
+                                <Button
+                                    className={stylex.props(styles.dropdownButton).className}
+                                    onClick={() => {
+                                        if (mode == "multiple") {
+                                            const order = ["topLeft", "topRight", "bottomRight", "bottomLeft"];
+                                            const currentIndex = order.indexOf(selected);
+                                            const nextIndex = (currentIndex + 1) % order.length;
+                                            setSelected(order[nextIndex]);
+                                            return;
+                                        }
+                                        setMode("multiple");
+                                        const newValue = mainInputValue || min;
+                                        setSelected("topLeft");
+                                        let commited = false;
+                                        if (topLeftInputValue == null) {
+                                            setTopLeftInputValue(newValue);
+                                            commited = true;
+                                        }
+                                        if (topRightInputValue == null) {
+                                            setTopRightInputValue(newValue);
+                                            commited = true;
+                                        }
+                                        if (bottomRightInputValue == null) {
+                                            setBottomRightInputValue(newValue);
+                                            commited = true;
+                                        }
+                                        if (bottomLeftInputValue == null) {
+                                            setBottomLeftInputValue(newValue);
+                                            commited = true;
+                                        }
+                                        if (!commited) {
+                                            setTimeout(commitMultipleValues, 0);
+                                        }
+                                        setDropdownOpen(false);
+                                    }}
+                                >
+                                    <BorderRadiusBox {...stylex.props(styles.dropdownSvg)} selected={selected} />
+                                    {i18nRegistry.translate("Carbon.Editor.Styling:Main:borderRadius.multiple")}
+                                </Button>
+                            )}
+                            {allowOrganic && (
+                                <Button
+                                    className={stylex.props(styles.dropdownButton).className}
+                                    onClick={() => {
+                                        setOrganicEditorOpen(true);
+                                        setDropdownOpen(false);
+                                    }}
+                                >
+                                    <BorderRadiusBox {...stylex.props(styles.dropdownSvg)} organic={true} />
+                                    {i18nRegistry.translate("Carbon.Editor.Styling:Main:borderRadius.organic")}
+                                </Button>
+                            )}
+                        </DropDown.Contents>
+                    </DropDown.Stateless>
                 )}
-                {!!preview && preview != "big" && (
-                    <div {...stylex.props(styles.preview(value, rounded), styles.previewSmall)}></div>
+
+                {preview && (
+                    <Button
+                        style="clean"
+                        hoverStyle="clean"
+                        title={i18nRegistry.translate(
+                            `Carbon.Editor.Styling:Main:${bigPreview ? "hide" : "show"}BigPreview`,
+                        )}
+                        className={stylex.props(styles.centerContent).className}
+                        onClick={() => setBigPreview(!bigPreview)}
+                    >
+                        <span {...stylex.props(styles.preview(value, mode == "rounded"), styles.previewSmall)}></span>
+                    </Button>
                 )}
             </div>
-            {preview == "big" && (
-                <div {...stylex.props(styles.centerContent)}>
-                    <div
-                        {...stylex.props(
-                            styles.preview(value, rounded),
-                            styles.previewBig(rounded, previewAspectRatio),
-                        )}
-                    ></div>
+            {preview && (
+                <div {...stylex.props(styles.bigPreviewContainer(bigPreview))}>
+                    <Button
+                        style="clean"
+                        hoverStyle="clean"
+                        title={i18nRegistry.translate("Carbon.Editor.Styling:Main:hideBigPreview")}
+                        className={stylex.props(styles.centerContent, styles.bigPreviewButton).className}
+                        onClick={() => setBigPreview(false)}
+                    >
+                        <span
+                            {...stylex.props(
+                                styles.preview(value, mode == "rounded"),
+                                styles.previewBig(mode == "rounded", previewAspectRatio),
+                            )}
+                        ></span>
+                    </Button>
                 </div>
             )}
         </>
