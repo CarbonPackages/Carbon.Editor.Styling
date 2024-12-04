@@ -62,7 +62,8 @@ const styles = stylex.create({
         margin: "var(--spacing-Full) auto 0",
         display: "block",
         aspectRatio: aspectRatio || null,
-        width: aspectRatio ? null : rounded ? 80 : "100%",
+        width: aspectRatio && aspectRatio < 3.4 ? null : rounded ? 80 : "100%",
+        height: !aspectRatio && aspectRatio < 3.4 ? 80 : null,
     }),
     previewSmall: {
         aspectRatio: 1,
@@ -167,6 +168,18 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
         ...config,
         ...options,
     };
+
+    const aspectRatio = (() => {
+        if (typeof previewAspectRatio === "number") {
+            return previewAspectRatio;
+        }
+
+        if (typeof previewAspectRatio !== "string") {
+            return null;
+        }
+
+        return (0, eval)(previewAspectRatio.replaceAll(":", "/"));
+    })();
 
     // Content repository to editor
     const values = (() => {
@@ -673,7 +686,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                         <span
                             {...stylex.props(
                                 styles.preview(value, mode === "rounded"),
-                                styles.previewBig(mode === "rounded", previewAspectRatio),
+                                styles.previewBig(mode === "rounded", aspectRatio),
                             )}
                         ></span>
                     </Button>
