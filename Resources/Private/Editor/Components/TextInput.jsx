@@ -104,10 +104,15 @@ function Component({
                 while (startWithOperator(newValue)) {
                     newValue = newValue.substring(1);
                 }
+                if (!newValue.length) {
+                    newValue = "";
+                }
                 if (endWithOperator(newValue)) {
                     return;
                 }
-                newValue = (0, eval)(newValue);
+                if (newValue) {
+                    newValue = (0, eval)(newValue.replaceAll(":", "/"));
+                }
             } else {
                 newValue = parseFloat(newValue);
             }
@@ -153,15 +158,27 @@ function Component({
     }, [setFocus]);
 
     function hasOperator(value) {
-        return value.includes("+") || value.includes("-") || value.includes("*") || value.includes("/");
+        return (
+            value.includes("+") ||
+            value.includes("-") ||
+            value.includes("*") ||
+            value.includes("/") ||
+            value.includes(":")
+        );
     }
 
     function startWithOperator(value) {
-        return value.startsWith("*") || value.startsWith("/");
+        return value.startsWith("*") || value.startsWith("/") || value.startsWith(":");
     }
 
     function endWithOperator(value) {
-        return value.endsWith("+") || value.endsWith("-") || value.endsWith("*") || value.endsWith("/");
+        return (
+            value.endsWith("+") ||
+            value.endsWith("-") ||
+            value.endsWith("*") ||
+            value.endsWith("/") ||
+            value.endsWith(":")
+        );
     }
 
     function minMax(value) {
