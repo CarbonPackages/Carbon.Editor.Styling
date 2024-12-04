@@ -69,8 +69,6 @@ function Component({
     onKeyPress,
     onKeyDown,
     type = "text",
-    fakeValue,
-    onFakeClick,
     disabled,
     // neos is set as prop because we don't want to pass it to the input element
     neos,
@@ -186,25 +184,11 @@ function Component({
                 containerStyle,
             )}
             onClick={() => {
-                if (unit && !fakeValue && !disabled) {
+                if (unit && !disabled) {
                     inputRef?.current?.focus();
                 }
             }}
         >
-            {fakeValue && !onFakeClick ? (
-                <div {...stylex.props(!unit && [styles.inputLook(false), styles.basicLook, styles.flex])}>
-                    {fakeValue}
-                </div>
-            ) : null}
-            {fakeValue && onFakeClick ? (
-                <button
-                    type="button"
-                    onClick={onFakeClick}
-                    {...stylex.props(styles.input, !unit && [styles.inputLook(false), styles.basicLook, styles.flex])}
-                >
-                    {fakeValue}
-                </button>
-            ) : null}
             <input
                 {...rest}
                 {...stylex.props(
@@ -213,7 +197,6 @@ function Component({
                     isNumericInput && styles.numberInput,
                     !unit && styles.inputLook(false),
                     (isFocus || fakeFocus) && styles.focus,
-                    fakeValue && styles.hidden,
                     inputStyle,
                 )}
                 onFocus={(event) => {

@@ -33,9 +33,11 @@ const styles = stylex.create({
 });
 
 export default function ButtonAsInput({ onClick, disabled, highlight, children }) {
+    const hasOnClick = onClick && typeof onClick === "function";
+
     return (
         <>
-            {typeof onClick === "function" ? (
+            {hasOnClick ? (
                 <button
                     type="button"
                     onClick={onClick}

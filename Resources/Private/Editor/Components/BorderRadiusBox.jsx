@@ -23,11 +23,11 @@ export default function BorderRadiusBox({ selected = null, organic = false, styl
         );
     }
 
-    const opacity = !selected || selected == "all" ? 1 : 0.2;
-    const topLeft = selected == "topLeft" ? 1 : opacity;
-    const topRight = selected == "topRight" ? 1 : opacity;
-    const bottomRight = selected == "bottomRight" ? 1 : opacity;
-    const bottomLeft = selected == "bottomLeft" ? 1 : opacity;
+    const opacity = !selected || selected === "all" ? 1 : 0.2;
+    const topLeft = selected === "topLeft" ? 1 : opacity;
+    const topRight = selected === "topRight" ? 1 : opacity;
+    const bottomRight = selected === "bottomRight" ? 1 : opacity;
+    const bottomLeft = selected === "bottomLeft" ? 1 : opacity;
 
     return (
         <svg

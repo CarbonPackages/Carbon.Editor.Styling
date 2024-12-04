@@ -56,9 +56,9 @@ function Editor({ id, value, commit, className, options, i18nRegistry, onEnterKe
         ...config,
         ...options,
     };
-    const charCountValue = value ? value : countPlaceholder && placeholder ? placeholder : "";
+    const charCountValue = value || (countPlaceholder && placeholder) || "";
     const charCount =
-        typeof Intl != "undefined" && Intl.Segmenter
+        typeof Intl !== "undefined" && Intl.Segmenter
             ? [...new Intl.Segmenter().segment(charCountValue)].length
             : charCountValue.length;
     const charCounter = i18nRegistry.translate(
@@ -80,10 +80,7 @@ function Editor({ id, value, commit, className, options, i18nRegistry, onEnterKe
     })();
 
     const onKeyPress = (event) => {
-        if (allowLineBreaks) {
-            return;
-        }
-        if (event.key === "Enter") {
+        if (!allowLineBreaks && event.key === "Enter") {
             onEnterKey();
             event.preventDefault();
         }

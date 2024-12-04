@@ -134,10 +134,10 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
 
     useEffect(() => {
         const newMode = getMode(value);
-        if (mode != newMode) {
+        if (mode !== newMode) {
             setMode(newMode);
         }
-        if (newMode == "multiple" && !selected) {
+        if (newMode === "multiple" && !selected) {
             setSelected("all");
         }
     }, [value]);
@@ -171,24 +171,24 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
     // Content repository to editor
     const values = (() => {
         const mode = getMode(value);
-        if (mode == "rounded") {
+        if (mode === "rounded") {
             return {
                 mode,
             };
         }
 
-        if (mode == "organic") {
+        if (mode === "organic") {
             return {
                 mode,
                 organic: value,
             };
         }
 
-        if (mode == "single") {
+        if (mode === "single") {
             let main = "";
-            if (typeof value == "number") {
+            if (typeof value === "number") {
                 main = getNumberAndUnit(convertPxToRem ? value * 16 : value, min, max);
-            } else if (typeof value != "string" || !value) {
+            } else if (typeof value !== "string" || !value) {
                 main = getNumberAndUnit(0, min, max);
             } else {
                 main = getNumberAndUnit(value, min, max, allowPercentage);
@@ -212,14 +212,14 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
 
     function getInitState(direction, key, fallback = null) {
         if (fallback === null) {
-            fallback = key == "unit" ? "px" : null;
+            fallback = key === "unit" ? "px" : null;
         }
         const config = values[direction];
         if (!config) {
             return fallback;
         }
         const value = config[key];
-        if (typeof value != "undefined") {
+        if (typeof value !== "undefined") {
             return value;
         }
         return fallback;
@@ -233,10 +233,10 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
     const [mainMin, setMainMin] = useState(getInitState("main", "min", min));
     const [mainMax, setMainMax] = useState(getInitState("main", "max", max));
     useEffect(() => {
-        const isPercentage = mainUnit == "%";
+        const isPercentage = mainUnit === "%";
         setMainMin(isPercentage ? 0 : min);
         setMainMax(isPercentage ? 100 : max);
-        if (mode == "single") {
+        if (mode === "single") {
             setTopLeftUnit(mainUnit);
             setTopRightUnit(mainUnit);
             setBottomRightUnit(mainUnit);
@@ -254,7 +254,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
     const [topLeftMax, setTopLeftMax] = useState(getInitState("topLeft", "max", max));
 
     useEffect(() => {
-        const isPercentage = topLeftUnit == "%";
+        const isPercentage = topLeftUnit === "%";
         setTopLeftMin(isPercentage ? 0 : min);
         setTopLeftMax(isPercentage ? 100 : max);
     }, [topLeftUnit]);
@@ -265,7 +265,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
     const [topRightMin, setTopRightMin] = useState(getInitState("topRight", "min", min));
     const [topRightMax, setTopRightMax] = useState(getInitState("topRight", "max", max));
     useEffect(() => {
-        const isPercentage = topRightUnit == "%";
+        const isPercentage = topRightUnit === "%";
         setTopRightMin(isPercentage ? 0 : min);
         setTopRightMax(isPercentage ? 100 : max);
     }, [topRightUnit]);
@@ -276,7 +276,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
     const [bottomRightMin, setBottomRightMin] = useState(getInitState("bottomRight", "min", min));
     const [bottomRightMax, setBottomRightMax] = useState(getInitState("bottomRight", "max", max));
     useEffect(() => {
-        const isPercentage = bottomRightUnit == "%";
+        const isPercentage = bottomRightUnit === "%";
         setBottomRightMin(isPercentage ? 0 : min);
         setBottomRightMax(isPercentage ? 100 : max);
     }, [bottomRightUnit]);
@@ -287,26 +287,26 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
     const [bottomLeftMin, setBottomLeftMin] = useState(getInitState("bottomLeft", "min", min));
     const [bottomLeftMax, setBottomLeftMax] = useState(getInitState("bottomLeft", "max", max));
     useEffect(() => {
-        const isPercentage = bottomLeftUnit == "%";
+        const isPercentage = bottomLeftUnit === "%";
         setBottomLeftMin(isPercentage ? 0 : min);
         setBottomLeftMax(isPercentage ? 100 : max);
     }, [bottomLeftUnit]);
 
     // Commit on mode change
     useEffect(() => {
-        if (mode == "rounded") {
+        if (mode === "rounded") {
             commitIfChanged(`${fullRoundedValue}px`);
             return;
         }
-        if (mode == "single") {
+        if (mode === "single") {
             commitMainValue();
             return;
         }
-        if (mode == "organic") {
+        if (mode === "organic") {
             commitOrganicValue();
             return;
         }
-        if (mode == "multiple") {
+        if (mode === "multiple") {
             commitMultipleValues();
             return;
         }
@@ -314,7 +314,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
 
     // Commit main input
     function commitMainValue() {
-        if (mode == "single") {
+        if (mode === "single") {
             commitIfChanged(convertForCommit(mainInputValue, mainUnit));
         }
     }
@@ -322,7 +322,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
 
     // Commit organic input
     function commitOrganicValue() {
-        if (organicInputValue && mode == "organic") {
+        if (organicInputValue && mode === "organic") {
             commitIfChanged(organicInputValue);
         }
     }
@@ -331,11 +331,11 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
     // Commit multiple inputs
     function commitMultipleValues() {
         if (
-            mode != "multiple" ||
-            topLeftInputValue == null ||
-            topRightInputValue == null ||
-            bottomRightInputValue == null ||
-            bottomLeftInputValue == null
+            mode !== "multiple" ||
+            topLeftInputValue === null ||
+            topRightInputValue === null ||
+            bottomRightInputValue === null ||
+            bottomLeftInputValue === null
         ) {
             return;
         }
@@ -367,24 +367,24 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
             return "0";
         }
         let divider = 1;
-        if (!unit || unit == "px") {
+        if (!unit || unit === "px") {
             unit = convertPxToRem ? "rem" : "px";
             divider = convertPxToRem ? 16 : 1;
         }
         const convertedNumber = number / divider;
-        return convertedNumber == 0 ? "0" : `${convertedNumber}${unit}`;
+        return convertedNumber === 0 ? "0" : `${convertedNumber}${unit}`;
     }
 
     function getMode(input) {
-        if (allowFullRounded && input && (input == `${fullRoundedValue}px` || input == fullRoundedValue)) {
+        if (allowFullRounded && input && (input === `${fullRoundedValue}px` || input === fullRoundedValue)) {
             return "rounded";
         }
 
-        if (typeof input == "string") {
+        if (typeof input === "string") {
             if (allowOrganic && input.includes("/")) {
                 return "organic";
             }
-            if (allowMultiple && value.includes(" ") && value.trim().split(" ").length == 4) {
+            if (allowMultiple && value.includes(" ") && value.trim().split(" ").length === 4) {
                 return "multiple";
             }
         }
@@ -393,7 +393,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
     }
 
     useEffect(() => {
-        if (potentailAllSelected && potentailAllSelected == selected) {
+        if (potentailAllSelected && potentailAllSelected === selected) {
             setSelected("all");
         }
         setPotentialAllSelected(false);
@@ -402,7 +402,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
     return (
         <>
             <div {...stylex.props(styles.container, highlight && styles.highlight, disabled && styles.disabled)}>
-                {mode == "multiple" && (
+                {mode === "multiple" && (
                     <div {...stylex.props(styles.segmentedGrid)}>
                         <TextInput
                             id={id}
@@ -418,7 +418,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                             onChange={(value) => {
                                 setTopLeftInputValue(limitToMinMax(value, topLeftMin, topLeftMax));
                             }}
-                            setFocus={selected == "topLeft"}
+                            setFocus={selected === "topLeft"}
                             onFocus={() => setSelected("topLeft")}
                             onBlur={() => setPotentialAllSelected("topLeft")}
                         />
@@ -435,7 +435,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                             onChange={(value) => {
                                 setTopRightInputValue(limitToMinMax(value, topRightMin, topRightMax));
                             }}
-                            setFocus={selected == "topRight"}
+                            setFocus={selected === "topRight"}
                             onFocus={() => setSelected("topRight")}
                             onBlur={() => setPotentialAllSelected("topRight")}
                         />
@@ -452,7 +452,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                             onChange={(value) => {
                                 setBottomLeftInputValue(limitToMinMax(value, bottomLeftMin, bottomLeftMax));
                             }}
-                            setFocus={selected == "bottomLeft"}
+                            setFocus={selected === "bottomLeft"}
                             onFocus={() => setSelected("bottomLeft")}
                             onBlur={() => setPotentialAllSelected("bottomLeft")}
                         />
@@ -469,13 +469,13 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                             onChange={(value) => {
                                 setBottomRightInputValue(limitToMinMax(value, bottomRightMin, bottomRightMax));
                             }}
-                            setFocus={selected == "bottomRight"}
+                            setFocus={selected === "bottomRight"}
                             onFocus={() => setSelected("bottomRight")}
                             onBlur={() => setPotentialAllSelected("bottomRight")}
                         />
                     </div>
                 )}
-                {mode == "single" && (
+                {mode === "single" && (
                     <TextInput
                         id={id}
                         value={mainInputValue}
@@ -495,7 +495,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                         containerStyle={styles.fullInput}
                     />
                 )}
-                {mode == "rounded" && (
+                {mode === "rounded" && (
                     <ButtonAsInput
                         id={id}
                         onClick={() => {
@@ -508,7 +508,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                         {i18nRegistry.translate("Carbon.Editor.Styling:Main:borderRadius.rounded")}
                     </ButtonAsInput>
                 )}
-                {mode == "organic" && (
+                {mode === "organic" && (
                     <ButtonAsInput>
                         {i18nRegistry.translate("Carbon.Editor.Styling:Main:borderRadius.organic")}
                     </ButtonAsInput>
@@ -520,7 +520,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                         title={i18nRegistry.translate("Carbon.Editor.Styling:Main:borderRadius.organic")}
                         onApply={() => {
                             setOrganicEditorOpen(false);
-                            if (mode != "organic") {
+                            if (mode !== "organic") {
                                 setMode("organic");
                             }
                             setTimeout(() => {
@@ -546,25 +546,25 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                         onClose={() => false}
                     >
                         <DropDown.Header className={stylex.props(styles.dropdownHeader).className}>
-                            {mode == "multiple" && <BorderRadiusBox selected={selected} />}
-                            {mode == "single" && <RoundedBox />}
-                            {mode == "rounded" && <Circle />}
-                            {mode == "organic" && <BorderRadiusBox organic={true} />}
+                            {mode === "multiple" && <BorderRadiusBox selected={selected} />}
+                            {mode === "single" && <RoundedBox />}
+                            {mode === "rounded" && <Circle />}
+                            {mode === "organic" && <BorderRadiusBox organic={true} />}
                         </DropDown.Header>
                         <DropDown.Contents className={stylex.props(styles.dropdownContent).className}>
                             <Button
                                 className={stylex.props(styles.dropdownButton).className}
                                 onClick={() => {
                                     setDropdownOpen(false);
-                                    if (mode == "single") {
+                                    if (mode === "single") {
                                         setMainFocus(true);
                                         return;
                                     }
 
-                                    if (mode == "multiple") {
+                                    if (mode === "multiple") {
                                         setSelected(null);
                                     }
-                                    if (mainInputValue == null) {
+                                    if (mainInputValue === null) {
                                         setMainInputValue(mainMin);
                                     }
                                     setMode("single");
@@ -581,7 +581,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                                     className={stylex.props(styles.dropdownButton).className}
                                     onClick={() => {
                                         setDropdownOpen(false);
-                                        if (mode != "rounded") {
+                                        if (mode !== "rounded") {
                                             setMode("rounded");
                                         }
                                     }}
@@ -594,7 +594,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                                 <Button
                                     className={stylex.props(styles.dropdownButton).className}
                                     onClick={() => {
-                                        if (mode == "multiple") {
+                                        if (mode === "multiple") {
                                             const order = ["topLeft", "topRight", "bottomRight", "bottomLeft"];
                                             const currentIndex = order.indexOf(selected);
                                             const nextIndex = (currentIndex + 1) % order.length;
@@ -605,19 +605,19 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                                         const newValue = mainInputValue || min;
                                         setSelected("topLeft");
                                         let commited = false;
-                                        if (topLeftInputValue == null) {
+                                        if (topLeftInputValue === null) {
                                             setTopLeftInputValue(newValue);
                                             commited = true;
                                         }
-                                        if (topRightInputValue == null) {
+                                        if (topRightInputValue === null) {
                                             setTopRightInputValue(newValue);
                                             commited = true;
                                         }
-                                        if (bottomRightInputValue == null) {
+                                        if (bottomRightInputValue === null) {
                                             setBottomRightInputValue(newValue);
                                             commited = true;
                                         }
-                                        if (bottomLeftInputValue == null) {
+                                        if (bottomLeftInputValue === null) {
                                             setBottomLeftInputValue(newValue);
                                             commited = true;
                                         }
@@ -657,7 +657,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                         className={stylex.props(styles.centerContent).className}
                         onClick={() => setBigPreview(!bigPreview)}
                     >
-                        <span {...stylex.props(styles.preview(value, mode == "rounded"), styles.previewSmall)}></span>
+                        <span {...stylex.props(styles.preview(value, mode === "rounded"), styles.previewSmall)}></span>
                     </Button>
                 )}
             </div>
@@ -672,8 +672,8 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                     >
                         <span
                             {...stylex.props(
-                                styles.preview(value, mode == "rounded"),
-                                styles.previewBig(mode == "rounded", previewAspectRatio),
+                                styles.preview(value, mode === "rounded"),
+                                styles.previewBig(mode === "rounded", previewAspectRatio),
                             )}
                         ></span>
                     </Button>

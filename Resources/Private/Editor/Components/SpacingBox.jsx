@@ -2,32 +2,12 @@ import React from "react";
 
 export default function SpacingBox({ selected = null, synced = false, useSyncValue = false, style }) {
     const size = 14;
-    const opacity = !useSyncValue && (!selected || selected == "all") ? 1 : 0.2;
+    const opacity = !useSyncValue && (!selected || selected === "all") ? 1 : 0.2;
 
-    let isTop = selected == "top";
-    let isRight = selected == "right";
-    let isBottom = selected == "bottom";
-    let isLeft = selected == "left";
-
-    if (useSyncValue) {
-        if (synced == "y" || synced == "xy") {
-            isTop = true;
-            isBottom = true;
-        }
-        if (synced == "x" || synced == "xy") {
-            isLeft = true;
-            isRight = true;
-        }
-    } else {
-        if (synced == "y" || synced == "xy") {
-            isBottom = isTop ? true : isBottom;
-            isTop = isBottom ? true : isTop;
-        }
-        if (synced == "x" || synced == "xy") {
-            isRight = isLeft ? true : isRight;
-            isLeft = isRight ? true : isLeft;
-        }
-    }
+    const isTop = selected === "top" || (useSyncValue && (synced === "y" || synced === "xy"));
+    const isRight = selected === "right" || (useSyncValue && (synced === "x" || synced === "xy"));
+    const isBottom = selected === "bottom" || (useSyncValue && (synced === "y" || synced === "xy"));
+    const isLeft = selected === "left" || (useSyncValue && (synced === "x" || synced === "xy"));
 
     const top = isTop ? 1 : opacity;
     const right = isRight ? 1 : opacity;

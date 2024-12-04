@@ -77,7 +77,7 @@ const styles = stylex.create({
 });
 
 export default function OrganicEditor({ onChange = () => {}, value = "30% 70% 70% 30% / 30% 30% 70% 70%" }) {
-    const [boxSize, _] = useState({ width: 500, height: 500 });
+    const [boxSize, setBoxSize] = useState({ width: 500, height: 500 });
     const [grabbing, setGrabbing] = useState(false);
     const [handleCoordinates, setHandleCoordinates] = useState({
         tx: boxSize.width / 2,
@@ -176,7 +176,7 @@ export default function OrganicEditor({ onChange = () => {}, value = "30% 70% 70
                 axis="y"
                 bounds={dragBoundY}
             >
-                <div {...stylex.props(styles.handle(grabbing == "left"), styles.handleLeft)}></div>
+                <div {...stylex.props(styles.handle(grabbing === "left"), styles.handleLeft)}></div>
             </Draggable>
             <Draggable
                 defaultPosition={defaultPosition.right}
@@ -191,7 +191,7 @@ export default function OrganicEditor({ onChange = () => {}, value = "30% 70% 70
                 axis="y"
                 bounds={dragBoundY}
             >
-                <div {...stylex.props(styles.handle(grabbing == "right"), styles.handleRight)}></div>
+                <div {...stylex.props(styles.handle(grabbing === "right"), styles.handleRight)}></div>
             </Draggable>
             <Draggable
                 defaultPosition={defaultPosition.top}
@@ -206,7 +206,7 @@ export default function OrganicEditor({ onChange = () => {}, value = "30% 70% 70
                 axis="x"
                 bounds={dragBoundX}
             >
-                <div {...stylex.props(styles.handle(grabbing == "top"), styles.handleTop)}></div>
+                <div {...stylex.props(styles.handle(grabbing === "top"), styles.handleTop)}></div>
             </Draggable>
             <Draggable
                 defaultPosition={defaultPosition.bottom}
@@ -221,7 +221,7 @@ export default function OrganicEditor({ onChange = () => {}, value = "30% 70% 70
                 axis="x"
                 bounds={dragBoundX}
             >
-                <div {...stylex.props(styles.handle(grabbing == "bottom"), styles.handleBottom)}></div>
+                <div {...stylex.props(styles.handle(grabbing === "bottom"), styles.handleBottom)}></div>
             </Draggable>
         </div>
     );
