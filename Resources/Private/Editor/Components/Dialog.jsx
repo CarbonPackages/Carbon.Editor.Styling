@@ -62,10 +62,12 @@ const variableIsFunction = (variable) => variable && typeof variable === "functi
 
 function Dialog({
     open,
+    setOpen,
     children,
     i18nRegistry,
     onApply,
     onCancel,
+    showCloseButton,
     onCloseButton,
     style,
     title,
@@ -74,6 +76,10 @@ function Dialog({
     closeLabel = "Neos.Neos:Main:close",
 }) {
     const dialog = useRef();
+
+    useEffect(() => {
+        dialog.current?.addEventListener("close", () => setOpen(false));
+    }, [dialog]);
 
     useEffect(() => {
         if (!dialog.current) {
@@ -108,12 +114,17 @@ function Dialog({
                     )}
                 </div>
             )}
-            {hasClose && (
+            {showCloseButton && (
                 <IconButton
                     icon="times"
                     style="clean"
                     title={i18nRegistry.translate(closeLabel)}
-                    onClick={onCloseButton}
+                    onClick={() => {
+                        setOpen(false);
+                        if (hasClose) {
+                            onCloseButton();
+                        }
+                    }}
                     iconProps={{ size: "lg" }}
                     className={stylex.props(styles.closeButton).className}
                 />

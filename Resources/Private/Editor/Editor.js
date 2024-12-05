@@ -3,9 +3,9 @@ import React, { Suspense, lazy } from "react";
 import LoadingAnimation from "carbon-neos-loadinganimation/LoadingWithStyleX";
 
 const editors = {
-    BorderRadius: () => import("./BorderRadius.jsx"),
-    TextAreaWithCounter: () => import("./TextAreaWithCounter.jsx"),
-    Spacing: () => import("./Spacing.jsx"),
+    BorderRadius: () => import("./BorderRadius"),
+    TextAreaWithCounter: () => import("./TextAreaWithCounter"),
+    Spacing: () => import("./Spacing"),
 };
 
 function generateLazyEditor(name) {

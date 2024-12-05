@@ -1,18 +1,19 @@
-import React, { useState, useEffect, Suspense, lazy } from "react";
+import React, { useState, useEffect, useCallback, Suspense, lazy } from "react";
 import { Button, DropDown } from "@neos-project/react-ui-components";
-import TextInput from "./Components/TextInput";
-import RoundedBox from "./Components/RoundedBox";
-import BorderRadiusBox from "./Components/BorderRadiusBox";
-import ButtonAsInput from "./Components/ButtonAsInput";
-import Circle from "./Components/Circle";
-import Dialog from "./Components/Dialog";
-import { getNumberAndUnit, limitToMinMax, hasNoValue } from "./Helper";
+import TextInput from "../Components/TextInput";
+import RoundedBox from "../Components/RoundedBox";
+import ButtonAsInput from "../Components/ButtonAsInput";
+import Dialog from "../Components/Dialog";
+import Circle from "./Circle";
+import BorderRadiusBox from "./BorderRadiusBox";
+import { getModeRaw, fromContentRepoToEditor, getAspectRatio, getInitState, convertForCommit } from "./Helper";
+import { getNumberAndUnit, limitToMinMax, hasNoValue } from "../Helper";
 import { neos } from "@neos-project/neos-ui-decorators";
 import { useDebounce } from "use-debounce";
 import * as stylex from "@stylexjs/stylex";
 import LoadingAnimation from "carbon-neos-loadinganimation/LoadingWithStyleX";
 
-const LazyOrganicEditor = lazy(() => import("./Components/OrganicEditor"));
+const LazyOrganicEditor = lazy(() => import("./OrganicEditor"));
 
 const styles = stylex.create({
     container: {
@@ -130,32 +131,6 @@ const defaultOptions = {
 };
 
 function Editor({ id, value, commit, highlight, options, i18nRegistry, config, onEnterKey }) {
-    const [organicEditorOpen, setOrganicEditorOpen] = useState(false);
-    const [dropdownOpen, setDropdownOpen] = useState(false);
-    const [bigPreview, setBigPreview] = useState(false);
-    const [showPreview, setShowPreview] = useState(true);
-    const [selected, setSelected] = useState(null);
-    const [mainFocus, setMainFocus] = useState(false);
-    const [_potentailAllSelected, setPotentialAllSelected] = useState(false);
-    const [potentailAllSelected] = useDebounce(_potentailAllSelected, 500);
-
-    useEffect(() => {
-        const newMode = getMode(value);
-        if (mode !== newMode) {
-            setMode(newMode);
-        }
-        if (newMode === "multiple" && !selected) {
-            setSelected("all");
-        }
-        setShowPreview(value !== "");
-    }, [value]);
-
-    useEffect(() => {
-        if (selected !== null) {
-            return;
-        }
-    }, [selected]);
-
     const {
         disabled,
         readonly,
@@ -177,139 +152,171 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
         ...options,
     };
 
-    const aspectRatio = (() => {
-        if (typeof previewAspectRatio === "number") {
-            return previewAspectRatio;
-        }
-
-        if (typeof previewAspectRatio !== "string") {
-            return null;
-        }
-
-        return (0, eval)(previewAspectRatio.replaceAll(":", "/"));
-    })();
+    const aspectRatio = getAspectRatio(previewAspectRatio);
 
     // Content repository to editor
-    const values = (() => {
-        const mode = getMode(value);
-        if (mode === "rounded") {
-            return {
-                mode,
-            };
-        }
+    const values = fromContentRepoToEditor({
+        value,
+        allowPercentage,
+        allowEmpty,
+        convertPxToRem,
+        min,
+        max,
+        allowFullRounded,
+        fullRoundedValue,
+        allowOrganic,
+        allowMultiple,
+    });
 
-        if (mode === "organic") {
-            return {
-                mode,
-                organic: value,
-            };
-        }
-
-        if (mode === "single") {
-            let main = "";
-            if (typeof value === "number") {
-                main = getNumberAndUnit(convertPxToRem ? value * 16 : value, min, max);
-            } else {
-                main = getNumberAndUnit(value, min, max, allowPercentage, allowEmpty);
-            }
-            return {
-                mode,
-                main,
-            };
-        }
-
-        // Multiple mode is the last
-        const values = value.split(" ").map((value) => getNumberAndUnit(value, min, max, allowPercentage));
-        return {
-            mode,
-            topLeft: values[0],
-            topRight: values[1],
-            bottomRight: values[2],
-            bottomLeft: values[3],
-        };
-    })();
-
-    function getInitState(direction, key, fallback = null) {
-        if (fallback === null) {
-            fallback = key === "unit" ? "px" : null;
-        }
-        const config = values[direction];
-        if (!config) {
-            return fallback;
-        }
-        const value = config[key];
-        if (typeof value !== "undefined") {
-            return value;
-        }
-        return fallback;
-    }
-
+    // Set states
     const [mode, setMode] = useState(values.mode);
-
+    const [organicEditorOpen, setOrganicEditorOpen] = useState(false);
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+    const [bigPreview, setBigPreview] = useState(false);
+    const [showPreview, setShowPreview] = useState(true);
+    const [selected, setSelected] = useState(null);
+    const [mainFocus, setMainFocus] = useState(false);
+    const [_potentailAllSelected, setPotentialAllSelected] = useState(false);
+    const [potentailAllSelected] = useDebounce(_potentailAllSelected, 500);
     // Main Input
-    const [mainInputValue, setMainInputValue] = useState(getInitState("main", "value"));
-    const [mainUnit, setMainUnit] = useState(getInitState("main", "unit"));
-    const [mainMin, setMainMin] = useState(getInitState("main", "min", min));
-    const [mainMax, setMainMax] = useState(getInitState("main", "max", max));
+    const [mainInputValue, setMainInputValue] = useState(getInitState(values, "main", "value"));
+    const [mainUnit, setMainUnit] = useState(getInitState(values, "main", "unit"));
+    const [mainMin, setMainMin] = useState(getInitState(values, "main", "min", min));
+    const [mainMax, setMainMax] = useState(getInitState(values, "main", "max", max));
+    // Organic Input
+    const [organicInputValue, setOrganicInputValue] = useState(getInitState(values, "organic", "value"));
+    const [organicInputValueInDialog, setOrganicInputValueInDialog] = useState(
+        getInitState(values, "organic", "value"),
+    );
+    // Top Left Input
+    const [topLeftInputValue, setTopLeftInputValue] = useState(getInitState(values, "topLeft", "value"));
+    const [topLeftUnit, setTopLeftUnit] = useState(getInitState(values, "topLeft", "unit"));
+    const [topLeftMin, setTopLeftMin] = useState(getInitState(values, "topLeft", "min", min));
+    const [topLeftMax, setTopLeftMax] = useState(getInitState(values, "topLeft", "max", max));
+    // Top Right Input
+    const [topRightInputValue, setTopRightInputValue] = useState(getInitState(values, "topRight", "value"));
+    const [topRightUnit, setTopRightUnit] = useState(getInitState(values, "topRight", "unit"));
+    const [topRightMin, setTopRightMin] = useState(getInitState(values, "topRight", "min", min));
+    const [topRightMax, setTopRightMax] = useState(getInitState(values, "topRight", "max", max));
+    // Bottom Right Input
+    const [bottomRightInputValue, setBottomRightInputValue] = useState(getInitState(values, "bottomRight", "value"));
+    const [bottomRightUnit, setBottomRightUnit] = useState(getInitState(values, "bottomRight", "unit"));
+    const [bottomRightMin, setBottomRightMin] = useState(getInitState(values, "bottomRight", "min", min));
+    const [bottomRightMax, setBottomRightMax] = useState(getInitState(values, "bottomRight", "max", max));
+    // Bottom Left Input
+    const [bottomLeftInputValue, setBottomLeftInputValue] = useState(getInitState(values, "bottomLeft", "value"));
+    const [bottomLeftUnit, setBottomLeftUnit] = useState(getInitState(values, "bottomLeft", "unit"));
+    const [bottomLeftMin, setBottomLeftMin] = useState(getInitState(values, "bottomLeft", "min", min));
+    const [bottomLeftMax, setBottomLeftMax] = useState(getInitState(values, "bottomLeft", "max", max));
+
+    // Callback functions
+    const getMode = useCallback(() => {
+        return getModeRaw({ value, allowFullRounded, fullRoundedValue, allowOrganic, allowMultiple });
+    }, [value, allowFullRounded, fullRoundedValue, allowOrganic, allowMultiple]);
+
+    const commitIfChanged = useCallback(
+        (newValue) => {
+            if (newValue !== value) {
+                commit(newValue);
+            }
+        },
+        [value, commit],
+    );
+
+    // Commit main input
+    const commitMainValue = useCallback(() => {
+        console.log("commitMainValue");
+        if (mode === "single") {
+            commitIfChanged(convertForCommit(mainInputValue, mainUnit, convertPxToRem, allowEmpty));
+        }
+    }, [mode, mainInputValue, mainUnit, allowEmpty, commitIfChanged, convertForCommit, convertPxToRem]);
+
+    // Commit organic input
+    const commitOrganicValue = useCallback(() => {
+        if (organicInputValue && mode === "organic") {
+            commitIfChanged(organicInputValue);
+        }
+    }, [organicInputValue, mode, commitIfChanged]);
+
+    // Commit multiple inputs
+    const commitMultipleValues = useCallback(() => {
+        if (
+            mode !== "multiple" ||
+            topLeftInputValue === null ||
+            topRightInputValue === null ||
+            bottomRightInputValue === null ||
+            bottomLeftInputValue === null
+        ) {
+            return;
+        }
+        const tl = convertForCommit(topLeftInputValue, topLeftUnit, convertPxToRem);
+        const tr = convertForCommit(topRightInputValue, topRightUnit, convertPxToRem);
+        const br = convertForCommit(bottomRightInputValue, bottomRightUnit, convertPxToRem);
+        const bl = convertForCommit(bottomLeftInputValue, bottomLeftUnit, convertPxToRem);
+        commitIfChanged(`${tl} ${tr} ${br} ${bl}`);
+    }, [
+        mode,
+        topLeftInputValue,
+        topRightInputValue,
+        bottomRightInputValue,
+        bottomLeftInputValue,
+        topLeftUnit,
+        topRightUnit,
+        bottomRightUnit,
+        bottomLeftUnit,
+        commitIfChanged,
+        convertPxToRem,
+        convertForCommit,
+    ]);
+
+    // Update on changes
+
+    useEffect(() => {
+        const newMode = getMode(value);
+        if (mode !== newMode) {
+            setMode(newMode);
+        }
+        if (newMode === "multiple" && !selected) {
+            setSelected("all");
+        }
+        setShowPreview(value !== "");
+    }, [value]);
+
+    useEffect(() => {
+        if (selected !== null) {
+            return;
+        }
+    }, [selected]);
+
     useEffect(() => {
         const isPercentage = mainUnit === "%";
         setMainMin(isPercentage ? 0 : min);
         setMainMax(isPercentage ? 100 : max);
-        if (mode === "single") {
-            setTopLeftUnit(mainUnit);
-            setTopRightUnit(mainUnit);
-            setBottomRightUnit(mainUnit);
-            setBottomLeftUnit(mainUnit);
-        }
-    }, [mainUnit]);
-
-    const [organicInputValue, setOrganicInputValue] = useState(getInitState("organic", "value"));
-    const [organicInputValueInDialog, setOrganicInputValueInDialog] = useState(getInitState("organic", "value"));
-
-    // Top Left Input
-    const [topLeftInputValue, setTopLeftInputValue] = useState(getInitState("topLeft", "value"));
-    const [topLeftUnit, setTopLeftUnit] = useState(getInitState("topLeft", "unit"));
-    const [topLeftMin, setTopLeftMin] = useState(getInitState("topLeft", "min", min));
-    const [topLeftMax, setTopLeftMax] = useState(getInitState("topLeft", "max", max));
+    }, [mainUnit, min, max]);
 
     useEffect(() => {
         const isPercentage = topLeftUnit === "%";
         setTopLeftMin(isPercentage ? 0 : min);
         setTopLeftMax(isPercentage ? 100 : max);
-    }, [topLeftUnit]);
+    }, [topLeftUnit, min, max]);
 
-    // Top Right Input
-    const [topRightInputValue, setTopRightInputValue] = useState(getInitState("topRight", "value"));
-    const [topRightUnit, setTopRightUnit] = useState(getInitState("topRight", "unit"));
-    const [topRightMin, setTopRightMin] = useState(getInitState("topRight", "min", min));
-    const [topRightMax, setTopRightMax] = useState(getInitState("topRight", "max", max));
     useEffect(() => {
         const isPercentage = topRightUnit === "%";
         setTopRightMin(isPercentage ? 0 : min);
         setTopRightMax(isPercentage ? 100 : max);
-    }, [topRightUnit]);
+    }, [topRightUnit, min, max]);
 
-    // Bottom Right Input
-    const [bottomRightInputValue, setBottomRightInputValue] = useState(getInitState("bottomRight", "value"));
-    const [bottomRightUnit, setBottomRightUnit] = useState(getInitState("bottomRight", "unit"));
-    const [bottomRightMin, setBottomRightMin] = useState(getInitState("bottomRight", "min", min));
-    const [bottomRightMax, setBottomRightMax] = useState(getInitState("bottomRight", "max", max));
     useEffect(() => {
         const isPercentage = bottomRightUnit === "%";
         setBottomRightMin(isPercentage ? 0 : min);
         setBottomRightMax(isPercentage ? 100 : max);
-    }, [bottomRightUnit]);
+    }, [bottomRightUnit, min, max]);
 
-    // Bottom Left Input
-    const [bottomLeftInputValue, setBottomLeftInputValue] = useState(getInitState("bottomLeft", "value"));
-    const [bottomLeftUnit, setBottomLeftUnit] = useState(getInitState("bottomLeft", "unit"));
-    const [bottomLeftMin, setBottomLeftMin] = useState(getInitState("bottomLeft", "min", min));
-    const [bottomLeftMax, setBottomLeftMax] = useState(getInitState("bottomLeft", "max", max));
     useEffect(() => {
         const isPercentage = bottomLeftUnit === "%";
         setBottomLeftMin(isPercentage ? 0 : min);
         setBottomLeftMax(isPercentage ? 100 : max);
-    }, [bottomLeftUnit]);
+    }, [bottomLeftUnit, min, max]);
 
     // Commit on mode change
     useEffect(() => {
@@ -329,41 +336,12 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
             commitMultipleValues();
             return;
         }
-    }, [mode]);
+    }, [mode, fullRoundedValue]);
 
-    // Commit main input
-    function commitMainValue() {
-        if (mode === "single") {
-            commitIfChanged(convertForCommit(mainInputValue, mainUnit, allowEmpty));
-        }
-    }
-    useEffect(commitMainValue, [mainInputValue, mainUnit]);
+    useEffect(commitMainValue, [mainInputValue, mainUnit, commitMainValue]);
 
-    // Commit organic input
-    function commitOrganicValue() {
-        if (organicInputValue && mode === "organic") {
-            commitIfChanged(organicInputValue);
-        }
-    }
-    useEffect(commitOrganicValue, [organicInputValue]);
+    useEffect(commitOrganicValue, [organicInputValue, commitOrganicValue]);
 
-    // Commit multiple inputs
-    function commitMultipleValues() {
-        if (
-            mode !== "multiple" ||
-            topLeftInputValue === null ||
-            topRightInputValue === null ||
-            bottomRightInputValue === null ||
-            bottomLeftInputValue === null
-        ) {
-            return;
-        }
-        const tl = convertForCommit(topLeftInputValue, topLeftUnit);
-        const tr = convertForCommit(topRightInputValue, topRightUnit);
-        const br = convertForCommit(bottomRightInputValue, bottomRightUnit);
-        const bl = convertForCommit(bottomLeftInputValue, bottomLeftUnit);
-        commitIfChanged(`${tl} ${tr} ${br} ${bl}`);
-    }
     useEffect(commitMultipleValues, [
         topLeftInputValue,
         topRightInputValue,
@@ -373,43 +351,8 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
         topRightUnit,
         bottomRightUnit,
         bottomLeftUnit,
+        commitMultipleValues,
     ]);
-
-    function commitIfChanged(newValue) {
-        if (newValue !== value) {
-            commit(newValue);
-        }
-    }
-
-    function convertForCommit(number, unit, allowEmpty = false) {
-        if (hasNoValue(number)) {
-            return allowEmpty ? "" : "0";
-        }
-        let divider = 1;
-        if (!unit || unit === "px") {
-            unit = convertPxToRem ? "rem" : "px";
-            divider = convertPxToRem ? 16 : 1;
-        }
-        const convertedNumber = number / divider;
-        return convertedNumber === 0 ? "0" : `${convertedNumber}${unit}`;
-    }
-
-    function getMode(input) {
-        if (allowFullRounded && input && (input === `${fullRoundedValue}px` || input === fullRoundedValue)) {
-            return "rounded";
-        }
-
-        if (typeof input === "string") {
-            if (allowOrganic && input.includes("/")) {
-                return "organic";
-            }
-            if (allowMultiple && value.includes(" ") && value.trim().split(" ").length === 4) {
-                return "multiple";
-            }
-        }
-
-        return "single";
-    }
 
     useEffect(() => {
         if (potentailAllSelected && potentailAllSelected === selected) {
@@ -551,6 +494,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                 {allowOrganic && (
                     <Dialog
                         open={organicEditorOpen}
+                        setOpen={setOrganicEditorOpen}
                         title={i18nRegistry.translate("Carbon.Editor.Styling:Main:borderRadius.organic")}
                         onApply={() => {
                             setOrganicEditorOpen(false);
@@ -577,7 +521,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                         className={stylex.props(styles.dropdown, readonly && styles.disabled).className}
                         isOpen={dropdownOpen}
                         onToggle={() => setDropdownOpen(!dropdownOpen)}
-                        onClose={() => false}
+                        onClose={() => setDropdownOpen(false)}
                     >
                         <DropDown.Header className={stylex.props(styles.dropdownHeader).className}>
                             {mode === "multiple" && <BorderRadiusBox selected={selected} />}
@@ -589,7 +533,6 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                             <Button
                                 className={stylex.props(styles.dropdownButton).className}
                                 onClick={() => {
-                                    setDropdownOpen(false);
                                     if (mode === "single") {
                                         setMainFocus(true);
                                         return;
@@ -614,7 +557,6 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                                 <Button
                                     className={stylex.props(styles.dropdownButton).className}
                                     onClick={() => {
-                                        setDropdownOpen(false);
                                         if (mode !== "rounded") {
                                             setMode("rounded");
                                         }
@@ -629,36 +571,23 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                                     className={stylex.props(styles.dropdownButton).className}
                                     onClick={() => {
                                         if (mode === "multiple") {
-                                            const order = ["topLeft", "topRight", "bottomRight", "bottomLeft"];
-                                            const currentIndex = order.indexOf(selected);
-                                            const nextIndex = (currentIndex + 1) % order.length;
-                                            setSelected(order[nextIndex]);
                                             return;
                                         }
-                                        setMode("multiple");
                                         const newValue = mainInputValue || min;
                                         setSelected("topLeft");
-                                        let commited = false;
                                         if (topLeftInputValue === null) {
                                             setTopLeftInputValue(newValue);
-                                            commited = true;
                                         }
                                         if (topRightInputValue === null) {
                                             setTopRightInputValue(newValue);
-                                            commited = true;
                                         }
                                         if (bottomRightInputValue === null) {
                                             setBottomRightInputValue(newValue);
-                                            commited = true;
                                         }
                                         if (bottomLeftInputValue === null) {
                                             setBottomLeftInputValue(newValue);
-                                            commited = true;
                                         }
-                                        if (!commited) {
-                                            setTimeout(commitMultipleValues, 0);
-                                        }
-                                        setDropdownOpen(false);
+                                        setTimeout(() => setMode("multiple"), 0);
                                     }}
                                 >
                                     <BorderRadiusBox {...stylex.props(styles.dropdownSvg)} selected={selected} />
@@ -670,7 +599,6 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                                     className={stylex.props(styles.dropdownButton).className}
                                     onClick={() => {
                                         setOrganicEditorOpen(true);
-                                        setDropdownOpen(false);
                                     }}
                                 >
                                     <BorderRadiusBox {...stylex.props(styles.dropdownSvg)} organic={true} />
