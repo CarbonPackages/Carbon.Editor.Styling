@@ -23,7 +23,7 @@ const styles = stylex.create({
         cursor: "text",
         ":focus": {
             outline: "1px solid var(--colors-PrimaryBlue)",
-        }
+        },
     },
     text: {
         cursor: "default",

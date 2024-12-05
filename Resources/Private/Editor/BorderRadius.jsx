@@ -147,7 +147,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
         if (newMode === "multiple" && !selected) {
             setSelected("all");
         }
-        setShowPreview(value !== "")
+        setShowPreview(value !== "");
     }, [value]);
 
     useEffect(() => {
@@ -690,7 +690,13 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                         title={i18nRegistry.translate(
                             `Carbon.Editor.Styling:Main:${bigPreview ? "hide" : "show"}BigPreview`,
                         )}
-                        className={stylex.props(styles.centerContent, styles.previewButton, !showPreview && styles.previewButtonInvisible).className}
+                        className={
+                            stylex.props(
+                                styles.centerContent,
+                                styles.previewButton,
+                                !showPreview && styles.previewButtonInvisible,
+                            ).className
+                        }
                         onClick={() => setBigPreview(!bigPreview)}
                     >
                         <span {...stylex.props(styles.preview(value, mode === "rounded"), styles.previewSmall)}></span>

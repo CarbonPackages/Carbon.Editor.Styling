@@ -131,11 +131,11 @@ function Component({
                     const operator = multiplePlusAtEnd ? "+" : "-";
                     const value = multiplePlusAtEnd || multipleMinusAtEnd;
                     const number = 10 ** (value - 2);
-                    newValue = `${newValue.slice(0, -value)}${operator}${number}`
+                    newValue = `${newValue.slice(0, -value)}${operator}${number}`;
                 }
 
                 // Remove all left double -- and ++
-                while(newValue.includes("++") || newValue.includes("--")) {
+                while (newValue.includes("++") || newValue.includes("--")) {
                     newValue = newValue.replaceAll("++", "+").replaceAll("--", "-");
                 }
 
@@ -151,8 +151,7 @@ function Component({
                 if (newValue) {
                     try {
                         newValue = (0, eval)(newValue.replaceAll(":", "/"));
-                    } catch (error) {
-                    }
+                    } catch (error) {}
                 }
             } else {
                 newValue = parseFloat(newValue);
@@ -333,7 +332,11 @@ function Component({
             />
             {!(allowEmpty && hasNoValue(state)) && (
                 <>
-                    {unitSwitch && unit ? <UnitSwitch unit={unit} onActive={setFakeFocus} onClick={unitSwitch} /> : unit}
+                    {unitSwitch && unit ? (
+                        <UnitSwitch unit={unit} onActive={setFakeFocus} onClick={unitSwitch} />
+                    ) : (
+                        unit
+                    )}
                 </>
             )}
         </div>
