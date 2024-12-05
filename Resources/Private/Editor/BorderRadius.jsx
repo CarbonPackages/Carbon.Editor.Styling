@@ -209,10 +209,8 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
             let main = "";
             if (typeof value === "number") {
                 main = getNumberAndUnit(convertPxToRem ? value * 16 : value, min, max);
-            } else if (typeof value !== "string" || !value) {
-                main = getNumberAndUnit(0, min, max);
             } else {
-                main = getNumberAndUnit(value, min, max, allowPercentage);
+                main = getNumberAndUnit(value, min, max, allowPercentage, allowEmpty);
             }
             return {
                 mode,

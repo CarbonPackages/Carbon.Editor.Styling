@@ -9,7 +9,7 @@ export function hasNoValue(value) {
     );
 }
 
-export function getNumberAndUnit(input, min, max, allowPercentage = false) {
+export function getNumberAndUnit(input, min, max, allowPercentage = false, allowEmpty = false) {
     const defaultUnit = "px";
     if (typeof input == "string") {
         const match = input.match(/^(-?\d*\.?\d+)(.*)$/);
@@ -17,6 +17,7 @@ export function getNumberAndUnit(input, min, max, allowPercentage = false) {
         if (allowPercentage) {
             allowedUnits.push("%");
         }
+        // A match means, there is always a number at the start
         if (match) {
             let value = parseFloat(match[1]);
             let unit = match[2];
@@ -38,11 +39,12 @@ export function getNumberAndUnit(input, min, max, allowPercentage = false) {
             };
         }
     }
-    if (!input || typeof input != "number") {
+    const noValueIsSet = hasNoValue(input);
+    if (noValueIsSet) {
         input = 0;
     }
     return {
-        value: limitToMinMax(input, min, max),
+        value: allowEmpty && noValueIsSet ? null : limitToMinMax(input, min, max),
         unit: defaultUnit,
         min,
         max,
