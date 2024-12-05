@@ -22,6 +22,30 @@
             <trans-unit id="borderRadius.organic" xml:space="preserve">
                 <source>Organic radius</source>
             </trans-unit>
+            <trans-unit id="topLeft" xml:space="preserve">
+                <source>Top left</source>
+            </trans-unit>
+            <trans-unit id="topRight" xml:space="preserve">
+                <source>Top right</source>
+            </trans-unit>
+            <trans-unit id="bottomLeft" xml:space="preserve">
+                <source>Bottom left</source>
+            </trans-unit>
+            <trans-unit id="bottomRight" xml:space="preserve">
+                <source>Bottom right</source>
+            </trans-unit>
+            <trans-unit id="top" xml:space="preserve">
+                <source>Top</source>
+            </trans-unit>
+            <trans-unit id="right" xml:space="preserve">
+                <source>Right</source>
+            </trans-unit>
+            <trans-unit id="bottom" xml:space="preserve">
+                <source>Bottom</source>
+            </trans-unit>
+            <trans-unit id="left" xml:space="preserve">
+                <source>Left</source>
+            </trans-unit>
             <trans-unit id="showBigPreview" xml:space="preserve">
                 <source>Show big preview</source>
             </trans-unit>

@@ -28,6 +28,38 @@
                 <source>Organic radius</source>
                 <target>Organischer Radius</target>
             </trans-unit>
+            <trans-unit id="topLeft" xml:space="preserve">
+                <source>Top left</source>
+                <target>Oben links</target>
+            </trans-unit>
+            <trans-unit id="topRight" xml:space="preserve">
+                <source>Top right</source>
+                <target>Oben rechts</target>
+            </trans-unit>
+            <trans-unit id="bottomLeft" xml:space="preserve">
+                <source>Bottom left</source>
+                <target>Unten links</target>
+            </trans-unit>
+            <trans-unit id="bottomRight" xml:space="preserve">
+                <source>Bottom right</source>
+                <target>Unten rechts</target>
+            </trans-unit>
+            <trans-unit id="top" xml:space="preserve">
+                <source>Top</source>
+                <target>Oben</target>
+            </trans-unit>
+            <trans-unit id="right" xml:space="preserve">
+                <source>Right</source>
+                <target>rechts</target>
+            </trans-unit>
+            <trans-unit id="bottom" xml:space="preserve">
+                <source>Bottom</source>
+                <target>Unten</target>
+            </trans-unit>
+            <trans-unit id="left" xml:space="preserve">
+                <source>Left</source>
+                <target>Links</target>
+            </trans-unit>
             <trans-unit id="showBigPreview" xml:space="preserve">
                 <source>Show big preview</source>
                 <target>Große Vorschau anzeigen</target>

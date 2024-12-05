@@ -1,5 +1,14 @@
 export const isSegmented = (value) => typeof value == "string" && value.includes(" ");
 
+export function hasNoValue(value) {
+    return (
+        value == null ||
+        value == undefined ||
+        (typeof value === "string" && !value.trim().length) ||
+        (typeof value === "number" && isNaN(value))
+    );
+}
+
 export function getNumberAndUnit(input, min, max, allowPercentage = false) {
     const defaultUnit = "px";
     if (typeof input == "string") {

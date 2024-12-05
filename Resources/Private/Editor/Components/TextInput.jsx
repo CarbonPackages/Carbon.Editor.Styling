@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import UnitSwitch from "./UnitSwitch";
+import { hasNoValue, limitToMinMax } from "../Helper";
 import { useDebouncedCallback } from "use-debounce";
 import { neos } from "@neos-project/neos-ui-decorators";
 import * as stylex from "@stylexjs/stylex";
@@ -70,11 +71,15 @@ function Component({
     onKeyDown,
     type = "text",
     disabled,
-    // neos is set as prop because we don't want to pass it to the input element
-    neos,
+    min,
+    max,
+    title,
     highlight,
     allowFloat = false,
     setFocus = false,
+    allowEmpty = false,
+    // neos is set as prop because we don't want to pass it to the input element
+    neos,
     ...rest
 }) {
     const isNumericInput = type == "number";
@@ -94,13 +99,46 @@ function Component({
         if (!onChangeDebounced && !onChange) {
             return;
         }
-        if (typeof newValue == "number") {
+
+        // Remove spaces at start
+        if (typeof newValue === "string") {
+            while (newValue.startsWith(" ")) {
+                newValue = newValue.substring(1);
+            }
+        }
+
+        if (hasNoValue(newValue)) {
+            if (allowEmpty) {
+                debouncedCommit("");
+                return;
+            }
+            newValue = minMax(0);
+            setState(newValue);
+        } else if (typeof newValue == "number") {
             newValue = minMax(newValue);
         }
-        if (isNumericInput && typeof newValue == "string") {
+
+        if (isNumericInput && typeof newValue === "string") {
             // Replace , with . and remove all letters and spaces
             newValue = newValue.replace(",", ".").replace(/[a-zA-Z\s]/g, "");
+
             if (hasOperator(newValue)) {
+                // If a user enter multiple -- or ++ at the end, we decrease or increase it
+                // Example ++ => +1, +++ => +10 and so on
+                const multiplePlusAtEnd = newValue.match(/\+([\+]+)$/)?.[0].length || 0;
+                const multipleMinusAtEnd = multiplePlusAtEnd ? 0 : newValue.match(/-([-]+)$/)?.[0].length || 0;
+                if (multiplePlusAtEnd || multipleMinusAtEnd) {
+                    const operator = multiplePlusAtEnd ? "+" : "-";
+                    const value = multiplePlusAtEnd || multipleMinusAtEnd;
+                    const number = 10 ** (value - 2);
+                    newValue = `${newValue.slice(0, -value)}${operator}${number}`
+                }
+
+                // Remove all left double -- and ++
+                while(newValue.includes("++") || newValue.includes("--")) {
+                    newValue = newValue.replaceAll("++", "+").replaceAll("--", "-");
+                }
+
                 while (startWithOperator(newValue)) {
                     newValue = newValue.substring(1);
                 }
@@ -111,7 +149,10 @@ function Component({
                     return;
                 }
                 if (newValue) {
-                    newValue = (0, eval)(newValue.replaceAll(":", "/"));
+                    try {
+                        newValue = (0, eval)(newValue.replaceAll(":", "/"));
+                    } catch (error) {
+                    }
                 }
             } else {
                 newValue = parseFloat(newValue);
@@ -125,12 +166,17 @@ function Component({
                 setState(newValue);
             }
         }
-        if (force || newValue != value) {
-            if (onChangeDebounced) {
-                onChangeDebounced(newValue);
-            } else {
-                onChange(newValue);
-            }
+        debouncedCommit(newValue, force);
+    }
+
+    function debouncedCommit(newValue, force = false) {
+        if (newValue === value && !force) {
+            return;
+        }
+        if (onChangeDebounced) {
+            onChangeDebounced(newValue);
+        } else {
+            onChange(newValue);
         }
     }
     const debounced = useDebouncedCallback(commitValue, debounce);
@@ -182,13 +228,7 @@ function Component({
     }
 
     function minMax(value) {
-        if (typeof rest.min === "number" && value < rest.min) {
-            return rest.min;
-        }
-        if (typeof rest.max === "number" && value > rest.max) {
-            return rest.max;
-        }
-        return value;
+        return limitToMinMax(value, min, max);
     }
 
     return (
@@ -205,6 +245,7 @@ function Component({
                     inputRef?.current?.focus();
                 }
             }}
+            title={title}
         >
             <input
                 {...rest}
@@ -290,7 +331,11 @@ function Component({
                 }}
                 ref={inputRef}
             />
-            {unitSwitch && unit ? <UnitSwitch unit={unit} onActive={setFakeFocus} onClick={unitSwitch} /> : unit}
+            {!(allowEmpty && hasNoValue(state)) && (
+                <>
+                    {unitSwitch && unit ? <UnitSwitch unit={unit} onActive={setFakeFocus} onClick={unitSwitch} /> : unit}
+                </>
+            )}
         </div>
     );
 }

@@ -21,6 +21,9 @@ const styles = stylex.create({
     },
     button: {
         cursor: "text",
+        ":focus": {
+            outline: "1px solid var(--colors-PrimaryBlue)",
+        }
     },
     text: {
         cursor: "default",
@@ -29,25 +32,21 @@ const styles = stylex.create({
         minWidth: 0,
         textOverflow: "ellipsis",
         overflow: "hidden",
+        lineHeight: "var(--spacing-GoldenUnit)",
     },
 });
 
-export default function ButtonAsInput({ onClick, disabled, highlight, children }) {
+export default function ButtonAsInput({ id, onClick, disabled, highlight, children, readonly }) {
     const hasOnClick = onClick && typeof onClick === "function";
 
     return (
         <>
-            {hasOnClick ? (
-                <button
-                    type="button"
-                    onClick={onClick}
-                    disabled={disabled}
-                    {...stylex.props(styles.look, styles.button)}
-                >
+            {hasOnClick && !readonly && !disabled ? (
+                <button type="button" onClick={onClick} id={id} {...stylex.props(styles.look, styles.button)}>
                     <span {...stylex.props(styles.ellipsis)}>{children}</span>
                 </button>
             ) : (
-                <div {...stylex.props(styles.look, styles.text)}>
+                <div id={id} {...stylex.props(styles.look, styles.text)}>
                     <span {...stylex.props(styles.ellipsis)}>{children}</span>
                 </div>
             )}

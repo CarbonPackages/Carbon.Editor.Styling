@@ -6,7 +6,7 @@ import BorderRadiusBox from "./Components/BorderRadiusBox";
 import ButtonAsInput from "./Components/ButtonAsInput";
 import Circle from "./Components/Circle";
 import Dialog from "./Components/Dialog";
-import { getNumberAndUnit, limitToMinMax } from "./Helper";
+import { getNumberAndUnit, limitToMinMax, hasNoValue } from "./Helper";
 import { neos } from "@neos-project/neos-ui-decorators";
 import { useDebounce } from "use-debounce";
 import * as stylex from "@stylexjs/stylex";
@@ -49,9 +49,6 @@ const styles = stylex.create({
             pointerEvents: "none",
         },
     },
-    readonly: {
-        pointerEvents: "none",
-    },
     preview: (borderRadius, rounded) => ({
         transition: "border-radius var(--transition-Slow) ease, width var(--transition-Slow) ease",
         background: "var(--colors-PrimaryBlue)",
@@ -75,6 +72,13 @@ const styles = stylex.create({
         gridTemplateRows: show ? "1fr" : "0fr",
         transition: "grid-template-rows var(--transition-Default) ease-in-out",
     }),
+    previewButton: {
+        transition: "opacity var(--transition-Default) ease",
+    },
+    previewButtonInvisible: {
+        opacity: 0,
+        pointerEvents: "none",
+    },
     bigPreviewButton: {
         width: "100%",
         height: "auto",
@@ -111,6 +115,7 @@ const styles = stylex.create({
 const defaultOptions = {
     disabled: false,
     readonly: false,
+    allowEmpty: false,
     allowMultiple: false,
     allowOrganic: false,
     allowFullRounded: false,
@@ -128,6 +133,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
     const [organicEditorOpen, setOrganicEditorOpen] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [bigPreview, setBigPreview] = useState(false);
+    const [showPreview, setShowPreview] = useState(true);
     const [selected, setSelected] = useState(null);
     const [mainFocus, setMainFocus] = useState(false);
     const [_potentailAllSelected, setPotentialAllSelected] = useState(false);
@@ -141,6 +147,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
         if (newMode === "multiple" && !selected) {
             setSelected("all");
         }
+        setShowPreview(value !== "")
     }, [value]);
 
     useEffect(() => {
@@ -152,6 +159,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
     const {
         disabled,
         readonly,
+        allowEmpty,
         allowMultiple,
         allowOrganic,
         allowFullRounded,
@@ -328,7 +336,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
     // Commit main input
     function commitMainValue() {
         if (mode === "single") {
-            commitIfChanged(convertForCommit(mainInputValue, mainUnit));
+            commitIfChanged(convertForCommit(mainInputValue, mainUnit, allowEmpty));
         }
     }
     useEffect(commitMainValue, [mainInputValue, mainUnit]);
@@ -375,9 +383,9 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
         }
     }
 
-    function convertForCommit(number, unit) {
-        if (!number) {
-            return "0";
+    function convertForCommit(number, unit, allowEmpty = false) {
+        if (hasNoValue(number)) {
+            return allowEmpty ? "" : "0";
         }
         let divider = 1;
         if (!unit || unit === "px") {
@@ -434,6 +442,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                             setFocus={selected === "topLeft"}
                             onFocus={() => setSelected("topLeft")}
                             onBlur={() => setPotentialAllSelected("topLeft")}
+                            title={i18nRegistry.translate("Carbon.Editor.Styling:Main:topLeft")}
                         />
                         <TextInput
                             value={topRightInputValue}
@@ -451,6 +460,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                             setFocus={selected === "topRight"}
                             onFocus={() => setSelected("topRight")}
                             onBlur={() => setPotentialAllSelected("topRight")}
+                            title={i18nRegistry.translate("Carbon.Editor.Styling:Main:topRight")}
                         />
                         <TextInput
                             value={bottomLeftInputValue}
@@ -468,6 +478,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                             setFocus={selected === "bottomLeft"}
                             onFocus={() => setSelected("bottomLeft")}
                             onBlur={() => setPotentialAllSelected("bottomLeft")}
+                            title={i18nRegistry.translate("Carbon.Editor.Styling:Main:bottomLeft")}
                         />
                         <TextInput
                             value={bottomRightInputValue}
@@ -485,12 +496,14 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                             setFocus={selected === "bottomRight"}
                             onFocus={() => setSelected("bottomRight")}
                             onBlur={() => setPotentialAllSelected("bottomRight")}
+                            title={i18nRegistry.translate("Carbon.Editor.Styling:Main:bottomRight")}
                         />
                     </div>
                 )}
                 {mode === "single" && (
                     <TextInput
                         id={id}
+                        allowEmpty={allowEmpty}
                         value={mainInputValue}
                         unit={mainUnit}
                         unitSwitch={allowPercentage ? setMainUnit : null}
@@ -502,6 +515,10 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                         max={mainMax}
                         setFocus={mainFocus}
                         onChange={(value) => {
+                            if (allowEmpty && hasNoValue(value)) {
+                                setMainInputValue("");
+                                return;
+                            }
                             setMainInputValue(limitToMinMax(value, mainMin, mainMax));
                         }}
                         onBlur={() => setMainFocus(false)}
@@ -511,6 +528,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                 {mode === "rounded" && (
                     <ButtonAsInput
                         id={id}
+                        readonly={readonly}
                         onClick={() => {
                             setMode("single");
                             setTimeout(() => {
@@ -522,7 +540,12 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                     </ButtonAsInput>
                 )}
                 {mode === "organic" && (
-                    <ButtonAsInput>
+                    <ButtonAsInput
+                        readonly={readonly}
+                        onClick={() => {
+                            setOrganicEditorOpen(true);
+                        }}
+                    >
                         {i18nRegistry.translate("Carbon.Editor.Styling:Main:borderRadius.organic")}
                     </ButtonAsInput>
                 )}
@@ -553,7 +576,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                 {(allowMultiple || allowFullRounded) && (
                     <DropDown.Stateless
                         title={i18nRegistry.translate(`Carbon.Editor.Styling:Main:borderRadius.${mode}`)}
-                        className={stylex.props(styles.dropdown, readonly && styles.readonly).className}
+                        className={stylex.props(styles.dropdown, readonly && styles.disabled).className}
                         isOpen={dropdownOpen}
                         onToggle={() => setDropdownOpen(!dropdownOpen)}
                         onClose={() => false}
@@ -667,7 +690,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                         title={i18nRegistry.translate(
                             `Carbon.Editor.Styling:Main:${bigPreview ? "hide" : "show"}BigPreview`,
                         )}
-                        className={stylex.props(styles.centerContent).className}
+                        className={stylex.props(styles.centerContent, styles.previewButton, !showPreview && styles.previewButtonInvisible).className}
                         onClick={() => setBigPreview(!bigPreview)}
                     >
                         <span {...stylex.props(styles.preview(value, mode === "rounded"), styles.previewSmall)}></span>
@@ -675,7 +698,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                 )}
             </div>
             {preview && (
-                <div {...stylex.props(styles.bigPreviewContainer(bigPreview))}>
+                <div {...stylex.props(styles.bigPreviewContainer(showPreview ? bigPreview : false))}>
                     <Button
                         style="clean"
                         hoverStyle="clean"
