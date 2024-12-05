@@ -21,6 +21,7 @@ Neos:
           placeholder: ''
           disabled: false
           readonly: false
+          allowEmpty: false
 
           # Allow mutliple values
           allowMultiple: false
@@ -51,10 +52,15 @@ Neos:
           max: 24
           fullRoundedValue: 9999
         'Carbon.Editor.Styling.Spacing':
+          placeholder: ''
           disabled: false
           readonly: false
-          placeholder: ''
-          allowMultiple: true
+          allowEmpty: false
+
+          # Allow mutliple values
+          allowMultiple: false
+
+          # Allow to sync values (x and y axis)
           allowSync: true
 
           # Convert px values to rem when saving to content repository

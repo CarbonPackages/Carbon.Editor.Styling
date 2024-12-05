@@ -3,7 +3,7 @@ import { Button, Icon } from "@neos-project/react-ui-components";
 import TextInput from "./Components/TextInput";
 import RoundedBox from "./Components/RoundedBox";
 import SpacingBox from "./Components/SpacingBox";
-import { isSegmented, convertValue, limitToMinMax } from "./Helper";
+import { convertValue, limitToMinMax, hasNoValue } from "./Helper";
 import { neos } from "@neos-project/neos-ui-decorators";
 import { useDebounce } from "use-debounce";
 import * as stylex from "@stylexjs/stylex";
@@ -101,6 +101,7 @@ const styles = stylex.create({
 const defaultOptions = {
     disabled: false,
     readonly: false,
+    allowEmpty: false,
     allowMultiple: false,
     allowSync: true,
     convertPxToRem: false,
@@ -110,16 +111,19 @@ const defaultOptions = {
 };
 
 function Editor({ id, value, commit, highlight, options, i18nRegistry, config, onEnterKey }) {
-    const [segmented, setSegmented] = useState(null);
     const [selected, setSelected] = useState(null);
     const [mainFocus, setMainFocus] = useState(false);
     const [_potentailAllSelected, setPotentialAllSelected] = useState(false);
     const [potentailAllSelected] = useDebounce(_potentailAllSelected, 500);
 
     useEffect(() => {
-        const bool = isSegmented(value);
-        setSegmented(bool);
-        setSelected(bool && !selected ? "all" : selected);
+        const newMode = getMode(value);
+        if (mode !== newMode) {
+            setMode(newMode);
+        }
+        if (newMode === "multiple" && !selected) {
+            setSelected("all");
+        }
     }, [value]);
 
     useEffect(() => {
@@ -128,7 +132,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
         }
     }, [selected]);
 
-    const { disabled, readonly, allowMultiple, allowSync, convertPxToRem, min, max, placeholder } = {
+    const { disabled, readonly, allowEmpty, allowMultiple, allowSync, convertPxToRem, min, max, placeholder } = {
         ...defaultOptions,
         ...config,
         ...options,
@@ -136,18 +140,18 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
 
     // Content repository to editor
     const values = (() => {
-        const valueIsString = typeof value == "string";
-        const valueIsRem = valueIsString && value.includes("rem");
         if (typeof value == "number") {
             return {
                 main: convertValue(value, min, max),
             };
         }
-        if (!valueIsString || !value) {
+        if (hasNoValue(value)) {
             return {
-                main: min,
+                main: allowEmpty ? null : min,
             };
         }
+
+        // After running hasNoValue, we can assume that value is a string
         const values = value.split(" ").map((value) => convertValue(value, min, max));
         if (!allowMultiple || values.length == 1) {
             return {
@@ -181,15 +185,12 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
             bottom: values[2],
             left: values[3],
         };
-        let synced = allowSync
+        const synced = allowSync
             ? (allValues.left == allValues.right ? "x" : "") + (allValues.top == allValues.bottom ? "y" : "")
             : null;
 
         return {
-            top: values[0],
-            right: values[1],
-            bottom: values[2],
-            left: values[3],
+            ...allValues,
             synced: synced || null,
         };
     })();
@@ -198,6 +199,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
         return typeof value == "number" ? value : null;
     }
 
+    const [mode, setMode] = useState(getMode(value));
     const [mainInputValue, setMainInputValue] = useState(fallbackToNull(values?.main));
     const [topInputValue, setTopInputValue] = useState(fallbackToNull(values?.top));
     const [rightInputValue, setRightInputValue] = useState(fallbackToNull(values?.right));
@@ -206,6 +208,14 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
     const [_syncedValue, setSyncedValue] = useState(values?.synced);
     const [syncedValue] = useDebounce(_syncedValue, 1000);
     const [syncButtonFocus, setSyncButtonFocus] = useState(false);
+
+    useEffect(() => {
+        if (mode === "single") {
+            commitSingleValue();
+            return;
+        }
+        commitMultipleValues();
+    }, [mode]);
 
     function commitIfChanged(newValue) {
         if (newValue !== value) {
@@ -221,10 +231,22 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
     }
 
     function commitSingleValue() {
-        commitIfChanged(convertForCommit(mainInputValue));
+        if (mode !== "single") {
+            return;
+        }
+        if (!hasNoValue(mainInputValue)) {
+            commitIfChanged(convertForCommit(mainInputValue));
+            return;
+        }
+        if (allowEmpty) {
+            commitIfChanged("");
+        }
     }
 
     function commitMultipleValues() {
+        if (mode !== "multiple") {
+            return;
+        }
         const syncX = leftInputValue == rightInputValue;
         const syncY = topInputValue == bottomInputValue;
         if (syncX && syncY) {
@@ -243,19 +265,9 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
         );
     }
 
-    useEffect(() => {
-        if (mainInputValue == null) {
-            return;
-        }
-        commitSingleValue();
-    }, [mainInputValue]);
+    useEffect(commitSingleValue, [mainInputValue]);
 
-    useEffect(() => {
-        if (topInputValue == null || rightInputValue == null || bottomInputValue == null || leftInputValue == null) {
-            return;
-        }
-        commitMultipleValues();
-    }, [topInputValue, rightInputValue, bottomInputValue, leftInputValue]);
+    useEffect(commitMultipleValues, [topInputValue, rightInputValue, bottomInputValue, leftInputValue]);
 
     useEffect(() => {
         if (syncedValue == "y" || syncedValue == "xy") {
@@ -271,6 +283,14 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
         return limitToMinMax(value, min, max);
     }
 
+    function getMode(input) {
+        if (allowMultiple && typeof input === "string" && value.includes(" ")) {
+            return "multiple";
+        }
+
+        return "single";
+    }
+
     useEffect(() => {
         if (potentailAllSelected && potentailAllSelected == selected) {
             setSelected("all");
@@ -280,8 +300,9 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
 
     return (
         <>
+            value: "{value}"
             <div {...stylex.props(styles.container, highlight && styles.highlight, disabled && styles.disabled)}>
-                {segmented ? (
+                {mode === "multiple" ? (
                     <div {...stylex.props(styles.segmentedGrid)}>
                         <TextInput
                             containerStyle={styles.area("top")}
@@ -294,6 +315,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                             type="number"
                             min={min}
                             max={max}
+                            title={i18nRegistry.translate("Carbon.Editor.Styling:Main:top")}
                             onChange={(value) => {
                                 if (syncedValue == "y" || syncedValue == "xy") {
                                     setBottomInputValue(value);
@@ -321,6 +343,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                             type="number"
                             min={min}
                             max={max}
+                            title={i18nRegistry.translate("Carbon.Editor.Styling:Main:right")}
                             onChange={(value) => {
                                 if (syncedValue == "x" || syncedValue == "xy") {
                                     setLeftInputValue(value);
@@ -348,6 +371,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                             type="number"
                             min={min}
                             max={max}
+                            title={i18nRegistry.translate("Carbon.Editor.Styling:Main:bottom")}
                             onChange={(value) => {
                                 if (syncedValue == "y" || syncedValue == "xy") {
                                     setTopInputValue(value);
@@ -375,6 +399,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                             type="number"
                             min={min}
                             max={max}
+                            title={i18nRegistry.translate("Carbon.Editor.Styling:Main:left")}
                             onChange={(value) => {
                                 if (syncedValue == "x" || syncedValue == "xy") {
                                     setRightInputValue(value);
@@ -432,7 +457,12 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                         min={min}
                         max={max}
                         setFocus={mainFocus}
+                        allowEmpty={allowEmpty}
                         onChange={(value) => {
+                            if (allowEmpty && hasNoValue(value)) {
+                                setMainInputValue(null);
+                                return;
+                            }
                             setMainInputValue(minMax(value));
                         }}
                         onBlur={() => setMainFocus(false)}
@@ -441,13 +471,12 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                 )}
 
                 {allowMultiple && (
-                    <div {...stylex.props(styles.container, segmented && styles.flexColumn)}>
+                    <div {...stylex.props(styles.container, mode == "multiple" && styles.flexColumn)}>
                         <Button
                             onClick={() => {
-                                if (segmented) {
-                                    setMainInputValue(topInputValue);
+                                if (mode == "multiple") {
                                     setSelected(null);
-                                    setSegmented(false);
+                                    setMode("single");
                                     setTimeout(() => {
                                         setMainFocus(true);
                                     }, 0);
@@ -458,67 +487,62 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                             title={i18nRegistry.translate("Carbon.Editor.Styling:Main:globalSpacing")}
                             className={
                                 stylex.props(
-                                    styles.svgButton(!segmented),
+                                    styles.svgButton(mode == "single"),
                                     styles.centerContent,
                                     readonly && styles.readonly,
                                 ).className
                             }
                         >
-                            <RoundedBox selected={selected} style={stylex.props(styles.svgButton(!segmented)).style} />
+                            <RoundedBox
+                                selected={selected}
+                                style={stylex.props(styles.svgButton(mode == "single")).style}
+                            />
                         </Button>
-                        {allowMultiple && (
-                            <Button
-                                onClick={() => {
-                                    if (segmented) {
-                                        const order = ["top", "right", "bottom", "left"];
-                                        const currentIndex = order.indexOf(selected);
-                                        const nextIndex = (currentIndex + 1) % order.length;
-                                        setSelected(order[nextIndex]);
-                                        return;
-                                    }
-
-                                    const newValue = mainInputValue;
-                                    setSegmented(true);
-                                    setSelected("top");
-                                    setMainInputValue(null);
-                                    let commited = false;
-                                    if (topInputValue == null) {
-                                        setTopInputValue(newValue);
-                                        commited = true;
-                                    }
-                                    if (rightInputValue == null) {
-                                        setRightInputValue(newValue);
-                                        commited = true;
-                                    }
-                                    if (bottomInputValue == null) {
-                                        setBottomInputValue(newValue);
-                                        commited = true;
-                                    }
-                                    if (leftInputValue == null) {
-                                        setLeftInputValue(newValue);
-                                        commited = true;
-                                    }
-                                    if (!commited) {
-                                        commitMultipleValues();
-                                    }
-                                }}
-                                title={i18nRegistry.translate("Carbon.Editor.Styling:Main:spacingPerSide")}
-                                className={
-                                    stylex.props(
-                                        styles.svgButton(segmented),
-                                        styles.centerContent,
-                                        readonly && styles.readonly,
-                                    ).className
+                        <Button
+                            onClick={() => {
+                                if (mode == "multiple") {
+                                    const order = ["top", "right", "bottom", "left"];
+                                    const currentIndex = order.indexOf(selected);
+                                    const nextIndex = (currentIndex + 1) % order.length;
+                                    setSelected(order[nextIndex]);
+                                    return;
                                 }
-                            >
-                                <SpacingBox
-                                    selected={selected}
-                                    useSyncValue={syncButtonFocus}
-                                    synced={_syncedValue}
-                                    style={stylex.props(styles.svgButton(segmented)).style}
-                                />
-                            </Button>
-                        )}
+
+                                const newValue = mainInputValue;
+
+                                setSelected("top");
+                                if (topInputValue == null) {
+                                    setTopInputValue(newValue);
+                                }
+                                if (rightInputValue == null) {
+                                    setRightInputValue(newValue);
+                                }
+                                if (bottomInputValue == null) {
+                                    setBottomInputValue(newValue);
+                                }
+                                if (leftInputValue == null) {
+                                    setLeftInputValue(newValue);
+                                }
+                                setTimeout(() => {
+                                    setMode("multiple");
+                                }, 10);
+                            }}
+                            title={i18nRegistry.translate("Carbon.Editor.Styling:Main:spacingPerSide")}
+                            className={
+                                stylex.props(
+                                    styles.svgButton(mode == "multiple"),
+                                    styles.centerContent,
+                                    readonly && styles.readonly,
+                                ).className
+                            }
+                        >
+                            <SpacingBox
+                                selected={selected}
+                                useSyncValue={syncButtonFocus}
+                                synced={_syncedValue}
+                                style={stylex.props(styles.svgButton(mode == "multiple")).style}
+                            />
+                        </Button>
                     </div>
                 )}
             </div>

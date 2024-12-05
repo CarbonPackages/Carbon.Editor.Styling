@@ -1,5 +1,3 @@
-export const isSegmented = (value) => typeof value == "string" && value.includes(" ");
-
 export function hasNoValue(value) {
     return (
         value == null ||
