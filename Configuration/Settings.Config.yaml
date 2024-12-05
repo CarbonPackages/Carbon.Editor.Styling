@@ -58,6 +58,8 @@ Neos:
           allowEmpty: false
 
           # Allow mutliple values
+          # If you want to restrict to certain directions, you can set a string with multiple values separated by a space
+          # Example: 'top right'
           allowMultiple: false
 
           # Allow to sync values (x and y axis)

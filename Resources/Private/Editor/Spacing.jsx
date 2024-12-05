@@ -23,11 +23,28 @@ const styles = stylex.create({
     },
     segmentedGrid: {
         display: "grid",
+        gap: "var(--spacing-Quarter)",
+        width: "100%",
+    },
+    segmentedGridAll: {
         gridTemplate: `". top ." minmax(0, 1fr)
             "left middle right" minmax(0, 1fr)
             ". bottom ." minmax(0, 1fr) / minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr)`,
-        gap: "var(--spacing-Quarter)",
-        width: "100%",
+    },
+    segmentedGridOneLine: {
+        gridTemplate: `"left middle right" minmax(0, 1fr) / minmax(0, 2fr) minmax(0, 1fr) minmax(0, 2fr)`,
+    },
+    segmentedGridTwoLinesTop: {
+        gridTemplate: `". top ." minmax(0, 1fr)
+            "left middle right" minmax(0, 1fr) / minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr)`,
+    },
+    segmentedGridTwoLinesBottom: {
+        gridTemplate: `"left middle right" minmax(0, 1fr)
+            ". bottom ." minmax(0, 1fr) / minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr)`,
+    },
+    segmentedGridTwoLinesTopBottom: {
+        gridTemplate: `". top middle" minmax(0, 1fr)
+            ". bottom middle" minmax(0, 1fr) / minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr)`,
     },
     area: (area) => ({
         gridArea: area,
@@ -54,15 +71,29 @@ const styles = stylex.create({
             gridArea: "content",
         },
     },
+    syncButtonRight: {
+        height: "65%",
+        alignSelf: "center",
+    },
     syncLineBackground: {
         background: "var(--colors-ContrastDarker)",
-        height: "calc(100% - 12px)",
-        width: "calc(100% - 12px)",
+        height: "calc(100% - 15px)",
+        width: "calc(100% - 15px)",
     },
     syncLineX: {
         background: "currentColor",
         height: "1px",
         width: "100%",
+    },
+    syncLineYRight: {
+        border: "1px solid currentColor",
+        background: "transparent",
+        height: "100%",
+        width: "15%",
+        borderLeft: "0",
+        marginLeft: "calc(-15% + 2px)",
+        borderTopRightRadius: 2,
+        borderBottomRightRadius: 2,
     },
     syncLineY: {
         background: "currentColor",
@@ -137,6 +168,30 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
         ...config,
         ...options,
     };
+
+    const specialMultipleSettings = typeof allowMultiple === "string";
+    const multipleDirections = {
+        top: specialMultipleSettings ? allowMultiple.includes("top") : allowMultiple,
+        right: specialMultipleSettings ? allowMultiple.includes("right") : allowMultiple,
+        bottom: specialMultipleSettings ? allowMultiple.includes("bottom") : allowMultiple,
+        left: specialMultipleSettings ? allowMultiple.includes("left") : allowMultiple,
+    };
+    const hasYAxies = multipleDirections.top && multipleDirections.bottom;
+    const allowSyncX = allowSync && multipleDirections.left && multipleDirections.right;
+    const allowSyncY = allowSync && hasYAxies;
+    let segmentedGrid =
+        hasYAxies && (multipleDirections.left || multipleDirections.right)
+            ? "segmentedGridAll"
+            : "segmentedGridTwoLinesTopBottom";
+
+    // Top and bottom are disabled, everything fits in one line
+    if (!multipleDirections.top && !multipleDirections.bottom) {
+        segmentedGrid = "segmentedGridOneLine";
+    }
+    // Either top or bottom is disabled
+    if (!hasYAxies && segmentedGrid == "segmentedGridTwoLinesTopBottom") {
+        segmentedGrid = multipleDirections.top ? "segmentedGridTwoLinesTop" : "segmentedGridTwoLinesBottom";
+    }
 
     // Content repository to editor
     const values = (() => {
@@ -300,145 +355,167 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
 
     return (
         <>
-            value: "{value}"
+            value: "{value}" {segmentedGrid}
             <div {...stylex.props(styles.container, highlight && styles.highlight, disabled && styles.disabled)}>
                 {mode === "multiple" ? (
-                    <div {...stylex.props(styles.segmentedGrid)}>
-                        <TextInput
-                            containerStyle={styles.area("top")}
-                            id={id}
-                            value={topInputValue}
-                            unit="px"
-                            readOnly={readonly}
-                            placeholder={placeholder}
-                            onEnterKey={onEnterKey}
-                            type="number"
-                            min={min}
-                            max={max}
-                            title={i18nRegistry.translate("Carbon.Editor.Styling:Main:top")}
-                            onChange={(value) => {
-                                if (syncedValue == "y" || syncedValue == "xy") {
-                                    setBottomInputValue(value);
-                                }
-                            }}
-                            onChangeDebounced={(value) => {
-                                value = minMax(value);
-                                setTopInputValue(value);
-                                if (syncedValue == "y" || syncedValue == "xy") {
-                                    setBottomInputValue(value);
-                                }
-                            }}
-                            setFocus={selected == "top"}
-                            fakeFocus={selected == "bottom" && (syncedValue == "y" || syncedValue == "xy")}
-                            onFocus={() => setSelected("top")}
-                            onBlur={() => setPotentialAllSelected("top")}
-                        />
-                        <TextInput
-                            containerStyle={styles.area("right")}
-                            value={rightInputValue}
-                            unit="px"
-                            readOnly={readonly}
-                            placeholder={placeholder}
-                            onEnterKey={onEnterKey}
-                            type="number"
-                            min={min}
-                            max={max}
-                            title={i18nRegistry.translate("Carbon.Editor.Styling:Main:right")}
-                            onChange={(value) => {
-                                if (syncedValue == "x" || syncedValue == "xy") {
-                                    setLeftInputValue(value);
-                                }
-                            }}
-                            onChangeDebounced={(value) => {
-                                value = minMax(value);
-                                setRightInputValue(value);
-                                if (syncedValue == "x" || syncedValue == "xy") {
-                                    setLeftInputValue(value);
-                                }
-                            }}
-                            setFocus={selected == "right"}
-                            fakeFocus={selected == "left" && (syncedValue == "x" || syncedValue == "xy")}
-                            onFocus={() => setSelected("right")}
-                            onBlur={() => setPotentialAllSelected("right")}
-                        />
-                        <TextInput
-                            containerStyle={styles.area("bottom")}
-                            value={bottomInputValue}
-                            unit="px"
-                            readOnly={readonly}
-                            placeholder={placeholder}
-                            onEnterKey={onEnterKey}
-                            type="number"
-                            min={min}
-                            max={max}
-                            title={i18nRegistry.translate("Carbon.Editor.Styling:Main:bottom")}
-                            onChange={(value) => {
-                                if (syncedValue == "y" || syncedValue == "xy") {
+                    <div {...stylex.props(styles.segmentedGrid, styles[segmentedGrid])}>
+                        {multipleDirections.top && (
+                            <TextInput
+                                containerStyle={styles.area("top")}
+                                id={id}
+                                value={topInputValue}
+                                unit="px"
+                                readOnly={readonly}
+                                placeholder={placeholder}
+                                onEnterKey={onEnterKey}
+                                type="number"
+                                min={min}
+                                max={max}
+                                title={i18nRegistry.translate("Carbon.Editor.Styling:Main:top")}
+                                onChange={(value) => {
+                                    if (syncedValue == "y" || syncedValue == "xy") {
+                                        setBottomInputValue(value);
+                                    }
+                                }}
+                                onChangeDebounced={(value) => {
+                                    value = minMax(value);
                                     setTopInputValue(value);
-                                }
-                            }}
-                            onChangeDebounced={(value) => {
-                                value = minMax(value);
-                                setBottomInputValue(value);
-                                if (syncedValue == "y" || syncedValue == "xy") {
-                                    setTopInputValue(value);
-                                }
-                            }}
-                            setFocus={selected == "bottom"}
-                            fakeFocus={selected == "top" && (syncedValue == "y" || syncedValue == "xy")}
-                            onFocus={() => setSelected("bottom")}
-                            onBlur={() => setPotentialAllSelected("bottom")}
-                        />
-                        <TextInput
-                            containerStyle={styles.area("left")}
-                            value={leftInputValue}
-                            unit="px"
-                            readOnly={readonly}
-                            placeholder={placeholder}
-                            onEnterKey={onEnterKey}
-                            type="number"
-                            min={min}
-                            max={max}
-                            title={i18nRegistry.translate("Carbon.Editor.Styling:Main:left")}
-                            onChange={(value) => {
-                                if (syncedValue == "x" || syncedValue == "xy") {
+                                    if (syncedValue == "y" || syncedValue == "xy") {
+                                        setBottomInputValue(value);
+                                    }
+                                }}
+                                setFocus={selected == "top"}
+                                fakeFocus={selected == "bottom" && (syncedValue == "y" || syncedValue == "xy")}
+                                onFocus={() => setSelected("top")}
+                                onBlur={() => setPotentialAllSelected("top")}
+                            />
+                        )}
+                        {multipleDirections.right && (
+                            <TextInput
+                                containerStyle={styles.area("right")}
+                                value={rightInputValue}
+                                unit="px"
+                                readOnly={readonly}
+                                placeholder={placeholder}
+                                onEnterKey={onEnterKey}
+                                type="number"
+                                min={min}
+                                max={max}
+                                title={i18nRegistry.translate("Carbon.Editor.Styling:Main:right")}
+                                onChange={(value) => {
+                                    if (syncedValue == "x" || syncedValue == "xy") {
+                                        setLeftInputValue(value);
+                                    }
+                                }}
+                                onChangeDebounced={(value) => {
+                                    value = minMax(value);
                                     setRightInputValue(value);
-                                }
-                            }}
-                            onChangeDebounced={(value) => {
-                                value = minMax(value);
-                                setLeftInputValue(value);
-                                if (syncedValue == "x" || syncedValue == "xy") {
-                                    setRightInputValue(value);
-                                }
-                            }}
-                            setFocus={selected == "left"}
-                            fakeFocus={selected == "right" && (syncedValue == "x" || syncedValue == "xy")}
-                            onFocus={() => setSelected("left")}
-                            onBlur={() => setPotentialAllSelected("left")}
-                        />
-                        {allowSync && (
+                                    if (syncedValue == "x" || syncedValue == "xy") {
+                                        setLeftInputValue(value);
+                                    }
+                                }}
+                                setFocus={selected == "right"}
+                                fakeFocus={selected == "left" && (syncedValue == "x" || syncedValue == "xy")}
+                                onFocus={() => setSelected("right")}
+                                onBlur={() => setPotentialAllSelected("right")}
+                            />
+                        )}
+                        {multipleDirections.bottom && (
+                            <TextInput
+                                containerStyle={styles.area("bottom")}
+                                value={bottomInputValue}
+                                unit="px"
+                                readOnly={readonly}
+                                placeholder={placeholder}
+                                onEnterKey={onEnterKey}
+                                type="number"
+                                min={min}
+                                max={max}
+                                title={i18nRegistry.translate("Carbon.Editor.Styling:Main:bottom")}
+                                onChange={(value) => {
+                                    if (syncedValue == "y" || syncedValue == "xy") {
+                                        setTopInputValue(value);
+                                    }
+                                }}
+                                onChangeDebounced={(value) => {
+                                    value = minMax(value);
+                                    setBottomInputValue(value);
+                                    if (syncedValue == "y" || syncedValue == "xy") {
+                                        setTopInputValue(value);
+                                    }
+                                }}
+                                setFocus={selected == "bottom"}
+                                fakeFocus={selected == "top" && (syncedValue == "y" || syncedValue == "xy")}
+                                onFocus={() => setSelected("bottom")}
+                                onBlur={() => setPotentialAllSelected("bottom")}
+                            />
+                        )}
+                        {multipleDirections.left && (
+                            <TextInput
+                                containerStyle={styles.area("left")}
+                                value={leftInputValue}
+                                unit="px"
+                                readOnly={readonly}
+                                placeholder={placeholder}
+                                onEnterKey={onEnterKey}
+                                type="number"
+                                min={min}
+                                max={max}
+                                title={i18nRegistry.translate("Carbon.Editor.Styling:Main:left")}
+                                onChange={(value) => {
+                                    if (syncedValue == "x" || syncedValue == "xy") {
+                                        setRightInputValue(value);
+                                    }
+                                }}
+                                onChangeDebounced={(value) => {
+                                    value = minMax(value);
+                                    setLeftInputValue(value);
+                                    if (syncedValue == "x" || syncedValue == "xy") {
+                                        setRightInputValue(value);
+                                    }
+                                }}
+                                setFocus={selected == "left"}
+                                fakeFocus={selected == "right" && (syncedValue == "x" || syncedValue == "xy")}
+                                onFocus={() => setSelected("left")}
+                                onBlur={() => setPotentialAllSelected("left")}
+                            />
+                        )}
+                        {(allowSyncX || allowSyncY) && (
                             <button
                                 type="button"
-                                {...stylex.props(styles.area("middle"), styles.syncButton)}
+                                {...stylex.props(
+                                    styles.area("middle"),
+                                    styles.syncButton,
+                                    segmentedGrid == "segmentedGridTwoLinesTopBottom" && styles.syncButtonRight,
+                                )}
                                 title={i18nRegistry.translate("Carbon.Editor.Styling:Main:snycValues")}
                                 onBlur={() => setSyncButtonFocus(false)}
                                 onClick={() => {
                                     setSyncButtonFocus(true);
-                                    const map = {
-                                        x: "y",
-                                        y: "xy",
-                                        xy: null,
-                                    };
-                                    const newValue = _syncedValue ? map[_syncedValue] : "x";
-                                    setSyncedValue(newValue);
+                                    const order = allowSyncX ? ["x"] : [];
+                                    if (allowSyncY) {
+                                        order.push("y");
+                                    }
+                                    if (allowSyncX && allowSyncY) {
+                                        order.push("xy");
+                                    }
+                                    order.push(null);
+                                    const currentIndex = order.indexOf(_syncedValue);
+                                    const nextIndex = (currentIndex + 1) % order.length;
+                                    setSyncedValue(order[nextIndex]);
                                 }}
                             >
                                 {(_syncedValue == "x" || _syncedValue == "xy") && (
                                     <span {...stylex.props(styles.syncLineX)}></span>
                                 )}
                                 {(_syncedValue == "y" || _syncedValue == "xy") && (
-                                    <span {...stylex.props(styles.syncLineY)}></span>
+                                    <span
+                                        {...stylex.props(
+                                            segmentedGrid == "segmentedGridTwoLinesTopBottom"
+                                                ? styles.syncLineYRight
+                                                : styles.syncLineY,
+                                        )}
+                                    ></span>
                                 )}
                                 <span {...stylex.props(styles.syncLineBackground)}></span>
                                 <Icon icon={_syncedValue ? "lock" : "lock-open"} />
@@ -471,7 +548,12 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                 )}
 
                 {allowMultiple && (
-                    <div {...stylex.props(styles.container, mode == "multiple" && styles.flexColumn)}>
+                    <div
+                        {...stylex.props(
+                            styles.container,
+                            mode == "multiple" && segmentedGrid != "segmentedGridOneLine" && styles.flexColumn,
+                        )}
+                    >
                         <Button
                             onClick={() => {
                                 if (mode == "multiple") {
@@ -500,8 +582,20 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                         </Button>
                         <Button
                             onClick={() => {
+                                const order = [];
+                                if (multipleDirections.top) {
+                                    order.push("top");
+                                }
+                                if (multipleDirections.right) {
+                                    order.push("right");
+                                }
+                                if (multipleDirections.bottom) {
+                                    order.push("bottom");
+                                }
+                                if (multipleDirections.left) {
+                                    order.push("left");
+                                }
                                 if (mode == "multiple") {
-                                    const order = ["top", "right", "bottom", "left"];
                                     const currentIndex = order.indexOf(selected);
                                     const nextIndex = (currentIndex + 1) % order.length;
                                     setSelected(order[nextIndex]);
@@ -510,7 +604,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
 
                                 const newValue = mainInputValue;
 
-                                setSelected("top");
+                                setSelected(order[0]);
                                 if (topInputValue == null) {
                                     setTopInputValue(newValue);
                                 }
