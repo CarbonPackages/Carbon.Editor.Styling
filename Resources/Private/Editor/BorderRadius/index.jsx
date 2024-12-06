@@ -223,53 +223,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
         [value, commit],
     );
 
-    // Commit main input
-    const commitMainValue = useCallback(() => {
-        if (mode === "single") {
-            commitIfChanged(convertForCommit(mainInputValue, mainUnit, convertPxToRem, allowEmpty));
-        }
-    }, [mode, mainInputValue, mainUnit, allowEmpty, commitIfChanged, convertForCommit, convertPxToRem]);
-
-    // Commit organic input
-    const commitOrganicValue = useCallback(() => {
-        if (organicInputValue && mode === "organic") {
-            commitIfChanged(organicInputValue);
-        }
-    }, [organicInputValue, mode, commitIfChanged]);
-
-    // Commit multiple inputs
-    const commitMultipleValues = useCallback(() => {
-        if (
-            mode !== "multiple" ||
-            topLeftInputValue === null ||
-            topRightInputValue === null ||
-            bottomRightInputValue === null ||
-            bottomLeftInputValue === null
-        ) {
-            return;
-        }
-        const tl = convertForCommit(topLeftInputValue, topLeftUnit, convertPxToRem);
-        const tr = convertForCommit(topRightInputValue, topRightUnit, convertPxToRem);
-        const br = convertForCommit(bottomRightInputValue, bottomRightUnit, convertPxToRem);
-        const bl = convertForCommit(bottomLeftInputValue, bottomLeftUnit, convertPxToRem);
-        commitIfChanged(`${tl} ${tr} ${br} ${bl}`);
-    }, [
-        mode,
-        topLeftInputValue,
-        topRightInputValue,
-        bottomRightInputValue,
-        bottomLeftInputValue,
-        topLeftUnit,
-        topRightUnit,
-        bottomRightUnit,
-        bottomLeftUnit,
-        commitIfChanged,
-        convertPxToRem,
-        convertForCommit,
-    ]);
-
     // Update on changes
-
     useEffect(() => {
         const newMode = getMode(value);
         if (mode !== newMode) {
@@ -289,59 +243,83 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
 
     useEffect(() => {
         const isPercentage = mainUnit === "%";
-        setMainMin(isPercentage ? 0 : min);
-        setMainMax(isPercentage ? 100 : max);
+        const minimal = isPercentage ? 0 : min;
+        const maximal = isPercentage ? 100 : max;
+        setMainMin(minimal);
+        setMainMax(maximal);
+        setMainInputValue(limitToMinMax(mainInputValue, minimal, maximal));
     }, [mainUnit, min, max]);
 
     useEffect(() => {
         const isPercentage = topLeftUnit === "%";
-        setTopLeftMin(isPercentage ? 0 : min);
-        setTopLeftMax(isPercentage ? 100 : max);
+        const minimal = isPercentage ? 0 : min;
+        const maximal = isPercentage ? 100 : max;
+        setTopLeftMin(minimal);
+        setTopLeftMax(maximal);
+        setTopLeftInputValue(limitToMinMax(topLeftInputValue, minimal, maximal));
     }, [topLeftUnit, min, max]);
 
     useEffect(() => {
         const isPercentage = topRightUnit === "%";
-        setTopRightMin(isPercentage ? 0 : min);
-        setTopRightMax(isPercentage ? 100 : max);
+        const minimal = isPercentage ? 0 : min;
+        const maximal = isPercentage ? 100 : max;
+        setTopRightMin(minimal);
+        setTopRightMax(maximal);
+        setTopRightInputValue(limitToMinMax(topRightInputValue, minimal, maximal));
     }, [topRightUnit, min, max]);
 
     useEffect(() => {
         const isPercentage = bottomRightUnit === "%";
-        setBottomRightMin(isPercentage ? 0 : min);
-        setBottomRightMax(isPercentage ? 100 : max);
+        const minimal = isPercentage ? 0 : min;
+        const maximal = isPercentage ? 100 : max;
+        setBottomRightMin(minimal);
+        setBottomRightMax(maximal);
+        setBottomRightInputValue(limitToMinMax(bottomRightInputValue, minimal, maximal));
     }, [bottomRightUnit, min, max]);
 
     useEffect(() => {
         const isPercentage = bottomLeftUnit === "%";
-        setBottomLeftMin(isPercentage ? 0 : min);
-        setBottomLeftMax(isPercentage ? 100 : max);
+        const minimal = isPercentage ? 0 : min;
+        const maximal = isPercentage ? 100 : max;
+        setBottomLeftMin(minimal);
+        setBottomLeftMax(maximal);
+        setBottomLeftInputValue(limitToMinMax(bottomLeftInputValue, minimal, maximal));
     }, [bottomLeftUnit, min, max]);
 
-    // Commit on mode change
     useEffect(() => {
         if (mode === "rounded") {
             commitIfChanged(`${fullRoundedValue}px`);
-            return;
-        }
-        if (mode === "single") {
-            commitMainValue();
-            return;
-        }
-        if (mode === "organic") {
-            commitOrganicValue();
-            return;
-        }
-        if (mode === "multiple") {
-            commitMultipleValues();
-            return;
         }
     }, [mode, fullRoundedValue]);
 
-    useEffect(commitMainValue, [mainInputValue, mainUnit, commitMainValue]);
+    useEffect(() => {
+        if (mode === "single") {
+            commitIfChanged(convertForCommit(mainInputValue, mainUnit, convertPxToRem, allowEmpty));
+        }
+    }, [mainInputValue, mainUnit, mode]);
 
-    useEffect(commitOrganicValue, [organicInputValue, commitOrganicValue]);
+    useEffect(() => {
+        if (organicInputValue && mode === "organic") {
+            commitIfChanged(organicInputValue);
+        }
+    }, [organicInputValue, mode]);
 
-    useEffect(commitMultipleValues, [
+    useEffect(() => {
+        if (
+            mode !== "multiple" ||
+            topLeftInputValue === null ||
+            topRightInputValue === null ||
+            bottomRightInputValue === null ||
+            bottomLeftInputValue === null
+        ) {
+            return;
+        }
+        const tl = convertForCommit(topLeftInputValue, topLeftUnit, convertPxToRem);
+        const tr = convertForCommit(topRightInputValue, topRightUnit, convertPxToRem);
+        const br = convertForCommit(bottomRightInputValue, bottomRightUnit, convertPxToRem);
+        const bl = convertForCommit(bottomLeftInputValue, bottomLeftUnit, convertPxToRem);
+        commitIfChanged(`${tl} ${tr} ${br} ${bl}`);
+    }, [
         topLeftInputValue,
         topRightInputValue,
         bottomRightInputValue,
@@ -350,7 +328,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
         topRightUnit,
         bottomRightUnit,
         bottomLeftUnit,
-        commitMultipleValues,
+        mode,
     ]);
 
     useEffect(() => {
