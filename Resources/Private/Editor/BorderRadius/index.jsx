@@ -225,7 +225,6 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
 
     // Commit main input
     const commitMainValue = useCallback(() => {
-        console.log("commitMainValue");
         if (mode === "single") {
             commitIfChanged(convertForCommit(mainInputValue, mainUnit, convertPxToRem, allowEmpty));
         }

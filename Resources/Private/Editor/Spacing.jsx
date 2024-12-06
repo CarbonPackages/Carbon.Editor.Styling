@@ -262,7 +262,6 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
     const [leftInputValue, setLeftInputValue] = useState(fallbackToNull(values?.left));
     const [_syncedValue, setSyncedValue] = useState(values?.synced);
     const [syncedValue] = useDebounce(_syncedValue, 1000);
-    const [syncButtonFocus, setSyncButtonFocus] = useState(false);
 
     useEffect(() => {
         if (mode === "single") {
@@ -489,9 +488,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                                     segmentedGrid == "segmentedGridTwoLinesTopBottom" && styles.syncButtonRight,
                                 )}
                                 title={i18nRegistry.translate("Carbon.Editor.Styling:Main:snycValues")}
-                                onBlur={() => setSyncButtonFocus(false)}
                                 onClick={() => {
-                                    setSyncButtonFocus(true);
                                     const order = allowSyncX ? ["x"] : [];
                                     if (allowSyncY) {
                                         order.push("y");
@@ -632,8 +629,8 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                         >
                             <SpacingBox
                                 selected={selected}
-                                useSyncValue={syncButtonFocus}
                                 synced={_syncedValue}
+                                directions={multipleDirections}
                                 style={stylex.props(styles.svgButton(mode == "multiple")).style}
                             />
                         </Button>
