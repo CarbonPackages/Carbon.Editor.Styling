@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Button, Icon } from "@neos-project/react-ui-components";
-import TextInput from "./Components/TextInput";
-import RoundedBox from "./Components/RoundedBox";
-import SpacingBox from "./Components/SpacingBox";
-import { convertValue, limitToMinMax, hasNoValue } from "./Helper";
+import TextInput from "../Components/TextInput";
+import RoundedBox from "../Components/RoundedBox";
+import SpacingBox from "../Components/SpacingBox";
+import { fromContentRepoToEditor, multipleSettings, numberOrNull } from "./Helper";
+import { convertValue, limitToMinMax, hasNoValue } from "../Helper";
 import { neos } from "@neos-project/neos-ui-decorators";
 import { useDebounce } from "use-debounce";
 import * as stylex from "@stylexjs/stylex";
@@ -31,8 +32,11 @@ const styles = stylex.create({
             "left middle right" minmax(0, 1fr)
             ". bottom ." minmax(0, 1fr) / minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr)`,
     },
-    segmentedGridOneLine: {
+    segmentedGridOneLineSync: {
         gridTemplate: `"left middle right" minmax(0, 1fr) / minmax(0, 2fr) minmax(0, 1fr) minmax(0, 2fr)`,
+    },
+    segmentedGridOneLine: {
+        gridTemplate: `"left right" minmax(0, 1fr) / minmax(0, 1fr) minmax(0, 1fr)`,
     },
     segmentedGridTwoLinesTop: {
         gridTemplate: `". top ." minmax(0, 1fr)
@@ -43,8 +47,11 @@ const styles = stylex.create({
             ". bottom ." minmax(0, 1fr) / minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr)`,
     },
     segmentedGridTwoLinesTopBottom: {
-        gridTemplate: `". top middle" minmax(0, 1fr)
-            ". bottom middle" minmax(0, 1fr) / minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr)`,
+        gridTemplate: `"top" minmax(0, 1fr) "bottom" minmax(0, 1fr) / minmax(0, 1fr)`,
+    },
+    segmentedGridTwoLinesTopBottomSync: {
+        gridTemplate: `"top middle" minmax(0, 1fr)
+            "bottom middle" minmax(0, 1fr) / minmax(0, 4fr) minmax(0, 1fr)`,
     },
     area: (area) => ({
         gridArea: area,
@@ -142,149 +149,66 @@ const defaultOptions = {
 };
 
 function Editor({ id, value, commit, highlight, options, i18nRegistry, config, onEnterKey }) {
-    const [selected, setSelected] = useState(null);
-    const [mainFocus, setMainFocus] = useState(false);
-    const [_potentailAllSelected, setPotentialAllSelected] = useState(false);
-    const [potentailAllSelected] = useDebounce(_potentailAllSelected, 500);
-
-    useEffect(() => {
-        const newMode = getMode(value);
-        if (mode !== newMode) {
-            setMode(newMode);
-        }
-        if (newMode === "multiple" && !selected) {
-            setSelected("all");
-        }
-    }, [value]);
-
-    useEffect(() => {
-        if (selected !== null) {
-            return;
-        }
-    }, [selected]);
-
     const { disabled, readonly, allowEmpty, allowMultiple, allowSync, convertPxToRem, min, max, placeholder } = {
         ...defaultOptions,
         ...config,
         ...options,
     };
 
-    const specialMultipleSettings = typeof allowMultiple === "string";
-    const multipleDirections = {
-        top: specialMultipleSettings ? allowMultiple.includes("top") : allowMultiple,
-        right: specialMultipleSettings ? allowMultiple.includes("right") : allowMultiple,
-        bottom: specialMultipleSettings ? allowMultiple.includes("bottom") : allowMultiple,
-        left: specialMultipleSettings ? allowMultiple.includes("left") : allowMultiple,
-    };
-    const hasYAxies = multipleDirections.top && multipleDirections.bottom;
-    const allowSyncX = allowSync && multipleDirections.left && multipleDirections.right;
-    const allowSyncY = allowSync && hasYAxies;
-    let segmentedGrid =
-        hasYAxies && (multipleDirections.left || multipleDirections.right)
-            ? "segmentedGridAll"
-            : "segmentedGridTwoLinesTopBottom";
-
-    // Top and bottom are disabled, everything fits in one line
-    if (!multipleDirections.top && !multipleDirections.bottom) {
-        segmentedGrid = "segmentedGridOneLine";
-    }
-    // Either top or bottom is disabled
-    if (!hasYAxies && segmentedGrid == "segmentedGridTwoLinesTopBottom") {
-        segmentedGrid = multipleDirections.top ? "segmentedGridTwoLinesTop" : "segmentedGridTwoLinesBottom";
-    }
-
     // Content repository to editor
-    const values = (() => {
-        if (typeof value == "number") {
-            return {
-                main: convertValue(value, min, max),
-            };
-        }
-        if (hasNoValue(value)) {
-            return {
-                main: allowEmpty ? null : min,
-            };
-        }
+    const values = fromContentRepoToEditor({ value, min, max, allowEmpty, allowMultiple, allowSync });
+    const { multipleDirections, allowSyncX, allowSyncY, segmentedGrid } = multipleSettings({
+        allowMultiple,
+        allowSync,
+    });
+    const getMode = useCallback(
+        (input) => {
+            if (allowMultiple && typeof input === "string" && value.includes(" ")) {
+                return "multiple";
+            }
 
-        // After running hasNoValue, we can assume that value is a string
-        const values = value.split(" ").map((value) => convertValue(value, min, max));
-        if (!allowMultiple || values.length == 1) {
-            return {
-                main: values[0],
-            };
-        }
+            return "single";
+        },
+        [allowMultiple, value],
+    );
 
-        if (values.length == 2) {
-            return {
-                top: values[0],
-                right: values[1],
-                bottom: values[0],
-                left: values[1],
-                synced: allowSync && "xy",
-            };
-        }
-
-        if (values.length == 3) {
-            return {
-                top: values[0],
-                right: values[1],
-                bottom: values[1],
-                left: values[1],
-                synced: allowSync && "x",
-            };
-        }
-
-        const allValues = {
-            top: values[0],
-            right: values[1],
-            bottom: values[2],
-            left: values[3],
-        };
-        const synced = allowSync
-            ? (allValues.left == allValues.right ? "x" : "") + (allValues.top == allValues.bottom ? "y" : "")
-            : null;
-
-        return {
-            ...allValues,
-            synced: synced || null,
-        };
-    })();
-
-    function fallbackToNull(value) {
-        return typeof value == "number" ? value : null;
-    }
-
+    // Set states
+    const [selected, setSelected] = useState(null);
+    const [mainFocus, setMainFocus] = useState(false);
+    const [_potentailAllSelected, setPotentialAllSelected] = useState(false);
+    const [potentailAllSelected] = useDebounce(_potentailAllSelected, 500);
     const [mode, setMode] = useState(getMode(value));
-    const [mainInputValue, setMainInputValue] = useState(fallbackToNull(values?.main));
-    const [topInputValue, setTopInputValue] = useState(fallbackToNull(values?.top));
-    const [rightInputValue, setRightInputValue] = useState(fallbackToNull(values?.right));
-    const [bottomInputValue, setBottomInputValue] = useState(fallbackToNull(values?.bottom));
-    const [leftInputValue, setLeftInputValue] = useState(fallbackToNull(values?.left));
+    const [mainInputValue, setMainInputValue] = useState(numberOrNull(values?.main));
+    const [topInputValue, setTopInputValue] = useState(numberOrNull(values?.top));
+    const [rightInputValue, setRightInputValue] = useState(numberOrNull(values?.right));
+    const [bottomInputValue, setBottomInputValue] = useState(numberOrNull(values?.bottom));
+    const [leftInputValue, setLeftInputValue] = useState(numberOrNull(values?.left));
     const [_syncedValue, setSyncedValue] = useState(values?.synced);
     const [syncedValue] = useDebounce(_syncedValue, 1000);
 
-    useEffect(() => {
-        if (mode === "single") {
-            commitSingleValue();
-            return;
-        }
-        commitMultipleValues();
-    }, [mode]);
+    // Callback functions
+    const minMax = useCallback((value) => limitToMinMax(value, min, max), [value, min, max, limitToMinMax]);
 
-    function commitIfChanged(newValue) {
-        if (newValue !== value) {
-            commit(newValue);
-        }
-    }
+    const commitIfChanged = useCallback(
+        (newValue) => {
+            if (newValue !== value) {
+                commit(newValue);
+            }
+        },
+        [value, commit],
+    );
 
-    function convertForCommit(number) {
-        const unit = convertPxToRem ? "rem" : "px";
-        const divider = convertPxToRem ? 16 : 1;
-        const convertedNumber = minMax(number) / divider;
-        return convertedNumber == 0 ? "0" : `${convertedNumber}${unit}`;
-    }
+    const convertForCommit = useCallback(
+        (number) => {
+            const unit = convertPxToRem ? "rem" : "px";
+            const divider = convertPxToRem ? 16 : 1;
+            const convertedNumber = minMax(number) / divider;
+            return convertedNumber == 0 ? "0" : `${convertedNumber}${unit}`;
+        },
+        [convertPxToRem, minMax],
+    );
 
-    function commitSingleValue() {
+    const commitSingleValue = useCallback(() => {
         if (mode !== "single") {
             return;
         }
@@ -295,14 +219,14 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
         if (allowEmpty) {
             commitIfChanged("");
         }
-    }
+    }, [mainInputValue, mode, hasNoValue, commitIfChanged, convertForCommit, allowEmpty]);
 
-    function commitMultipleValues() {
+    const commitMultipleValues = useCallback(() => {
         if (mode !== "multiple") {
             return;
         }
-        const syncX = leftInputValue == rightInputValue;
-        const syncY = topInputValue == bottomInputValue;
+        const syncX = leftInputValue === rightInputValue;
+        const syncY = topInputValue === bottomInputValue;
         if (syncX && syncY) {
             commitIfChanged(`${convertForCommit(topInputValue)} ${convertForCommit(leftInputValue)}`);
             return;
@@ -317,7 +241,26 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
         commitIfChanged(
             `${convertForCommit(topInputValue)} ${convertForCommit(rightInputValue)} ${convertForCommit(bottomInputValue)} ${convertForCommit(leftInputValue)}`,
         );
-    }
+    }, [mode, commitIfChanged, convertForCommit, topInputValue, rightInputValue, bottomInputValue, leftInputValue]);
+
+    // Update on changes
+    useEffect(() => {
+        const newMode = getMode(value);
+        if (mode !== newMode) {
+            setMode(newMode);
+        }
+        if (newMode === "multiple" && !selected) {
+            setSelected("all");
+        }
+    }, [value]);
+
+    useEffect(() => {
+        if (mode === "single") {
+            commitSingleValue();
+            return;
+        }
+        commitMultipleValues();
+    }, [mode]);
 
     useEffect(commitSingleValue, [mainInputValue]);
 
@@ -332,19 +275,6 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
         }
     }, [syncedValue]);
 
-    // Return the value if it is between min and max, otherwise return the min or max value
-    function minMax(value) {
-        return limitToMinMax(value, min, max);
-    }
-
-    function getMode(input) {
-        if (allowMultiple && typeof input === "string" && value.includes(" ")) {
-            return "multiple";
-        }
-
-        return "single";
-    }
-
     useEffect(() => {
         if (potentailAllSelected && potentailAllSelected == selected) {
             setSelected("all");
@@ -354,7 +284,6 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
 
     return (
         <>
-            value: "{value}" {segmentedGrid}
             <div {...stylex.props(styles.container, highlight && styles.highlight, disabled && styles.disabled)}>
                 {mode === "multiple" ? (
                     <div {...stylex.props(styles.segmentedGrid, styles[segmentedGrid])}>
@@ -485,7 +414,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                                 {...stylex.props(
                                     styles.area("middle"),
                                     styles.syncButton,
-                                    segmentedGrid == "segmentedGridTwoLinesTopBottom" && styles.syncButtonRight,
+                                    segmentedGrid == "segmentedGridTwoLinesTopBottomSync" && styles.syncButtonRight,
                                 )}
                                 title={i18nRegistry.translate("Carbon.Editor.Styling:Main:snycValues")}
                                 onClick={() => {
@@ -502,13 +431,13 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                                     setSyncedValue(order[nextIndex]);
                                 }}
                             >
-                                {(_syncedValue == "x" || _syncedValue == "xy") && (
+                                {allowSyncX && (_syncedValue == "x" || _syncedValue == "xy") && (
                                     <span {...stylex.props(styles.syncLineX)}></span>
                                 )}
-                                {(_syncedValue == "y" || _syncedValue == "xy") && (
+                                {allowSyncY && (_syncedValue == "y" || _syncedValue == "xy") && (
                                     <span
                                         {...stylex.props(
-                                            segmentedGrid == "segmentedGridTwoLinesTopBottom"
+                                            segmentedGrid == "segmentedGridTwoLinesTopBottomSync"
                                                 ? styles.syncLineYRight
                                                 : styles.syncLineY,
                                         )}
@@ -548,7 +477,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                     <div
                         {...stylex.props(
                             styles.container,
-                            mode == "multiple" && segmentedGrid != "segmentedGridOneLine" && styles.flexColumn,
+                            mode == "multiple" && segmentedGrid != "segmentedGridOneLine"  && segmentedGrid != "segmentedGridOneLineSync" && styles.flexColumn,
                         )}
                     >
                         <Button

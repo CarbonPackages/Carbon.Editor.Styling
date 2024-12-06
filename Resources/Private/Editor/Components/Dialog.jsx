@@ -31,10 +31,10 @@ const styles = stylex.create({
         color: "var(--colors-ContrastBrightest)",
         boxShadow: "0 20px 40px #0006",
         animation: `${slideDialogContents} var(--transition-Default) ease-in-out`,
-
         ":where([open])": {
             "::backdrop": {
-                animation: `${backdropFadeIn} var(--transition-Default) ease-out forwards`,
+                // Not all browsers support CSS custom properties for ::backdrop
+                animation: `${backdropFadeIn} 0.3s ease-out forwards`,
             },
         },
     },
