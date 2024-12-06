@@ -6,6 +6,8 @@ const editors = {
     BorderRadius: () => import("./BorderRadius"),
     TextAreaWithCounter: () => import("./TextAreaWithCounter"),
     Spacing: () => import("./Spacing"),
+    // Border: () => import("./Border"),
+    // Font: () => import("./Font"),
 };
 
 function generateLazyEditor(name) {

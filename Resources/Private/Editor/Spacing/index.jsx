@@ -477,7 +477,10 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                     <div
                         {...stylex.props(
                             styles.container,
-                            mode == "multiple" && segmentedGrid != "segmentedGridOneLine"  && segmentedGrid != "segmentedGridOneLineSync" && styles.flexColumn,
+                            mode == "multiple" &&
+                                segmentedGrid != "segmentedGridOneLine" &&
+                                segmentedGrid != "segmentedGridOneLineSync" &&
+                                styles.flexColumn,
                         )}
                     >
                         <Button
