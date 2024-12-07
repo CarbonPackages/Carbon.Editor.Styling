@@ -20,38 +20,32 @@ export function fromContentRepoToEditor({ value, min, max, allowEmpty, allowMult
         };
     }
 
-    if (values.length == 2) {
-        return {
-            top: values[0],
-            right: values[1],
-            bottom: values[0],
-            left: values[1],
-            synced: allowSync && "xy",
-        };
+    const [top, right, bottom, left] = values;
+    switch (values.length) {
+        case 2:
+            return {
+                top,
+                right,
+                bottom: top,
+                left: right,
+                synced: allowSync && "xy",
+            };
+        case 3:
+            return {
+                top,
+                right,
+                bottom,
+                left: right,
+                synced: allowSync && "x",
+            };
     }
 
-    if (values.length == 3) {
-        return {
-            top: values[0],
-            right: values[1],
-            bottom: values[1],
-            left: values[1],
-            synced: allowSync && "x",
-        };
-    }
-
-    const allValues = {
-        top: values[0],
-        right: values[1],
-        bottom: values[2],
-        left: values[3],
-    };
-    const synced = allowSync
-        ? (allValues.left == allValues.right ? "x" : "") + (allValues.top == allValues.bottom ? "y" : "")
-        : null;
-
+    const synced = allowSync ? (left === right ? "x" : "") + (top === bottom ? "y" : "") : null;
     return {
-        ...allValues,
+        top,
+        right,
+        bottom,
+        left,
         synced: synced || null,
     };
 }

@@ -225,21 +225,25 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
         if (mode !== "multiple") {
             return;
         }
-        const syncX = leftInputValue === rightInputValue;
-        const syncY = topInputValue === bottomInputValue;
+        const left = multipleDirections.left ? leftInputValue : 0;
+        const right = multipleDirections.right ? rightInputValue : 0;
+        const top = multipleDirections.top ? topInputValue : 0;
+        const bottom = multipleDirections.bottom ? bottomInputValue : 0;
+
+        const syncX = left === right;
+        const syncY = top === bottom;
+
         if (syncX && syncY) {
-            commitIfChanged(`${convertForCommit(topInputValue)} ${convertForCommit(leftInputValue)}`);
+            commitIfChanged(`${convertForCommit(top)} ${convertForCommit(left)}`);
             return;
         }
         if (syncX) {
-            commitIfChanged(
-                `${convertForCommit(topInputValue)} ${convertForCommit(leftInputValue)} ${convertForCommit(bottomInputValue)}`,
-            );
+            commitIfChanged(`${convertForCommit(top)} ${convertForCommit(left)} ${convertForCommit(bottom)}`);
             return;
         }
 
         commitIfChanged(
-            `${convertForCommit(topInputValue)} ${convertForCommit(rightInputValue)} ${convertForCommit(bottomInputValue)} ${convertForCommit(leftInputValue)}`,
+            `${convertForCommit(top)} ${convertForCommit(right)} ${convertForCommit(bottom)} ${convertForCommit(left)}`,
         );
     }, [mode, commitIfChanged, convertForCommit, topInputValue, rightInputValue, bottomInputValue, leftInputValue]);
 
