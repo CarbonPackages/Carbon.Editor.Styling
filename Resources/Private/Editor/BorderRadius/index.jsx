@@ -6,6 +6,7 @@ import ButtonAsInput from "../Components/ButtonAsInput";
 import Dialog from "../Components/Dialog";
 import Circle from "./Circle";
 import BorderRadiusBox from "./BorderRadiusBox";
+import DebugOutput from "../Components/DebugOutput";
 import { getModeRaw, fromContentRepoToEditor, getAspectRatio, getInitState, convertForCommit } from "./Helper";
 import { getNumberAndUnit, limitToMinMax, hasNoValue } from "../Helper";
 import { neos } from "@neos-project/neos-ui-decorators";
@@ -263,11 +264,23 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
     }, [topRightUnit, min, max]);
 
     useEffect(() => {
-        setMinMaxValues(bottomRightInputValue, bottomRightUnit, setBottomRightMin, setBottomRightMax, setBottomRightInputValue);
+        setMinMaxValues(
+            bottomRightInputValue,
+            bottomRightUnit,
+            setBottomRightMin,
+            setBottomRightMax,
+            setBottomRightInputValue,
+        );
     }, [bottomRightUnit, min, max]);
 
     useEffect(() => {
-        setMinMaxValues(bottomLeftInputValue, bottomLeftUnit, setBottomLeftMin, setBottomLeftMax, setBottomLeftInputValue);
+        setMinMaxValues(
+            bottomLeftInputValue,
+            bottomLeftUnit,
+            setBottomLeftMin,
+            setBottomLeftMax,
+            setBottomLeftInputValue,
+        );
     }, [bottomLeftUnit, min, max]);
 
     useEffect(() => {
@@ -324,6 +337,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
 
     return (
         <>
+            <DebugOutput>VALUE: {value}</DebugOutput>
             <div {...stylex.props(styles.container, highlight && styles.highlight, disabled && styles.disabled)}>
                 {mode === "multiple" && (
                     <div {...stylex.props(styles.segmentedGrid)}>

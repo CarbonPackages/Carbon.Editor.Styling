@@ -39,6 +39,12 @@ const options = {
     ],
 };
 
+if (minify) {
+    options.drop = ["debugger"];
+    options.pure = ["console.log"];
+    options.dropLabels = ["DEV"];
+}
+
 if (watch) {
     esbuild.context(options).then((ctx) => ctx.watch());
 } else {

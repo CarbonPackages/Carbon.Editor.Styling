@@ -3,6 +3,7 @@ import { Button, Icon } from "@neos-project/react-ui-components";
 import TextInput from "../Components/TextInput";
 import RoundedBox from "../Components/RoundedBox";
 import SpacingBox from "../Components/SpacingBox";
+import DebugOutput from "../Components/DebugOutput";
 import { fromContentRepoToEditor, multipleSettings, numberOrNull } from "./Helper";
 import { convertValue, limitToMinMax, hasNoValue } from "../Helper";
 import { neos } from "@neos-project/neos-ui-decorators";
@@ -288,6 +289,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
 
     return (
         <>
+            <DebugOutput>VALUE: {value}</DebugOutput>
             <div {...stylex.props(styles.container, highlight && styles.highlight, disabled && styles.disabled)}>
                 {mode === "multiple" ? (
                     <div {...stylex.props(styles.segmentedGrid, styles[segmentedGrid])}>
