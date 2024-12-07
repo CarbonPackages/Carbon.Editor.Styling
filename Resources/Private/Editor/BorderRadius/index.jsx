@@ -241,49 +241,33 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
         }
     }, [selected]);
 
-    useEffect(() => {
-        const isPercentage = mainUnit === "%";
+    const setMinMaxValues = (value, unit, setMin, setMax, setInputValue) => {
+        const isPercentage = unit === "%";
         const minimal = isPercentage ? 0 : min;
         const maximal = isPercentage ? 100 : max;
-        setMainMin(minimal);
-        setMainMax(maximal);
-        setMainInputValue(limitToMinMax(mainInputValue, minimal, maximal));
+        setMin(minimal);
+        setMax(maximal);
+        setInputValue(limitToMinMax(value, minimal, maximal));
+    };
+
+    useEffect(() => {
+        setMinMaxValues(mainInputValue, mainUnit, setMainMin, setMainMax, setMainInputValue);
     }, [mainUnit, min, max]);
 
     useEffect(() => {
-        const isPercentage = topLeftUnit === "%";
-        const minimal = isPercentage ? 0 : min;
-        const maximal = isPercentage ? 100 : max;
-        setTopLeftMin(minimal);
-        setTopLeftMax(maximal);
-        setTopLeftInputValue(limitToMinMax(topLeftInputValue, minimal, maximal));
+        setMinMaxValues(topLeftInputValue, topLeftUnit, setTopLeftMin, setTopLeftMax, setTopLeftInputValue);
     }, [topLeftUnit, min, max]);
 
     useEffect(() => {
-        const isPercentage = topRightUnit === "%";
-        const minimal = isPercentage ? 0 : min;
-        const maximal = isPercentage ? 100 : max;
-        setTopRightMin(minimal);
-        setTopRightMax(maximal);
-        setTopRightInputValue(limitToMinMax(topRightInputValue, minimal, maximal));
+        setMinMaxValues(topRightInputValue, topRightUnit, setTopRightMin, setTopRightMax, setTopRightInputValue);
     }, [topRightUnit, min, max]);
 
     useEffect(() => {
-        const isPercentage = bottomRightUnit === "%";
-        const minimal = isPercentage ? 0 : min;
-        const maximal = isPercentage ? 100 : max;
-        setBottomRightMin(minimal);
-        setBottomRightMax(maximal);
-        setBottomRightInputValue(limitToMinMax(bottomRightInputValue, minimal, maximal));
+        setMinMaxValues(bottomRightInputValue, bottomRightUnit, setBottomRightMin, setBottomRightMax, setBottomRightInputValue);
     }, [bottomRightUnit, min, max]);
 
     useEffect(() => {
-        const isPercentage = bottomLeftUnit === "%";
-        const minimal = isPercentage ? 0 : min;
-        const maximal = isPercentage ? 100 : max;
-        setBottomLeftMin(minimal);
-        setBottomLeftMax(maximal);
-        setBottomLeftInputValue(limitToMinMax(bottomLeftInputValue, minimal, maximal));
+        setMinMaxValues(bottomLeftInputValue, bottomLeftUnit, setBottomLeftMin, setBottomLeftMax, setBottomLeftInputValue);
     }, [bottomLeftUnit, min, max]);
 
     useEffect(() => {

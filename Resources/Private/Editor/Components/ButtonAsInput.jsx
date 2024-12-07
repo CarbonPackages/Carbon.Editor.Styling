@@ -36,6 +36,8 @@ const styles = stylex.create({
     },
 });
 
+const renderContent = (children) => <span {...stylex.props(styles.ellipsis)}>{children}</span>;
+
 export default function ButtonAsInput({ id, onClick, disabled, highlight, children, readonly }) {
     const hasOnClick = onClick && typeof onClick === "function";
 
@@ -43,11 +45,11 @@ export default function ButtonAsInput({ id, onClick, disabled, highlight, childr
         <>
             {hasOnClick && !readonly && !disabled ? (
                 <button type="button" onClick={onClick} id={id} {...stylex.props(styles.look, styles.button)}>
-                    <span {...stylex.props(styles.ellipsis)}>{children}</span>
+                    {renderContent(children)}
                 </button>
             ) : (
                 <div id={id} {...stylex.props(styles.look, styles.text)}>
-                    <span {...stylex.props(styles.ellipsis)}>{children}</span>
+                    {renderContent(children)}
                 </div>
             )}
         </>

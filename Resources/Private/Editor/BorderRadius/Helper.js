@@ -33,11 +33,10 @@ export function convertForCommit(number, unit, convertPxToRem, allowEmpty = fals
     if (hasNoValue(number)) {
         return allowEmpty ? "" : "0";
     }
-    let divider = 1;
-    if (!unit || unit === "px") {
-        unit = convertPxToRem ? "rem" : "px";
-        divider = convertPxToRem ? 16 : 1;
-    }
+
+    const divider = !unit || unit === "px" ? (convertPxToRem ? 16 : 1) : 1;
+    unit = !unit || unit === "px" ? (convertPxToRem ? "rem" : "px") : unit;
+
     const convertedNumber = number / divider;
     return convertedNumber === 0 ? "0" : `${convertedNumber}${unit}`;
 }
@@ -51,10 +50,7 @@ export function getInitState(values, direction, key, fallback = null) {
         return fallback;
     }
     const value = config[key];
-    if (typeof value !== "undefined") {
-        return value;
-    }
-    return fallback;
+    return typeof value !== "undefined" ? value : fallback;
 }
 
 export function fromContentRepoToEditor(input) {

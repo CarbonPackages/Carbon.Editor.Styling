@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useCallback } from "react";
 import { Button, IconButton } from "@neos-project/react-ui-components";
 import { neos } from "@neos-project/neos-ui-decorators";
 import * as stylex from "@stylexjs/stylex";
@@ -76,10 +76,16 @@ function Dialog({
     closeLabel = "Neos.Neos:Main:close",
 }) {
     const dialog = useRef();
+    const handleClose = useCallback(() => {
+        setOpen(false);
+    }, [setOpen]);
 
     useEffect(() => {
-        dialog.current?.addEventListener("close", () => setOpen(false));
-    }, [dialog]);
+        dialog.current?.addEventListener("close", handleClose);
+        return () => {
+            dialog.current?.removeEventListener("close", handleClose);
+        };
+    }, [dialog, handleClose]);
 
     useEffect(() => {
         if (!dialog.current) {
