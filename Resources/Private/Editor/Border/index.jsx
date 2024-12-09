@@ -241,7 +241,7 @@ function Border({ id, value, commit, highlight, options, i18nRegistry, config, o
                         containerStyle={styles.fullInput}
                     />
                 )}
-                {allowStyle && (!allowWidth || (allowWidth && !!width)) && (
+                {allowStyle && borderStyles.length > 1 && (!allowWidth || (allowWidth && !!width)) && (
                     <DropDown.Stateless
                         title={
                             styleDropdownOpen
