@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useCallback, Suspense, lazy } from "react";
-import { Button, DropDown, Icon } from "@neos-project/react-ui-components";
+import React, { useState, useEffect, useCallback, Suspense, lazy, useRef } from "react";
+import { Button, Icon } from "@neos-project/react-ui-components";
 import TextInput from "../Components/TextInput";
 import RoundedBox from "../Components/RoundedBox";
 import ButtonAsInput from "../Components/ButtonAsInput";
+import Dropdown from "../Components/Dropdown";
 import Dialog from "../Components/Dialog";
 import Circle from "./Circle";
 import BorderRadiusBox from "./BorderRadiusBox";
@@ -92,25 +93,13 @@ const styles = stylex.create({
         background: "transparent !important",
         outline: "none !important",
     },
-    dropdown: {
-        width: "auto !important",
-        alignSelf: "start",
-    },
-    dropdownHeader: {
-        position: "relative",
-    },
-    dropdownContent: {
-        right: 0,
-        left: "auto !important",
-        width: "max-content !important",
-        maxWidth: "220px !important",
-    },
     dropdownButton: {
         display: "flex",
         alignItems: "center",
         justifyContent: "start",
         gap: "var(--spacing-Half)",
         textAlign: "left",
+        paddingRight: "0 !important",
     },
     dropdownSvg: {
         minWidth: 15,
@@ -176,7 +165,6 @@ function BorderRadius({ id, value, commit, highlight, options, i18nRegistry, con
     // Set states
     const [mode, setMode] = useState(values.mode);
     const [organicEditorOpen, setOrganicEditorOpen] = useState(false);
-    const [dropdownOpen, setDropdownOpen] = useState(false);
     const [bigPreview, setBigPreview] = useState(false);
     const [showPreview, setShowPreview] = useState(true);
     const [selected, setSelected] = useState(null);
@@ -493,113 +481,108 @@ function BorderRadius({ id, value, commit, highlight, options, i18nRegistry, con
                 )}
 
                 {(allowMultiple || allowFullRounded) && (
-                    <DropDown.Stateless
-                        title={
-                            dropdownOpen
-                                ? null
-                                : i18nRegistry.translate(`Carbon.Editor.Styling:Main:borderRadius.${mode}`)
+                    <Dropdown
+                        title={i18nRegistry.translate(`Carbon.Editor.Styling:Main:borderRadius.${mode}`)}
+                        readonly={readonly}
+                        headerWidth={12}
+                        width={220}
+                        header={
+                            <>
+                                {mode === "multiple" && <BorderRadiusBox selected={selected} />}
+                                {mode === "single" && <RoundedBox />}
+                                {mode === "rounded" && <Circle />}
+                                {mode === "organic" && <BorderRadiusBox organic={true} />}
+                            </>
                         }
-                        className={stylex.props(styles.dropdown, readonly && styles.disabled).className}
-                        isOpen={dropdownOpen}
-                        onToggle={() => setDropdownOpen(!dropdownOpen)}
-                        onClose={() => setDropdownOpen(false)}
                     >
-                        <DropDown.Header className={stylex.props(styles.dropdownHeader).className}>
-                            {mode === "multiple" && <BorderRadiusBox selected={selected} />}
-                            {mode === "single" && <RoundedBox />}
-                            {mode === "rounded" && <Circle />}
-                            {mode === "organic" && <BorderRadiusBox organic={true} />}
-                        </DropDown.Header>
-                        <DropDown.Contents className={stylex.props(styles.dropdownContent).className}>
+                        <Button
+                            className={stylex.props(styles.dropdownButton).className}
+                            onClick={() => {
+                                if (mode === "single") {
+                                    setMainFocus(true);
+                                    return;
+                                }
+
+                                if (mode === "multiple") {
+                                    setSelected(null);
+                                }
+                                if (mainInputValue === null) {
+                                    setMainInputValue(mainMin);
+                                }
+                                setMode("single");
+                                setTimeout(() => {
+                                    setMainFocus(true);
+                                }, 0);
+                            }}
+                        >
+                            <RoundedBox {...stylex.props(styles.dropdownSvg)} />{" "}
+                            {i18nRegistry.translate("Carbon.Editor.Styling:Main:borderRadius.single")}
+                        </Button>
+                        {allowFullRounded && (
                             <Button
                                 className={stylex.props(styles.dropdownButton).className}
                                 onClick={() => {
-                                    if (mode === "single") {
-                                        setMainFocus(true);
-                                        return;
+                                    if (mode !== "rounded") {
+                                        setMode("rounded");
                                     }
-
-                                    if (mode === "multiple") {
-                                        setSelected(null);
-                                    }
-                                    if (mainInputValue === null) {
-                                        setMainInputValue(mainMin);
-                                    }
-                                    setMode("single");
-                                    setTimeout(() => {
-                                        setMainFocus(true);
-                                    }, 0);
                                 }}
                             >
-                                <RoundedBox {...stylex.props(styles.dropdownSvg)} />{" "}
-                                {i18nRegistry.translate("Carbon.Editor.Styling:Main:borderRadius.single")}
+                                <Circle {...stylex.props(styles.dropdownSvg)} />
+                                {i18nRegistry.translate("Carbon.Editor.Styling:Main:borderRadius.rounded")}
                             </Button>
-                            {allowFullRounded && (
-                                <Button
-                                    className={stylex.props(styles.dropdownButton).className}
-                                    onClick={() => {
-                                        if (mode !== "rounded") {
-                                            setMode("rounded");
-                                        }
-                                    }}
-                                >
-                                    <Circle {...stylex.props(styles.dropdownSvg)} />
-                                    {i18nRegistry.translate("Carbon.Editor.Styling:Main:borderRadius.rounded")}
-                                </Button>
-                            )}
-                            {allowMultiple && (
-                                <Button
-                                    className={stylex.props(styles.dropdownButton).className}
-                                    onClick={() => {
-                                        if (mode === "multiple") {
-                                            return;
-                                        }
-                                        const newValue = mainInputValue || min;
-                                        setSelected("topLeft");
-                                        if (topLeftInputValue === null) {
-                                            setTopLeftInputValue(newValue);
-                                        }
-                                        if (topRightInputValue === null) {
-                                            setTopRightInputValue(newValue);
-                                        }
-                                        if (bottomRightInputValue === null) {
-                                            setBottomRightInputValue(newValue);
-                                        }
-                                        if (bottomLeftInputValue === null) {
-                                            setBottomLeftInputValue(newValue);
-                                        }
-                                        setTimeout(() => setMode("multiple"), 0);
-                                    }}
-                                >
-                                    <BorderRadiusBox {...stylex.props(styles.dropdownSvg)} selected={selected} />
-                                    {i18nRegistry.translate("Carbon.Editor.Styling:Main:borderRadius.multiple")}
-                                </Button>
-                            )}
-                            {allowOrganic && (
-                                <Button
-                                    className={stylex.props(styles.dropdownButton).className}
-                                    onClick={() => {
-                                        setOrganicEditorOpen(true);
-                                    }}
-                                >
-                                    <BorderRadiusBox {...stylex.props(styles.dropdownSvg)} organic={true} />
-                                    {i18nRegistry.translate("Carbon.Editor.Styling:Main:borderRadius.organic")}
-                                </Button>
-                            )}
-                            {allowEmpty && !!value && (
-                                <Button
-                                    className={stylex.props(styles.dropdownButton).className}
-                                    onClick={() => {
-                                        setMainInputValue("");
-                                        setMode("single");
-                                    }}
-                                >
-                                    <Icon {...stylex.props(styles.dropdownSvg)} icon="times" />
-                                    {i18nRegistry.translate("Carbon.Editor.Styling:Main:borderRadius.empty")}
-                                </Button>
-                            )}
-                        </DropDown.Contents>
-                    </DropDown.Stateless>
+                        )}
+                        {allowMultiple && (
+                            <Button
+                                className={stylex.props(styles.dropdownButton).className}
+                                onClick={() => {
+                                    if (mode === "multiple") {
+                                        return;
+                                    }
+                                    const newValue = mainInputValue || min;
+                                    setSelected("topLeft");
+                                    if (topLeftInputValue === null) {
+                                        setTopLeftInputValue(newValue);
+                                    }
+                                    if (topRightInputValue === null) {
+                                        setTopRightInputValue(newValue);
+                                    }
+                                    if (bottomRightInputValue === null) {
+                                        setBottomRightInputValue(newValue);
+                                    }
+                                    if (bottomLeftInputValue === null) {
+                                        setBottomLeftInputValue(newValue);
+                                    }
+                                    setTimeout(() => setMode("multiple"), 0);
+                                }}
+                            >
+                                <BorderRadiusBox {...stylex.props(styles.dropdownSvg)} selected={selected} />
+                                {i18nRegistry.translate("Carbon.Editor.Styling:Main:borderRadius.multiple")}
+                            </Button>
+                        )}
+                        {allowOrganic && (
+                            <Button
+                                className={stylex.props(styles.dropdownButton).className}
+                                onClick={() => {
+                                    setOrganicEditorOpen(true);
+                                }}
+                            >
+                                <BorderRadiusBox {...stylex.props(styles.dropdownSvg)} organic={true} />
+                                {i18nRegistry.translate("Carbon.Editor.Styling:Main:borderRadius.organic")}
+                            </Button>
+                        )}
+                        {allowEmpty && !!value && (
+                            <Button
+                                className={stylex.props(styles.dropdownButton).className}
+                                onClick={() => {
+                                    setMainInputValue("");
+                                    setMode("single");
+                                }}
+                            >
+                                <Icon {...stylex.props(styles.dropdownSvg)} icon="times" />
+                                {i18nRegistry.translate("Carbon.Editor.Styling:Main:borderRadius.empty")}
+                            </Button>
+                        )}
+                    </Dropdown>
                 )}
 
                 {preview && (
