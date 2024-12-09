@@ -11,9 +11,9 @@
       "require": null,
       "import": "./Resources/Private/Editor/index.js"
     },
-    "./TextAreaWithCounter": {
+    "./Border": {
       "require": null,
-      "import": "./Resources/Private/Editor/TextAreaWithCounter.jsx"
+      "import": "./Resources/Private/Editor/Border/index.jsx"
     },
     "./BorderRadius": {
       "require": null,
@@ -22,6 +22,10 @@
     "./Spacing": {
       "require": null,
       "import": "./Resources/Private/Editor/Spacing/index.jsx"
+    },
+    "./TextAreaWithCounter": {
+      "require": null,
+      "import": "./Resources/Private/Editor/TextAreaWithCounter.jsx"
     }
   },
   "files": [
@@ -45,6 +49,7 @@
   "dependencies": {
     "@stylexjs/stylex": "^0.9.3",
     "carbon-neos-loadinganimation": "^1.1.1",
+    "react-colorful": "^5.6.1",
     "react-draggable": "^4.4.6",
     "use-debounce": "^10.0.4"
   },

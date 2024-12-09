@@ -3,10 +3,10 @@ import React, { Suspense, lazy } from "react";
 import LoadingAnimation from "carbon-neos-loadinganimation/LoadingWithStyleX";
 
 const editors = {
+    Border: () => import("./Border"),
     BorderRadius: () => import("./BorderRadius"),
-    TextAreaWithCounter: () => import("./TextAreaWithCounter"),
     Spacing: () => import("./Spacing"),
-    // Border: () => import("./Border"),
+    TextAreaWithCounter: () => import("./TextAreaWithCounter"),
     // Font: () => import("./Font"),
 };
 

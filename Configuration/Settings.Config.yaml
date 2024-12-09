@@ -17,6 +17,32 @@ Neos:
           errorLengthMin: null
           warningLengthMax: null
           errorLengthMax: null
+        'Carbon.Editor.Styling.Border':
+          placeholder: ''
+          disabled: false
+          readonly: false
+          allowEmpty: true
+
+          # Convert px values to rem when saving to content repository
+          convertPxToRem: false
+
+          allowWidth: true
+          allowStyle: true
+          allowColor: true
+          allowColorPicker: true
+          allowColorInput: true
+          borderStyles:
+            solid: true
+            dashed: true
+            dotted: true
+            double: true
+            groove: false
+            ridge: false
+            inset: false
+            outset: false
+          presetColors: []
+          minBorderWidth: 0
+          maxBorderWidth: 100
         'Carbon.Editor.Styling.BorderRadius':
           placeholder: ''
           disabled: false

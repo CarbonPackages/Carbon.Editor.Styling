@@ -36,6 +36,50 @@
                 <source>Open editor</source>
                 <target>Editor öffnen</target>
             </trans-unit>
+            <trans-unit id="useTextColor" xml:space="preserve">
+                <source>Use text color</source>
+                <target>Verwende Textfarbe</target>
+            </trans-unit>
+            <trans-unit id="textColor" xml:space="preserve">
+                <source>Text color</source>
+                <target>Textfarbe</target>
+            </trans-unit>
+            <trans-unit id="borderStyle.solid" xml:space="preserve">
+                <source>Solid line</source>
+                <target>Durchgezoge Linie</target>
+            </trans-unit>
+            <trans-unit id="borderStyle.dashed" xml:space="preserve">
+                <source>Dashed</source>
+                <target>Gestrichelt</target>
+            </trans-unit>
+            <trans-unit id="borderStyle.dotted" xml:space="preserve">
+                <source>Dotted</source>
+                <target>Gepunktet</target>
+            </trans-unit>
+            <trans-unit id="borderStyle.double" xml:space="preserve">
+                <source>Double line</source>
+                <target>Doppelte Linie</target>
+            </trans-unit>
+            <trans-unit id="borderStyle.double" xml:space="preserve">
+                <source>Double line</source>
+                <target>Doppelte Linie</target>
+            </trans-unit>
+            <trans-unit id="borderStyle.groove" xml:space="preserve">
+                <source>Carved appearance</source>
+                <target>Eingelassene Optik</target>
+            </trans-unit>
+            <trans-unit id="borderStyle.groove" xml:space="preserve">
+                <source>Extruded appearance</source>
+                <target>Extrudierte Optik</target>
+            </trans-unit>
+            <trans-unit id="borderStyle.inset" xml:space="preserve">
+                <source>Embedded appearance</source>
+                <target>Eingebettet Optik</target>
+            </trans-unit>
+            <trans-unit id="borderStyle.outset" xml:space="preserve">
+                <source>Embossed appearance</source>
+                <target>Geprägte Optik</target>
+            </trans-unit>
             <trans-unit id="topLeft" xml:space="preserve">
                 <source>Top left</source>
                 <target>Oben links</target>

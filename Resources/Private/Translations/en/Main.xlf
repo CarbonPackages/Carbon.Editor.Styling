@@ -28,6 +28,39 @@
             <trans-unit id="openEditor" xml:space="preserve">
                 <source>Open editor</source>
             </trans-unit>
+            <trans-unit id="useTextColor" xml:space="preserve">
+                <source>Use text color</source>
+            </trans-unit>
+            <trans-unit id="textColor" xml:space="preserve">
+                <source>Text color</source>
+            </trans-unit>
+            <trans-unit id="borderStyle.solid" xml:space="preserve">
+                <source>Solid line</source>
+            </trans-unit>
+            <trans-unit id="borderStyle.dashed" xml:space="preserve">
+                <source>Dashed</source>>
+            </trans-unit>
+            <trans-unit id="borderStyle.dotted" xml:space="preserve">
+                <source>Dotted</source>
+            </trans-unit>
+            <trans-unit id="borderStyle.double" xml:space="preserve">
+                <source>Double line</source>
+            </trans-unit>
+            <trans-unit id="borderStyle.double" xml:space="preserve">
+                <source>Double line</source>
+            </trans-unit>
+            <trans-unit id="borderStyle.groove" xml:space="preserve">
+                <source>Carved appearance</source>
+            </trans-unit>
+            <trans-unit id="borderStyle.groove" xml:space="preserve">
+                <source>Extruded appearance</source>
+            </trans-unit>
+            <trans-unit id="borderStyle.inset" xml:space="preserve">
+                <source>Embedded appearance</source>
+            </trans-unit>
+            <trans-unit id="borderStyle.outset" xml:space="preserve">
+                <source>Embossed appearance</source>
+            </trans-unit>
             <trans-unit id="topLeft" xml:space="preserve">
                 <source>Top left</source>
             </trans-unit>
