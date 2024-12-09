@@ -26,6 +26,20 @@
     "./TextAreaWithCounter": {
       "require": null,
       "import": "./Resources/Private/Editor/TextAreaWithCounter.jsx"
+    },
+    "./Dialog": {
+      "require": null,
+      "import": "./Resources/Private/Editor/Components/Dialog.jsx"
+    }
+    ,
+    "./TextInput": {
+      "require": null,
+      "import": "./Resources/Private/Editor/Components/TextInput.jsx"
+    }
+    ,
+    "./Dropdown": {
+      "require": null,
+      "import": "./Resources/Private/Editor/Components/Dropdown.jsx"
     }
   },
   "files": [
