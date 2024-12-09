@@ -22,6 +22,9 @@
             <trans-unit id="borderRadius.organic" xml:space="preserve">
                 <source>Organic radius</source>
             </trans-unit>
+            <trans-unit id="borderRadius.empty" xml:space="preserve">
+                <source>Set no value</source>
+            </trans-unit>
             <trans-unit id="topLeft" xml:space="preserve">
                 <source>Top left</source>
             </trans-unit>

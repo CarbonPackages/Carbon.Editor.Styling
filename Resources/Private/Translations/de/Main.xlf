@@ -28,6 +28,10 @@
                 <source>Organic radius</source>
                 <target>Organischer Radius</target>
             </trans-unit>
+            <trans-unit id="borderRadius.empty" xml:space="preserve">
+                <source>Set no value</source>
+                <target>Keinen Wert setzten</target>
+            </trans-unit>
             <trans-unit id="topLeft" xml:space="preserve">
                 <source>Top left</source>
                 <target>Oben links</target>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, Suspense, lazy } from "react";
-import { Button, DropDown } from "@neos-project/react-ui-components";
+import { Button, DropDown, Icon } from "@neos-project/react-ui-components";
 import TextInput from "../Components/TextInput";
 import RoundedBox from "../Components/RoundedBox";
 import ButtonAsInput from "../Components/ButtonAsInput";
@@ -584,6 +584,18 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                                 >
                                     <BorderRadiusBox {...stylex.props(styles.dropdownSvg)} organic={true} />
                                     {i18nRegistry.translate("Carbon.Editor.Styling:Main:borderRadius.organic")}
+                                </Button>
+                            )}
+                            {allowEmpty && !!value && (
+                                <Button
+                                    className={stylex.props(styles.dropdownButton).className}
+                                    onClick={() => {
+                                        setMainInputValue("");
+                                        setMode("single");
+                                    }}
+                                >
+                                    <Icon {...stylex.props(styles.dropdownSvg)} icon="times" />
+                                    {i18nRegistry.translate("Carbon.Editor.Styling:Main:borderRadius.empty")}
                                 </Button>
                             )}
                         </DropDown.Contents>
