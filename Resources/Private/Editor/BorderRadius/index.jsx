@@ -184,7 +184,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
     const [_potentailAllSelected, setPotentialAllSelected] = useState(false);
     const [potentailAllSelected] = useDebounce(_potentailAllSelected, 500);
     // Main Input
-    const [mainInputValue, setMainInputValue] = useState(getInitState(values, "main", "value"));
+    const [mainInputValue, setMainInputValue] = useState(getInitState(values, "main", "value", ""));
     const [mainUnit, setMainUnit] = useState(getInitState(values, "main", "unit"));
     const [mainMin, setMainMin] = useState(getInitState(values, "main", "min", min));
     const [mainMax, setMainMax] = useState(getInitState(values, "main", "max", max));
@@ -252,7 +252,9 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
         const maximal = isPercentage ? 100 : max;
         setMin(minimal);
         setMax(maximal);
-        setInputValue(limitToMinMax(value, minimal, maximal));
+        if (!hasNoValue(value)) {
+            setInputValue(limitToMinMax(value, minimal, maximal));
+        }
     };
 
     useEffect(() => {
