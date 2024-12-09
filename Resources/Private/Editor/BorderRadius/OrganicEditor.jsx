@@ -95,6 +95,7 @@ const styles = stylex.create({
 });
 
 const fallbackValue = ["30% 70% 70% 30%", "30% 30% 70% 70%"];
+const renderTooltip = (percent) => <span {...stylex.props(styles.tooltip)}>{percent}%</span>;
 
 export default function OrganicEditor({ onChange = () => {}, value }) {
     const [boxSize, setBoxSize] = useState({ width: 500, height: 500 });
@@ -206,7 +207,7 @@ export default function OrganicEditor({ onChange = () => {}, value }) {
                 bounds={dragBoundY}
             >
                 <div {...stylex.props(styles.handle(grabbing === "left"), styles.handleLeft)}>
-                    <span {...stylex.props(styles.tooltip)}>{left}%</span>
+                    {renderTooltip(left)}
                 </div>
             </Draggable>
             <Draggable
@@ -223,7 +224,7 @@ export default function OrganicEditor({ onChange = () => {}, value }) {
                 bounds={dragBoundY}
             >
                 <div {...stylex.props(styles.handle(grabbing === "right"), styles.handleRight)}>
-                    <span {...stylex.props(styles.tooltip)}>{right}%</span>
+                    {renderTooltip(right)}
                 </div>
             </Draggable>
             <Draggable
@@ -240,7 +241,7 @@ export default function OrganicEditor({ onChange = () => {}, value }) {
                 bounds={dragBoundX}
             >
                 <div {...stylex.props(styles.handle(grabbing === "top"), styles.handleTop)}>
-                    <span {...stylex.props(styles.tooltip)}>{top}%</span>
+                    {renderTooltip(top)}
                 </div>
             </Draggable>
             <Draggable
@@ -257,7 +258,7 @@ export default function OrganicEditor({ onChange = () => {}, value }) {
                 bounds={dragBoundX}
             >
                 <div {...stylex.props(styles.handle(grabbing === "bottom"), styles.handleBottom)}>
-                    <span {...stylex.props(styles.tooltip)}>{bottom}%</span>
+                    {renderTooltip(bottom)}
                 </div>
             </Draggable>
         </div>

@@ -19,12 +19,12 @@ const styles = stylex.create({
         whiteSpace: "nowrap",
         overflow: "hidden",
     },
-    button: {
-        cursor: "text",
+    button: (cursor) => ({
+        cursor,
         ":focus": {
             outline: "1px solid var(--colors-PrimaryBlue)",
         },
-    },
+    }),
     text: {
         cursor: "default",
     },
@@ -38,13 +38,28 @@ const styles = stylex.create({
 
 const renderContent = (children) => <span {...stylex.props(styles.ellipsis)}>{children}</span>;
 
-export default function ButtonAsInput({ id, onClick, disabled, highlight, children, readonly }) {
+export default function ButtonAsInput({
+    id,
+    onClick,
+    disabled,
+    highlight,
+    title,
+    children,
+    readonly,
+    cursor = "text",
+}) {
     const hasOnClick = onClick && typeof onClick === "function";
 
     return (
         <>
             {hasOnClick && !readonly && !disabled ? (
-                <button type="button" onClick={onClick} id={id} {...stylex.props(styles.look, styles.button)}>
+                <button
+                    type="button"
+                    onClick={onClick}
+                    id={id}
+                    title={title}
+                    {...stylex.props(styles.look, styles.button(cursor))}
+                >
                     {renderContent(children)}
                 </button>
             ) : (

@@ -458,6 +458,8 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                 {mode === "organic" && (
                     <ButtonAsInput
                         readonly={readonly}
+                        cursor="pointer"
+                        title={i18nRegistry.translate("Carbon.Editor.Styling:Main:openEditor")}
                         onClick={() => {
                             setOrganicEditorOpen(true);
                         }}

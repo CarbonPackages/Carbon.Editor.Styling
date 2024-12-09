@@ -32,6 +32,10 @@
                 <source>Set no value</source>
                 <target>Keinen Wert setzten</target>
             </trans-unit>
+            <trans-unit id="openEditor" xml:space="preserve">
+                <source>Open editor</source>
+                <target>Editor öffnen</target>
+            </trans-unit>
             <trans-unit id="topLeft" xml:space="preserve">
                 <source>Top left</source>
                 <target>Oben links</target>

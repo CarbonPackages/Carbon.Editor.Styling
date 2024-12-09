@@ -25,6 +25,9 @@
             <trans-unit id="borderRadius.empty" xml:space="preserve">
                 <source>Set no value</source>
             </trans-unit>
+            <trans-unit id="openEditor" xml:space="preserve">
+                <source>Open editor</source>
+            </trans-unit>
             <trans-unit id="topLeft" xml:space="preserve">
                 <source>Top left</source>
             </trans-unit>
