@@ -135,7 +135,7 @@ const defaultOptions = {
     fullRoundedValue: 9999,
 };
 
-function Editor({ id, value, commit, highlight, options, i18nRegistry, config, onEnterKey }) {
+function BorderRadius({ id, value, commit, highlight, options, i18nRegistry, config, onEnterKey }) {
     const {
         disabled,
         readonly,
@@ -341,7 +341,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
 
     return (
         <>
-            <DebugOutput>VALUE: {value}</DebugOutput>
+            <DebugOutput>VALUE: "{value}"</DebugOutput>
             <div {...stylex.props(styles.container, highlight && styles.highlight, disabled && styles.disabled)}>
                 {mode === "multiple" && (
                     <div {...stylex.props(styles.segmentedGrid)}>
@@ -494,7 +494,11 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
 
                 {(allowMultiple || allowFullRounded) && (
                     <DropDown.Stateless
-                        title={i18nRegistry.translate(`Carbon.Editor.Styling:Main:borderRadius.${mode}`)}
+                        title={
+                            dropdownOpen
+                                ? null
+                                : i18nRegistry.translate(`Carbon.Editor.Styling:Main:borderRadius.${mode}`)
+                        }
                         className={stylex.props(styles.dropdown, readonly && styles.disabled).className}
                         isOpen={dropdownOpen}
                         onToggle={() => setDropdownOpen(!dropdownOpen)}
@@ -645,4 +649,4 @@ const neosifier = neos((globalRegistry) => ({
     config: globalRegistry.get("frontendConfiguration").get("Carbon.Editor.Styling.BorderRadius"),
 }));
 
-export default neosifier(Editor);
+export default neosifier(BorderRadius);

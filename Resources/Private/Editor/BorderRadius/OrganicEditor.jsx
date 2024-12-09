@@ -240,9 +240,7 @@ export default function OrganicEditor({ onChange = () => {}, value }) {
                 axis="x"
                 bounds={dragBoundX}
             >
-                <div {...stylex.props(styles.handle(grabbing === "top"), styles.handleTop)}>
-                    {renderTooltip(top)}
-                </div>
+                <div {...stylex.props(styles.handle(grabbing === "top"), styles.handleTop)}>{renderTooltip(top)}</div>
             </Draggable>
             <Draggable
                 defaultPosition={defaultPosition.bottom}

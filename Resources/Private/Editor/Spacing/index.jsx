@@ -149,7 +149,7 @@ const defaultOptions = {
     placeholder: "",
 };
 
-function Editor({ id, value, commit, highlight, options, i18nRegistry, config, onEnterKey }) {
+function Spacing({ id, value, commit, highlight, options, i18nRegistry, config, onEnterKey }) {
     const { disabled, readonly, allowEmpty, allowMultiple, allowSync, convertPxToRem, min, max, placeholder } = {
         ...defaultOptions,
         ...config,
@@ -289,7 +289,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
 
     return (
         <>
-            <DebugOutput>VALUE: {value}</DebugOutput>
+            <DebugOutput>VALUE: "{value}"</DebugOutput>
             <div {...stylex.props(styles.container, highlight && styles.highlight, disabled && styles.disabled)}>
                 {mode === "multiple" ? (
                     <div {...stylex.props(styles.segmentedGrid, styles[segmentedGrid])}>
@@ -580,4 +580,4 @@ const neosifier = neos((globalRegistry) => ({
     config: globalRegistry.get("frontendConfiguration").get("Carbon.Editor.Styling.Spacing"),
 }));
 
-export default neosifier(Editor);
+export default neosifier(Spacing);
