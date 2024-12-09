@@ -616,7 +616,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                         <span
                             {...stylex.props(
                                 styles.preview(value, mode === "rounded"),
-                                styles.previewBig(mode === "rounded", aspectRatio),
+                                styles.previewBig(mode === "rounded" || mode === "organic", aspectRatio),
                             )}
                         ></span>
                     </Button>
