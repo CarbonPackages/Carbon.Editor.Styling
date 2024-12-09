@@ -75,11 +75,15 @@ const styles = stylex.create({
         transition: "grid-template-rows var(--transition-Default) ease-in-out",
     }),
     previewButton: {
-        transition: "opacity var(--transition-Default) ease",
+        transition:
+            "opacity var(--transition-Default) ease var(--transition-Default), margin-left var(--transition-Default) ease",
     },
     previewButtonInvisible: {
+        transition:
+            "opacity var(--transition-Default) ease, margin-left var(--transition-Default) ease var(--transition-Default)",
         opacity: 0,
         pointerEvents: "none",
+        marginLeft: "calc((var(--spacing-Quarter) + var(--spacing-GoldenUnit)) * -1) !important",
     },
     bigPreviewButton: {
         width: "100%",
