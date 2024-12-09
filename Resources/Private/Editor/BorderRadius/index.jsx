@@ -189,10 +189,8 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
     const [mainMin, setMainMin] = useState(getInitState(values, "main", "min", min));
     const [mainMax, setMainMax] = useState(getInitState(values, "main", "max", max));
     // Organic Input
-    const [organicInputValue, setOrganicInputValue] = useState(getInitState(values, "organic", "value"));
-    const [organicInputValueInDialog, setOrganicInputValueInDialog] = useState(
-        getInitState(values, "organic", "value"),
-    );
+    const [organicInputValue, setOrganicInputValue] = useState(getInitState(values, "organic"));
+    const [organicInputValueInDialog, setOrganicInputValueInDialog] = useState(getInitState(values, "organic"));
     // Top Left Input
     const [topLeftInputValue, setTopLeftInputValue] = useState(getInitState(values, "topLeft", "value"));
     const [topLeftUnit, setTopLeftUnit] = useState(getInitState(values, "topLeft", "unit"));
@@ -490,7 +488,7 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                     >
                         {organicEditorOpen && (
                             <Suspense fallback={<LoadingAnimation isLoading={true} />}>
-                                <LazyOrganicEditor onChange={setOrganicInputValueInDialog} />
+                                <LazyOrganicEditor onChange={setOrganicInputValueInDialog} value={organicInputValue} />
                             </Suspense>
                         )}
                     </Dialog>

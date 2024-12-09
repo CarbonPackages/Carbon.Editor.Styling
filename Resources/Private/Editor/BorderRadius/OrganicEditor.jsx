@@ -44,8 +44,14 @@ const styles = stylex.create({
         cursor: "grab",
         opacity: grabbing ? 1 : 0.8,
         transition: "opacity var(--transition-Default)",
-        ":hover": {
+        ":is(:hover,:focus)": {
             opacity: 1,
+        },
+        ":is(:hover,:focus)>*": {
+            opacity: 1,
+        },
+        ":not(:hover)>*": {
+            opacity: grabbing ? 1 : 0,
         },
         ":active": {
             cursor: "grabbing",
@@ -71,12 +77,26 @@ const styles = stylex.create({
         top: "50%",
         marginTop: -7,
     },
+    tooltip: {
+        position: "absolute",
+        display: "block",
+        padding: "var(--spacing-Quarter) var(--spacing-Half)",
+        backgroundColor: "var(--colors-ContrastDarker)",
+        color: "var(--colors-ContrastBrightest)",
+        borderRadius: 2,
+        zIndex: 1,
+        pointerEvents: "none",
+        transform: "translate(-50%, calc(-100% - 6px))",
+        transition: "opacity var(--transition-Default)",
+    },
     grabbing: {
         cursor: "grabbing",
     },
 });
 
-export default function OrganicEditor({ onChange = () => {}, value = "30% 70% 70% 30% / 30% 30% 70% 70%" }) {
+const fallbackValue = ["30% 70% 70% 30%", "30% 30% 70% 70%"];
+
+export default function OrganicEditor({ onChange = () => {}, value }) {
     const [boxSize, setBoxSize] = useState({ width: 500, height: 500 });
     const [grabbing, setGrabbing] = useState(false);
     const [handleCoordinates, setHandleCoordinates] = useState({
@@ -88,9 +108,14 @@ export default function OrganicEditor({ onChange = () => {}, value = "30% 70% 70
     const [boxBorderRadius, setBoxBorderRadius] = useState("inital");
     const [debouncedHandleCoordinates] = useDebounce(handleCoordinates, 10);
     const [defaultPosition, setDefaultPosition] = useState(null);
+    const [top, setTop] = useState(null);
+    const [bottom, setBottom] = useState(null);
+    const [left, setLeft] = useState(null);
+    const [right, setRight] = useState(null);
 
     useEffect(() => {
-        const [leftPart, rightPart] = value.split("/");
+        const [leftPart, rightPart] =
+            typeof value === "string" && value.includes("/") ? value.split("/") : fallbackValue;
         const [top, , , bottom] = leftPart
             .trim()
             .split(" ")
@@ -152,6 +177,10 @@ export default function OrganicEditor({ onChange = () => {}, value = "30% 70% 70
         const left = Math.round((ly / height) * 100);
         const right = Math.round((ry / height) * 100);
 
+        setTop(top);
+        setBottom(bottom);
+        setLeft(left);
+        setRight(right);
         setBoxBorderRadius(
             `${top}% ${100 - top}% ${100 - bottom}% ${bottom}% / ${left}% ${right}% ${100 - right}% ${100 - left}%`,
         );
@@ -176,7 +205,9 @@ export default function OrganicEditor({ onChange = () => {}, value = "30% 70% 70
                 axis="y"
                 bounds={dragBoundY}
             >
-                <div {...stylex.props(styles.handle(grabbing === "left"), styles.handleLeft)}></div>
+                <div {...stylex.props(styles.handle(grabbing === "left"), styles.handleLeft)}>
+                    <span {...stylex.props(styles.tooltip)}>{left}%</span>
+                </div>
             </Draggable>
             <Draggable
                 defaultPosition={defaultPosition.right}
@@ -191,7 +222,9 @@ export default function OrganicEditor({ onChange = () => {}, value = "30% 70% 70
                 axis="y"
                 bounds={dragBoundY}
             >
-                <div {...stylex.props(styles.handle(grabbing === "right"), styles.handleRight)}></div>
+                <div {...stylex.props(styles.handle(grabbing === "right"), styles.handleRight)}>
+                    <span {...stylex.props(styles.tooltip)}>{right}%</span>
+                </div>
             </Draggable>
             <Draggable
                 defaultPosition={defaultPosition.top}
@@ -206,7 +239,9 @@ export default function OrganicEditor({ onChange = () => {}, value = "30% 70% 70
                 axis="x"
                 bounds={dragBoundX}
             >
-                <div {...stylex.props(styles.handle(grabbing === "top"), styles.handleTop)}></div>
+                <div {...stylex.props(styles.handle(grabbing === "top"), styles.handleTop)}>
+                    <span {...stylex.props(styles.tooltip)}>{top}%</span>
+                </div>
             </Draggable>
             <Draggable
                 defaultPosition={defaultPosition.bottom}
@@ -221,7 +256,9 @@ export default function OrganicEditor({ onChange = () => {}, value = "30% 70% 70
                 axis="x"
                 bounds={dragBoundX}
             >
-                <div {...stylex.props(styles.handle(grabbing === "bottom"), styles.handleBottom)}></div>
+                <div {...stylex.props(styles.handle(grabbing === "bottom"), styles.handleBottom)}>
+                    <span {...stylex.props(styles.tooltip)}>{bottom}%</span>
+                </div>
             </Draggable>
         </div>
     );

@@ -37,6 +37,7 @@
 .x1t8ecn8{padding:0 14px 0 0}
 .x1717udv{padding:0}
 .x1i724xb{padding:var(--spacing-Full)}
+.xedylmv{padding:var(--spacing-Quarter) var(--spacing-Half)}
 .x1ly45rb:where(*)>*{grid-area:content}
 }
 @layer priority3{
@@ -74,6 +75,7 @@
 .xjyslct{appearance:none}
 .x1plog1{aspect-ratio:1}
 .x1f7gzso{aspect-ratio:var(--aspectRatio)}
+.xzyrq3l{background-color:var(--colors-ContrastDarker)}
 .x1ndo24d{background-color:var(--colors-PrimaryBlue)}
 .xe8odd5{box-shadow:0 20px 40px #0006}
 .x1heor9g{color:inherit}
@@ -120,17 +122,21 @@
 .x1hr2gdg{text-align:right}
 .xlyipyv{text-overflow:ellipsis}
 .x1a33avv{transform:scale(.5)}
+.x1xih9zl{transform:translate(-50%,calc(-100% - 6px))}
 .x1uosm7l{transform:var(--transform)}
 .x87ps6o{user-select:none}
 .xuxw1ft{white-space:nowrap}
+.x1vjfegm{z-index:1}
 html:not([dir='rtl']) .x1p9coah:focus-visible{box-shadow:-14px 0 0 0 var(--colors-ContrastNeutral),-14px 0 0 1px var(--colors-PrimaryBlue),0 0 0 1px var(--colors-PrimaryBlue)}
 html[dir='rtl'] .x1p9coah:focus-visible{box-shadow:14px 0 0 0 var(--colors-ContrastNeutral), 14px 0 0 1px var(--colors-PrimaryBlue), 0 0 0 1px var(--colors-PrimaryBlue)}
 .x1yasepr:focus-visible{color:inherit!important}
 .x1sv5n3t:where(:hover,:focus){color:var(--colors-PrimaryBlue)!important}
 .x1p3htkq:is(:hover,:focus)>svg{opacity:1}
+.x1qafsfm:is(:hover,:focus){opacity:1}
+.xlopxp9:is(:hover,:focus)>*{opacity:1}
 .x108nfvm:where(*)>svg{opacity:var(--1ifsx55)}
+.x1ygtta1:not(:hover)>*{opacity:var(--1lsze8t)}
 .xvszx66:where(*)>*{pointer-events:none}
-.x1o7uuvo:hover{opacity:1}
 .xch2mbi:active{cursor:grabbing}
 }
 @layer priority5{

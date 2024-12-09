@@ -49,6 +49,9 @@ export function getInitState(values, direction, key, fallback = null) {
     if (!config) {
         return fallback;
     }
+    if (!key) {
+        return config;
+    }
     const value = config[key];
     return typeof value !== "undefined" ? value : fallback;
 }
