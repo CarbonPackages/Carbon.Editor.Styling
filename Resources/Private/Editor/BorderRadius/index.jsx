@@ -351,7 +351,6 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                             unit={topLeftUnit}
                             unitSwitch={allowPercentage ? setTopLeftUnit : null}
                             readOnly={readonly}
-                            placeholder={placeholder}
                             onEnterKey={onEnterKey}
                             type="number"
                             min={topLeftMin}
@@ -369,7 +368,6 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                             unit={topRightUnit}
                             unitSwitch={allowPercentage ? setTopRightUnit : null}
                             readOnly={readonly}
-                            placeholder={placeholder}
                             onEnterKey={onEnterKey}
                             type="number"
                             min={topRightMin}
@@ -387,7 +385,6 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                             unit={bottomLeftUnit}
                             unitSwitch={allowPercentage ? setBottomLeftUnit : null}
                             readOnly={readonly}
-                            placeholder={placeholder}
                             onEnterKey={onEnterKey}
                             type="number"
                             min={bottomLeftMin}
@@ -405,7 +402,6 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                             unit={bottomRightUnit}
                             unitSwitch={allowPercentage ? setBottomRightUnit : null}
                             readOnly={readonly}
-                            placeholder={placeholder}
                             onEnterKey={onEnterKey}
                             type="number"
                             min={bottomRightMin}

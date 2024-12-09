@@ -300,7 +300,6 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                                 value={topInputValue}
                                 unit="px"
                                 readOnly={readonly}
-                                placeholder={placeholder}
                                 onEnterKey={onEnterKey}
                                 type="number"
                                 min={min}
@@ -330,7 +329,6 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                                 value={rightInputValue}
                                 unit="px"
                                 readOnly={readonly}
-                                placeholder={placeholder}
                                 onEnterKey={onEnterKey}
                                 type="number"
                                 min={min}
@@ -360,7 +358,6 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                                 value={bottomInputValue}
                                 unit="px"
                                 readOnly={readonly}
-                                placeholder={placeholder}
                                 onEnterKey={onEnterKey}
                                 type="number"
                                 min={min}
@@ -390,7 +387,6 @@ function Editor({ id, value, commit, highlight, options, i18nRegistry, config, o
                                 value={leftInputValue}
                                 unit="px"
                                 readOnly={readonly}
-                                placeholder={placeholder}
                                 onEnterKey={onEnterKey}
                                 type="number"
                                 min={min}
