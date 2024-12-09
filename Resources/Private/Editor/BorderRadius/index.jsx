@@ -62,7 +62,7 @@ const styles = stylex.create({
         display: "block",
         aspectRatio: aspectRatio || null,
         width: aspectRatio && aspectRatio < 3.4 ? null : rounded ? 80 : "100%",
-        height: !aspectRatio && aspectRatio < 3.4 ? 80 : null,
+        height: !aspectRatio || aspectRatio < 3.4 ? 80 : null,
     }),
     previewSmall: {
         aspectRatio: 1,
