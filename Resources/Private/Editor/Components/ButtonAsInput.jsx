@@ -46,6 +46,7 @@ export default function ButtonAsInput({
     title,
     children,
     readonly,
+    style,
     cursor = "text",
 }) {
     const hasOnClick = onClick && typeof onClick === "function";
@@ -58,12 +59,12 @@ export default function ButtonAsInput({
                     onClick={onClick}
                     id={id}
                     title={title}
-                    {...stylex.props(styles.look, styles.button(cursor))}
+                    {...stylex.props(styles.look, styles.button(cursor), style)}
                 >
                     {renderContent(children)}
                 </button>
             ) : (
-                <div id={id} {...stylex.props(styles.look, styles.text)}>
+                <div id={id} {...stylex.props(styles.look, styles.text, style)}>
                     {renderContent(children)}
                 </div>
             )}

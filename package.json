@@ -11,6 +11,10 @@
       "require": null,
       "import": "./Resources/Private/Editor/index.js"
     },
+    "./BackgroundSize": {
+      "require": null,
+      "import": "./Resources/Private/Editor/BackgroundSize/index.jsx"
+    },
     "./Border": {
       "require": null,
       "import": "./Resources/Private/Editor/Border/index.jsx"
@@ -30,13 +34,11 @@
     "./Dialog": {
       "require": null,
       "import": "./Resources/Private/Editor/Components/Dialog.jsx"
-    }
-    ,
+    },
     "./TextInput": {
       "require": null,
       "import": "./Resources/Private/Editor/Components/TextInput.jsx"
-    }
-    ,
+    },
     "./Dropdown": {
       "require": null,
       "import": "./Resources/Private/Editor/Components/Dropdown.jsx"

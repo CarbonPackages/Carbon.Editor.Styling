@@ -136,6 +136,42 @@
                 <source>Change unit to {0}</source>
                 <target>Wechsle Einheit zu {0}</target>
             </trans-unit>
+            <trans-unit id="backgroundSize.px" xml:space="preserve">
+                <source>Width in pixel</source>
+                <target>Breite in Pixel</target>
+            </trans-unit>
+            <trans-unit id="backgroundSize.%" xml:space="preserve">
+                <source>Width in percent</source>
+                <target>Breite in Prozent</target>
+            </trans-unit>
+            <trans-unit id="backgroundSize.auto" xml:space="preserve">
+                <source>Original size</source>
+                <target>Originalgröße</target>
+            </trans-unit>
+            <trans-unit id="backgroundSize.cover" xml:space="preserve">
+                <source>Fill the container</source>
+                <target>Container füllen</target>
+            </trans-unit>
+            <trans-unit id="backgroundSize.contain" xml:space="preserve">
+                <source>Show whole image</source>
+                <target>Zeige ganzes Bild</target>
+            </trans-unit>
+            <trans-unit id="backgroundSize.auto.description" xml:space="preserve">
+                <source>Scales the background image in the corresponding direction such that its intrinsic proportions are maintained.</source>
+                <target>Skaliert das Hintergrundbild in der entsprechenden Richtung, so dass seine Proportionen erhalten bleiben.</target>
+            </trans-unit>
+            <trans-unit id="backgroundSize.contain.description" xml:space="preserve">
+                <source>Resize the background image to make sure the image is fully visible</source>
+                <target>Ändert die Größe des Bildes um sicherzustellen dass das Bild vollständig sichtbar ist.</target>
+            </trans-unit>
+            <trans-unit id="backgroundSize.cover.description" xml:space="preserve">
+                <source>Scales the image (while preserving its ratio) to the smallest possible size to fill the container (that is: both its height and width completely cover the container), leaving no empty space. If the proportions of the background differ from the element, the image is cropped either vertically or horizontally.</source>
+                <target>Skaliert das Bild (unter Beibehaltung der Proportionen) auf die kleinstmögliche Größe, um den Container auszufüllen (d. h. sowohl die Höhe als auch die Breite des Bildes decken den Container vollständig ab), so dass kein Leerraum bleibt. Wenn die Proportionen des Hintergrunds vom Element abweichen, wird das Bild entweder vertikal oder horizontal beschnitten.</target>
+            </trans-unit>
+            <trans-unit id="backgroundSize.length.description" xml:space="preserve">
+                <source>Stretches the image in the corresponding dimension to the specified length.</source>
+                <target>Dehnt das Bild in der entsprechenden Dimension auf die angegebene Länge.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

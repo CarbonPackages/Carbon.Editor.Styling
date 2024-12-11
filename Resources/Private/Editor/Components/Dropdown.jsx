@@ -51,6 +51,9 @@ export default function Dropdown({
     automaticClose = true,
 }) {
     const [isOpen, setIsOpen] = useState(false);
+    if (typeof headerWidth !== "number") {
+        headerWidth = width - 40 - 16;
+    }
 
     const headerCustomProperty = useMemo(() => {
         return headerPadding

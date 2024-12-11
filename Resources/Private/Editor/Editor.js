@@ -3,6 +3,7 @@ import React, { Suspense, lazy } from "react";
 import LoadingAnimation from "carbon-neos-loadinganimation/LoadingWithStyleX";
 
 const editors = {
+    BackgroundSize: () => import("./BackgroundSize"),
     Border: () => import("./Border"),
     BorderRadius: () => import("./BorderRadius"),
     Spacing: () => import("./Spacing"),

@@ -100,3 +100,14 @@ Neos:
           # The values will be converted and saved with the rem unit in the database if convertPxToRem is true
           min: 0
           max: 999
+        'Carbon.Editor.Styling.BackgroundSize':
+          disabled: false
+          readonly: false
+          placeholder: ''
+          min: 1
+          max: null
+          allowPixel: true
+          allowPercentage: true
+          allowContain: true
+          allowAuto: true
+          allowCover: true

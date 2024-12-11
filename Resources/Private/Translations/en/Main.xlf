@@ -103,6 +103,33 @@
             <trans-unit id="changeToUnit" xml:space="preserve">
                 <source>Change unit to {0}</source>
             </trans-unit>
+            <trans-unit id="backgroundSize.px" xml:space="preserve">
+                <source>Width in pixel</source>
+            </trans-unit>
+            <trans-unit id="backgroundSize.%" xml:space="preserve">
+                <source>Width in percent</source>
+            </trans-unit>
+            <trans-unit id="backgroundSize.auto" xml:space="preserve">
+                <source>Original size</source>
+            </trans-unit>
+            <trans-unit id="backgroundSize.cover" xml:space="preserve">
+                <source>Fill the container</source>
+            </trans-unit>
+            <trans-unit id="backgroundSize.contain" xml:space="preserve">
+                <source>Show whole image</source>
+            </trans-unit>
+            <trans-unit id="backgroundSize.auto.description" xml:space="preserve">
+                <source>Scales the background image in the corresponding direction such that its intrinsic proportions are maintained.</source>
+            </trans-unit>
+            <trans-unit id="backgroundSize.contain.description" xml:space="preserve">
+                <source>Resize the background image to make sure the image is fully visible</source>
+            </trans-unit>
+            <trans-unit id="backgroundSize.cover.description" xml:space="preserve">
+                <source>Scales the image (while preserving its ratio) to the smallest possible size to fill the container (that is: both its height and width completely cover the container), leaving no empty space. If the proportions of the background differ from the element, the image is cropped either vertically or horizontally.</source>
+            </trans-unit>
+            <trans-unit id="backgroundSize.length.description" xml:space="preserve">
+                <source>Stretches the image in the corresponding dimension to the specified length.</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>
