@@ -4,7 +4,7 @@ import { Button, Icon, CheckBox } from "@neos-project/react-ui-components";
 import Dropdown from "../Components/Dropdown";
 import DebugOutput from "../Components/DebugOutput";
 import TextInput from "../Components/TextInput";
-import { fromContentRepoToEditor, needDarkColor } from "./Helper";
+import { fromContentRepoToEditor, needDarkColor, getDefaultColor } from "./Helper";
 import { hasNoValue } from "../Helper";
 import BorderPreview from "./BorderPreview";
 import { HexColorPicker, HexColorInput } from "react-colorful";
@@ -16,6 +16,8 @@ const defaultOptions = {
     allowEmpty: true,
     allowWidth: true,
     allowStyle: true,
+    allowCurrentColor: true,
+    defaultColor: "currentColor",
     allowColorPicker: true,
     allowColorInput: true,
     convertPxToRem: false,
@@ -136,6 +138,7 @@ function Border({ id, value, commit, highlight, options, i18nRegistry, config, o
         placeholder,
         allowWidth,
         allowStyle,
+        allowCurrentColor,
         allowColorPicker,
         allowColorInput,
         presetColors,
@@ -144,6 +147,7 @@ function Border({ id, value, commit, highlight, options, i18nRegistry, config, o
         ...config,
         ...options,
     };
+    const defaultColor = getDefaultColor({ options, config, defaultOptions });
     const borderStyles = Object.entries({ ...defaultBorderStyles, ...config?.borderStyles, ...options?.borderStyles })
         .map(([key, value]) => (value ? key : false))
         .filter(Boolean);
@@ -152,6 +156,7 @@ function Border({ id, value, commit, highlight, options, i18nRegistry, config, o
     const values = fromContentRepoToEditor({
         value,
         allowEmpty,
+        defaultColor,
         borderStyles,
         minBorderWidth,
         maxBorderWidth,
@@ -171,7 +176,7 @@ function Border({ id, value, commit, highlight, options, i18nRegistry, config, o
     const [color, setColor] = useState(values.color);
     const [colorDropdownOpen, setColorDropdownOpen] = useState(false);
     const [hasPresetColor, setHasPresetColor] = useState(false);
-    const [currentColor, setSetCurrentColor] = useState(values.color === "currentColor");
+    const [currentColor, setSetCurrentColor] = useState(allowCurrentColor ? values.color === "currentColor" : false);
 
     useEffect(() => {
         setSetCurrentColor(color === "currentColor");
@@ -194,7 +199,7 @@ function Border({ id, value, commit, highlight, options, i18nRegistry, config, o
 
         const newWidth = convertPxToRem ? width / 16 : width;
         const unit = convertPxToRem ? "rem" : "px";
-        const newValue = `${newWidth}${unit} ${style || "solid"} ${color || "currentColor"}`;
+        const newValue = `${newWidth}${unit} ${style || "solid"} ${color || defaultColor}`;
         commitIfChanged(newValue);
     }, [width, style, color, convertPxToRem]);
 
@@ -276,7 +281,7 @@ function Border({ id, value, commit, highlight, options, i18nRegistry, config, o
                             open={colorDropdownOpen}
                             setOpen={setColorDropdownOpen}
                         >
-                            {(allowColorPicker || allowColorInput) && (
+                            {(allowColorPicker || allowColorInput) && allowCurrentColor && (
                                 <label {...stylex.props(styles.dropdownCheckbox)}>
                                     <CheckBox
                                         onChange={() => {

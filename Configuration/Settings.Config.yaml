@@ -31,6 +31,8 @@ Neos:
           allowColor: true
           allowColorPicker: true
           allowColorInput: true
+          allowCurrentColor: true
+          defaultColor: 'currentColor'
           borderStyles:
             solid: true
             dashed: true
