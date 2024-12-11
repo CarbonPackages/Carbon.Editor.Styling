@@ -149,8 +149,8 @@
                 <target>Originalgröße</target>
             </trans-unit>
             <trans-unit id="backgroundSize.cover" xml:space="preserve">
-                <source>Fill the container</source>
-                <target>Container füllen</target>
+                <source>Fill area</source>
+                <target>Fläche füllen</target>
             </trans-unit>
             <trans-unit id="backgroundSize.contain" xml:space="preserve">
                 <source>Show whole image</source>

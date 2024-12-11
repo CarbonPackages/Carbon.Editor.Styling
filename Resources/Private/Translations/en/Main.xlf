@@ -113,7 +113,7 @@
                 <source>Original size</source>
             </trans-unit>
             <trans-unit id="backgroundSize.cover" xml:space="preserve">
-                <source>Fill the container</source>
+                <source>Fill area</source>
             </trans-unit>
             <trans-unit id="backgroundSize.contain" xml:space="preserve">
                 <source>Show whole image</source>
