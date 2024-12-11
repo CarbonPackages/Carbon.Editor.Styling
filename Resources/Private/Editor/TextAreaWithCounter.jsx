@@ -34,7 +34,7 @@ const defaultOptions = {
     errorLengthMax: null,
 };
 
-function Editor({ id, value, commit, className, options, i18nRegistry, onEnterKey, config }) {
+function TextAreaWithCounter({ id, value, commit, className, options, i18nRegistry, onEnterKey, config }) {
     const [focus, setFocus] = useState(false);
     const {
         disabled,
@@ -118,4 +118,4 @@ const neosifier = neos((globalRegistry) => ({
     config: globalRegistry.get("frontendConfiguration").get("Carbon.Editor.Styling.TextAreaWithCounter"),
 }));
 
-export default neosifier(Editor);
+export default neosifier(TextAreaWithCounter);
