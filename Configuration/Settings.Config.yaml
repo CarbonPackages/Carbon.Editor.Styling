@@ -12,26 +12,26 @@ Neos:
           # Show icon if the font has a font file or a css file
           showIcons: true
           # List of available fonts
-          fonts: {}
-            # A entry could look like this:
-            # The key is the font name  (e.g. 'Open Sans')
-            # 'Open Sans':
-            #   # Optional: The label that is shown in the dropdown. If not set the key is used
-            #   label: 'Open Sans (600 italic)'
-            #   # The fallback for this font. It is recommended to set a fallback
-            #   fallback: 'Helvetica, Arial, sans-serif'
-            #   # Optional: The font type. If not set the default is guessed from the fallback. If nothing is found 'sans-serif' is used
-            #   type: 'sans-serif'
-            #   # Optional: The font weight. If not set the default weight "400" is used
-            #   fontWeight: 600
-            #   # Optional: The font style. If not set the default style "normal" is used
-            #   fontStyle: italic
-            #   # Optional: The file path to the font file. Can be a resource:// or a http(s):// path
-            #   fontFile: 'resource://Vendor.Package/Fonts/OpenSans.woff2'
-            #   # Optional: A path to a CSS file with @font-face declarations. Can be a resource:// or a http(s):// path
-            #   cssFile: "https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@1,600"
-            #   # Optional and only used if fontFile is set: The font format. If not set the format is guessed from the file extension
-            #   fontFileFormat: 'woff2'
+          # fonts:
+          # A entry could look like this:
+          # The key is the font name  (e.g. 'Open Sans')
+          # 'Open Sans':
+          #   # Optional: The label that is shown in the dropdown. If not set the key is used
+          #   label: 'Open Sans (600 italic)'
+          #   # The fallback for this font. It is recommended to set a fallback
+          #   fallback: 'Helvetica, Arial, sans-serif'
+          #   # Optional: The font type. If not set the default is guessed from the fallback. If nothing is found 'sans-serif' is used
+          #   type: 'sans-serif'
+          #   # Optional: The font weight. If not set the default weight "400" is used
+          #   fontWeight: 600
+          #   # Optional: The font style. If not set the default style "normal" is used
+          #   fontStyle: italic
+          #   # Optional: The file path to the font file. Can be a resource:// or a http(s):// path
+          #   fontFile: 'resource://Vendor.Package/Fonts/OpenSans.woff2'
+          #   # Optional: A path to a CSS file with @font-face declarations. Can be a resource:// or a http(s):// path
+          #   cssFile: "https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@1,600"
+          #   # Optional and only used if fontFile is set: The font format. If not set the format is guessed from the file extension
+          #   fontFileFormat: 'woff2'
 
         'Carbon.Editor.Styling.TextAreaWithCounter':
           disabled: false

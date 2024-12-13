@@ -91,7 +91,10 @@ function FontFamily({ id, value, commit, options, highlight, i18nRegistry, onEnt
         ...config,
         ...options,
     };
-    const {importCSS, fontFace, fonts, flat} = getFontCollection({ ...defaultOptions.fonts, ...config.fonts, ...options.fonts }, enableFallback);
+    const { importCSS, fontFace, fonts, flat } = getFontCollection(
+        { ...defaultOptions.fonts, ...config.fonts, ...options.fonts },
+        enableFallback,
+    );
 
     const [isOpen, setIsOpen] = useState(false);
     const [selectedFont, setSelectedFont] = useState(null);
@@ -102,7 +105,7 @@ function FontFamily({ id, value, commit, options, highlight, i18nRegistry, onEnt
             return;
         }
         const [font] = value.split(",");
-        console.log({font, flat, value})
+        console.log({ font, flat, value });
         setSelectedFont(flat[font]);
     }, [value]);
 
