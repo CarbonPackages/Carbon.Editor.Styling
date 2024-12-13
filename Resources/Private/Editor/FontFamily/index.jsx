@@ -105,7 +105,6 @@ function FontFamily({ id, value, commit, options, highlight, i18nRegistry, onEnt
             return;
         }
         const [font] = value.split(",");
-        console.log({ font, flat, value });
         setSelectedFont(flat[font]);
     }, [value]);
 
