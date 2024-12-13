@@ -29,7 +29,7 @@ function UnitSwitch({ units = ["px", "%"], unit = "px", onActive, onClick = () =
     const currentIndex = units.indexOf(unit);
     const nextIndex = (currentIndex + 1) % units.length;
     const nextUnit = units[nextIndex];
-    const title = i18nRegistry.translate("changeToUnit", null, [nextUnit], "Carbon.Editor.Styling", "Main");
+    const title = i18nRegistry.translate("changeToUnit", nextUnit, [nextUnit], "Carbon.Editor.Styling", "Main");
 
     return (
         <button
