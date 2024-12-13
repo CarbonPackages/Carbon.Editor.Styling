@@ -38,13 +38,10 @@
                 <source>Solid line</source>
             </trans-unit>
             <trans-unit id="borderStyle.dashed" xml:space="preserve">
-                <source>Dashed</source>>
+                <source>Dashed</source>
             </trans-unit>
             <trans-unit id="borderStyle.dotted" xml:space="preserve">
                 <source>Dotted</source>
-            </trans-unit>
-            <trans-unit id="borderStyle.double" xml:space="preserve">
-                <source>Double line</source>
             </trans-unit>
             <trans-unit id="borderStyle.double" xml:space="preserve">
                 <source>Double line</source>
@@ -129,6 +126,21 @@
             </trans-unit>
             <trans-unit id="backgroundSize.length.description" xml:space="preserve">
                 <source>Stretches the image in the corresponding dimension to the specified length.</source>
+            </trans-unit>
+            <trans-unit id="fontType.sans-serif" xml:space="preserve">
+                <source>Sans serif font</source>
+            </trans-unit>
+            <trans-unit id="fontType.serif" xml:space="preserve">
+                <source>Serif font</source>
+            </trans-unit>
+            <trans-unit id="fontType.cursive" xml:space="preserve">
+                <source>Cursive</source>
+            </trans-unit>
+            <trans-unit id="fontType.fantasy" xml:space="preserve">
+                <source>Fantasy font</source>
+            </trans-unit>
+            <trans-unit id="fontType.monospace" xml:space="preserve">
+                <source>Monospace font</source>
             </trans-unit>
         </body>
     </file>

@@ -40,6 +40,14 @@ const styles = stylex.create({
         outline: "2px solid var(--colors-Warn)",
         outlineOffset: 2,
     },
+    fontGroup: {
+        padding: "var(--spacing-Half) var(--spacing-Full)",
+        backgroundColor: "var(--colors-ContrastDarker)",
+        paddingLeft: "var(--spacing-Full)",
+        textTransform: "uppercase",
+        fontWeight: 700,
+        lineHeight: "30px",
+    },
     button: {
         display: "flex",
         width: "100%",
@@ -83,37 +91,29 @@ function FontFamily({ id, value, commit, options, highlight, i18nRegistry, onEnt
         ...config,
         ...options,
     };
-    const fonts = getFontCollection({ ...defaultOptions.fonts, ...config.fonts, ...options.fonts }, enableFallback);
-    const css = Object.values(fonts)
-        .map(({ css }) => css)
-        .join("");
-    const cssImports = Object.values(fonts)
-        .map(({ cssImports }) => cssImports)
-        .join("");
+    const {importCSS, fontFace, fonts, flat} = getFontCollection({ ...defaultOptions.fonts, ...config.fonts, ...options.fonts }, enableFallback);
 
     const [isOpen, setIsOpen] = useState(false);
-    const [selectedFont, setSelectedFont] = useState("");
-    const [selectedFallback, setSelectedFallback] = useState("");
+    const [selectedFont, setSelectedFont] = useState(null);
 
     useEffect(() => {
         if (!value) {
-            setSelectedFont("");
-            setSelectedFallback("");
+            setSelectedFont(null);
             return;
         }
-        const [font, ...fallback] = value.split(",");
-        setSelectedFont(font);
-        setSelectedFallback(fallback.join(","));
+        const [font] = value.split(",");
+        console.log({font, flat, value})
+        setSelectedFont(flat[font]);
     }, [value]);
 
     const translatedPlaceholder = placeholder ? i18nRegistry.translate(placeholder) : "";
 
     return (
         <>
-            {(!!css || !!cssImports) && (
+            {(!!importCSS || !!fontFace) && (
                 <style>
-                    {cssImports}
-                    {css}
+                    {importCSS}
+                    {fontFace}
                 </style>
             )}
             <DropDown.Stateless
@@ -129,12 +129,12 @@ function FontFamily({ id, value, commit, options, highlight, i18nRegistry, onEnt
                         {...stylex.props(
                             !value && styles.placeholder,
                             styles.fontWithFallback,
-                            value && styles.font(value),
+                            value && styles.font(value, selectedFont?.fontWeight, selectedFont?.fontStyle),
                         )}
                     >
-                        <span>{selectedFont || translatedPlaceholder}</span>
-                        {enableFallback && selectedFont && selectedFallback && (
-                            <small {...stylex.props(styles.font(selectedFallback))}>{selectedFallback}</small>
+                        <span>{selectedFont?.label || translatedPlaceholder}</span>
+                        {enableFallback && selectedFont?.fallback && (
+                            <small {...stylex.props(styles.font(selectedFont.fallback))}>{selectedFont.fallback}</small>
                         )}
                     </span>
                     {allowEmpty && !!value && (
@@ -148,18 +148,27 @@ function FontFamily({ id, value, commit, options, highlight, i18nRegistry, onEnt
                     )}
                 </DropDown.Header>
                 <DropDown.Contents scrollable={true}>
-                    {Object.values(fonts).map(({ label, fontFile, cssFile, value }) => (
-                        <button
-                            className={stylex.props(styles.button).className}
-                            key={label}
-                            onClick={() => {
-                                commit(value);
-                            }}
-                        >
-                            <span {...stylex.props(styles.font(value), styles.bigFont)}>{label}</span>
-                            {!!fontFile && showIcons && <Icon icon="file" title={fontFile} />}
-                            {!!cssFile && showIcons && <Icon icon="link" title={cssFile} />}
-                        </button>
+                    {Object.entries(fonts).map(([type, items]) => (
+                        <>
+                            <div key={type} {...stylex.props(styles.fontGroup)}>
+                                {i18nRegistry.translate(`fontType.${type}`, type, [], "Carbon.Editor.Styling", "Main")}
+                            </div>
+                            {Object.values(items).map(({ label, fontFile, cssFile, value, fontWeight, fontStyle }) => (
+                                <button
+                                    key={label}
+                                    onClick={() => {
+                                        commit(value);
+                                    }}
+                                    {...stylex.props(styles.button)}
+                                >
+                                    <span {...stylex.props(styles.font(value, fontWeight, fontStyle), styles.bigFont)}>
+                                        {label}
+                                    </span>
+                                    {!!fontFile && showIcons && <Icon icon="file" title={fontFile} />}
+                                    {!!cssFile && showIcons && <Icon icon="link" title={cssFile} />}
+                                </button>
+                            ))}
+                        </>
                     ))}
                 </DropDown.Contents>
             </DropDown.Stateless>
