@@ -23,6 +23,10 @@
       "require": null,
       "import": "./Resources/Private/Editor/BorderRadius/index.jsx"
     },
+    "./FontFamily": {
+      "require": null,
+      "import": "./Resources/Private/Editor/FontFamily/index.jsx"
+    },
     "./Spacing": {
       "require": null,
       "import": "./Resources/Private/Editor/Spacing/index.jsx"
