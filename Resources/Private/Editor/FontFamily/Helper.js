@@ -34,13 +34,21 @@ function generateFontFaceCSS(key, fontFile, fontWeight, fontStyle, fontFileForma
     return `@font-face{font-family:${key};font-weight:${fontWeight};font-style:${fontStyle};font-display:swap;src:url("${fontFile}") format("${format}")}`;
 }
 
+export function beautifyFontOutput(string) {
+    if (!string || typeof string !== "string") {
+        return "";
+    }
+    return string.replaceAll("'", "").replaceAll('"', "").replaceAll(",", ", ").replaceAll("  ", " ").trim();
+}
+
 function generateFontObject(key, item, enableFallback) {
-    const label = item.label || key;
-    const fallback = item.fallback ? item.fallback : "";
+    const label = beautifyFontOutput(item.label || key);
+    const fallbackValue = item.fallback || "";
+    const fallback = beautifyFontOutput(fallbackValue);
     const type = item.type || determineFontType(fallback);
     const fontFile = item.fontFile === true ? true : getFilePath(item.fontFile);
     const cssFile = item.cssFile === true ? true : getFilePath(item.cssFile);
-    const value = `${key}${enableFallback && fallback ? `, ${fallback}` : ""}`;
+    const value = `${key}${enableFallback && fallbackValue ? `,${fallbackValue}` : ""}`;
     const fontStyle = item.fontStyle || "normal";
     const fontWeight = item.fontWeight || 400;
     const importCSS = typeof cssFile === "string" ? `@import url("${cssFile}");` : "";

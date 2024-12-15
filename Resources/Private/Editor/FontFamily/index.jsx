@@ -2,7 +2,8 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Icon, IconButton } from "@neos-project/react-ui-components";
 import { neos } from "@neos-project/neos-ui-decorators";
 import { DropDown } from "@neos-project/react-ui-components";
-import { getFontCollection, injectStylesheet } from "./Helper";
+import { getFontCollection, injectStylesheet, beautifyFontOutput } from "./Helper";
+import DebugOutput from "../Components/DebugOutput";
 import * as stylex from "@stylexjs/stylex";
 
 const defaultOptions = {
@@ -129,10 +130,11 @@ function FontFamily({ id, value, commit, options, highlight, i18nRegistry, onEnt
         placeholder = i18nRegistry.translate(placeholder);
     }
 
-    const fontPlaceholderLabel = placeholderFont?.label || placeholderFont?.name;
+    const fontPlaceholderLabel = beautifyFontOutput(placeholderFont?.label || placeholderFont?.name);
 
     return (
         <>
+            <DebugOutput>VALUE: `{value}`</DebugOutput>
             {(!!importCSS || !!fontFace) && (
                 <style>
                     {importCSS}
@@ -162,12 +164,14 @@ function FontFamily({ id, value, commit, options, highlight, i18nRegistry, onEnt
                     >
                         <span>{selectedFont?.label || placeholder || fontPlaceholderLabel}</span>
                         {enableFallback && selectedFont?.fallback && (
-                            <small {...stylex.props(styles.font(selectedFont.fallback), styles.fontClip)}>{selectedFont.fallback}</small>
+                            <small {...stylex.props(styles.font(selectedFont.fallback), styles.fontClip)}>
+                                {selectedFont.fallback}
+                            </small>
                         )}
                         {enableFallback && !value && !!placeholderFont.fallback && (
                             <small {...stylex.props(styles.font(placeholderFont.fallback), styles.fontClip)}>
                                 {!!placeholder && `${fontPlaceholderLabel}, `}
-                                {placeholderFont.fallback}
+                                {beautifyFontOutput(placeholderFont.fallback)}
                             </small>
                         )}
                     </span>
