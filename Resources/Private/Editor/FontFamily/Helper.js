@@ -22,35 +22,50 @@ function generateFontFaceCSS(key, fontFile, fontWeight, fontStyle, fontFileForma
     return `@font-face{font-family:${key};font-weight:${fontWeight};font-style:${fontStyle};font-display:swap;src:url("${fontFile}") format("${format}")}`;
 }
 
-export function getFontCollection(fonts, enableFallback) {
+function generateFontObject(key, item, enableFallback) {
+    const label = item.label || key;
+    const fallback = item.fallback ? item.fallback : "";
+    const type = item.type || determineFontType(fallback);
+    const fontFile = getFilePath(item.fontFile);
+    const cssFile = getFilePath(item.cssFile);
+    const value = `${key}${enableFallback && fallback ? `, ${fallback}` : ""}`;
+    const fontStyle = item.fontStyle || "normal";
+    const fontWeight = item.fontWeight || 400;
+    const importCSS = cssFile ? `@import url("${cssFile}");` : "";
+    const fontFace = fontFile ? generateFontFaceCSS(key, fontFile, fontWeight, fontStyle, item.fontFileFormat) : "";
+
+    return { label, fallback, fontFile, fontStyle, fontWeight, cssFile, value, importCSS, fontFace, type };
+}
+
+export function getFontCollection(fonts, enableFallback, placeholderFont) {
     const object = {
         importCSS: "",
         fontFace: "",
         fonts: {},
         flat: {},
     };
+    if (placeholderFont && placeholderFont.name) {
+        const { importCSS, fontFace } = generateFontObject(placeholderFont.name, placeholderFont, enableFallback);
+        if (importCSS) {
+            object.importCSS = importCSS;
+        }
+        if (fontFace) {
+            object.fontFace = fontFace;
+        }
+    }
     for (const key in fonts) {
         const item = fonts[key];
         if (!item) {
             continue;
         }
-        const label = item.label || key;
-        const fallback = item.fallback ? item.fallback : "";
-        const type = item.type || determineFontType(fallback);
-        const fontFile = getFilePath(item.fontFile);
-        const cssFile = getFilePath(item.cssFile);
-        const value = `${key}${enableFallback && fallback ? `, ${fallback}` : ""}`;
-        const fontStyle = item.fontStyle || "normal";
-        const fontWeight = item.fontWeight || 400;
+        const { importCSS, fontFace, type, ...result } = generateFontObject(key, item, enableFallback);
 
-        if (cssFile) {
-            object.importCSS = `${object.importCSS}@import url("${cssFile}");`;
+        if (importCSS) {
+            object.importCSS = `${object.importCSS}${importCSS}`;
         }
-        if (fontFile) {
-            object.fontFace = `${object.fontFace}${generateFontFaceCSS(key, fontFile, fontWeight, fontStyle, item.fontFileFormat)}`;
+        if (fontFace) {
+            object.fontFace = `${object.fontFace}${fontFace}`;
         }
-
-        const result = { label, fallback, fontFile, fontStyle, fontWeight, cssFile, value };
 
         if (!object.fonts[type]) {
             object.fonts[type] = {};

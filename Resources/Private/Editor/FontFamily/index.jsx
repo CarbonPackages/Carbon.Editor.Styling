@@ -10,6 +10,7 @@ const defaultOptions = {
     readonly: false,
     allowEmpty: true,
     placeholder: "",
+    placeholderFont: false,
     enableFallback: true,
     showIcons: true,
     fonts: {},
@@ -86,14 +87,16 @@ const styles = stylex.create({
 });
 
 function FontFamily({ id, value, commit, options, highlight, i18nRegistry, onEnterKey, config }) {
-    const { disabled, readonly, allowEmpty, placeholder, enableFallback, showIcons } = {
+    const { disabled, readonly, allowEmpty, enableFallback, showIcons, placeholderFont } = {
         ...defaultOptions,
         ...config,
         ...options,
     };
+    let { placeholder } = { ...defaultOptions, ...config, ...options };
     const { importCSS, fontFace, fonts, flat } = getFontCollection(
         { ...defaultOptions.fonts, ...config.fonts, ...options.fonts },
         enableFallback,
+        !placeholder && placeholderFont ? placeholderFont : null,
     );
 
     const [isOpen, setIsOpen] = useState(false);
@@ -105,10 +108,14 @@ function FontFamily({ id, value, commit, options, highlight, i18nRegistry, onEnt
             return;
         }
         const [font] = value.split(",");
-        setSelectedFont(flat[font]);
+        setSelectedFont(flat[font.trim()]);
     }, [value]);
 
-    const translatedPlaceholder = placeholder ? i18nRegistry.translate(placeholder) : "";
+    if (placeholder) {
+        placeholder = i18nRegistry.translate(placeholder);
+    }
+
+    const fontPlaceholderLabel = placeholderFont?.label || placeholderFont?.name;
 
     return (
         <>
@@ -132,12 +139,14 @@ function FontFamily({ id, value, commit, options, highlight, i18nRegistry, onEnt
                             !value && styles.placeholder,
                             styles.fontWithFallback,
                             value && styles.font(value, selectedFont?.fontWeight, selectedFont?.fontStyle),
+                            !value && !!placeholderFont?.name && styles.font(`${placeholderFont.name}${enableFallback && !!placeholderFont.fallback ? `, ${placeholderFont.fallback}` : ""}`),
                         )}
                     >
-                        <span>{selectedFont?.label || translatedPlaceholder}</span>
+                        <span>{selectedFont?.label || placeholder || fontPlaceholderLabel}</span>
                         {enableFallback && selectedFont?.fallback && (
                             <small {...stylex.props(styles.font(selectedFont.fallback))}>{selectedFont.fallback}</small>
                         )}
+                        {enableFallback && !value && !!placeholderFont.fallback && <small {...stylex.props(styles.font(placeholderFont.fallback))}>{!!placeholder && `${fontPlaceholderLabel}, `}{placeholderFont.fallback}</small>}
                     </span>
                     {allowEmpty && !!value && (
                         <IconButton

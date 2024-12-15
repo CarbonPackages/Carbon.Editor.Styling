@@ -7,7 +7,15 @@ Neos:
           readonly: false
           allowEmpty: true
           placeholder: ''
-          # If set to false, only the key is stored in the database
+          # Set this to an object just like a font value to use a placeholder font
+          # It takes the same values as a font value, but adding the needed name
+          placeholderFont: false
+          # Example:
+          # placeholderFont:
+          #  name: 'Open Sans'
+          #  fallback: 'Helvetica, Arial, sans-serif'
+
+          # If set to false, only the font name is stored in the database
           enableFallback: true
           # Show icon if the font has a font file or a css file
           showIcons: true
@@ -41,12 +49,19 @@ Neos:
           minRows: 2
           maxRows: 24
           expandedRows: 6
+          # If set to true, the counter is shown
           showCounter: true
+          # If set to true, the counter count also the placeholder
           countPlaceholder: false
+          # If set to true, it is allowed to add line breaks
           allowLineBreaks: true
+          # Number. If smaller than the current length, the text is marked as warning
           warningLengthMin: null
+          # Number. If smaller than the current length, the text is marked as error
           errorLengthMin: null
+          # Number. If greater than the current length, the text is marked as warning
           warningLengthMax: null
+          # Number. If greater than the current length, the text is marked as error
           errorLengthMax: null
         'Carbon.Editor.Styling.Border':
           placeholder: ''
