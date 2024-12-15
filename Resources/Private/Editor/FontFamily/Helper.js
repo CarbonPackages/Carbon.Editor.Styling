@@ -8,6 +8,18 @@ function getFilePath(file) {
     return file;
 }
 
+export function injectStylesheet(file) {
+    const href = getFilePath(file);
+    if (!href || document.querySelector(`link[href="${href}"]`)) {
+        return null;
+    }
+    const head = document.head;
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = href;
+    head.appendChild(link);
+}
+
 function determineFontType(fallback) {
     if (fallback.includes("sans-serif")) return "sans-serif";
     if (fallback.includes("serif")) return "serif";
@@ -26,18 +38,21 @@ function generateFontObject(key, item, enableFallback) {
     const label = item.label || key;
     const fallback = item.fallback ? item.fallback : "";
     const type = item.type || determineFontType(fallback);
-    const fontFile = getFilePath(item.fontFile);
-    const cssFile = getFilePath(item.cssFile);
+    const fontFile = item.fontFile === true ? true : getFilePath(item.fontFile);
+    const cssFile = item.cssFile === true ? true : getFilePath(item.cssFile);
     const value = `${key}${enableFallback && fallback ? `, ${fallback}` : ""}`;
     const fontStyle = item.fontStyle || "normal";
     const fontWeight = item.fontWeight || 400;
-    const importCSS = cssFile ? `@import url("${cssFile}");` : "";
-    const fontFace = fontFile ? generateFontFaceCSS(key, fontFile, fontWeight, fontStyle, item.fontFileFormat) : "";
+    const importCSS = typeof cssFile === "string" ? `@import url("${cssFile}");` : "";
+    const fontFace =
+        typeof fontFile === "string"
+            ? generateFontFaceCSS(key, fontFile, fontWeight, fontStyle, item.fontFileFormat)
+            : "";
 
     return { label, fallback, fontFile, fontStyle, fontWeight, cssFile, value, importCSS, fontFace, type };
 }
 
-export function getFontCollection(fonts, enableFallback, placeholderFont) {
+export function getFontCollection(fonts, enableFallback, placeholderFont, sortFonts) {
     const object = {
         importCSS: "",
         fontFace: "",
@@ -72,6 +87,13 @@ export function getFontCollection(fonts, enableFallback, placeholderFont) {
         }
         object.flat[key] = result;
         object.fonts[type][key] = result;
+    }
+    if (sortFonts) {
+        for (const type in object.fonts) {
+            object.fonts[type] = Object.fromEntries(
+                Object.entries(object.fonts[type]).sort(([, a], [, b]) => a.label.localeCompare(b.label)),
+            );
+        }
     }
     return object;
 }

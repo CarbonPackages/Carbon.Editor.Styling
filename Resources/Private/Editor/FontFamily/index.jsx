@@ -2,13 +2,15 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Icon, IconButton } from "@neos-project/react-ui-components";
 import { neos } from "@neos-project/neos-ui-decorators";
 import { DropDown } from "@neos-project/react-ui-components";
-import { getFontCollection } from "./Helper";
+import { getFontCollection, injectStylesheet } from "./Helper";
 import * as stylex from "@stylexjs/stylex";
 
 const defaultOptions = {
     disabled: false,
     readonly: false,
     allowEmpty: true,
+    cssFile: false,
+    sortFonts: true,
     placeholder: "",
     placeholderFont: false,
     enableFallback: true,
@@ -22,6 +24,10 @@ const styles = stylex.create({
         fontWeight,
         fontStyle,
     }),
+    fontClip: {
+        overflowX: "clip",
+        textOverflow: "ellipsis",
+    },
     header: {
         display: "flex",
         justifyContent: "space-between",
@@ -81,13 +87,19 @@ const styles = stylex.create({
         flexDirection: "column",
         justifyContent: "center",
         gap: "var(--spacing-Quarter)",
+        marginLeft: "calc(var(--spacing-Full) * -1)",
+        paddingLeft: "var(--spacing-Full)",
+        overflow: "hidden",
         lineHeight: 1,
         height: 40,
+    },
+    block: {
+        display: "block !important",
     },
 });
 
 function FontFamily({ id, value, commit, options, highlight, i18nRegistry, onEnterKey, config }) {
-    const { disabled, readonly, allowEmpty, enableFallback, showIcons, placeholderFont } = {
+    const { disabled, readonly, allowEmpty, enableFallback, showIcons, placeholderFont, cssFile, sortFonts } = {
         ...defaultOptions,
         ...config,
         ...options,
@@ -97,10 +109,12 @@ function FontFamily({ id, value, commit, options, highlight, i18nRegistry, onEnt
         { ...defaultOptions.fonts, ...config.fonts, ...options.fonts },
         enableFallback,
         !placeholder && placeholderFont ? placeholderFont : null,
+        sortFonts,
     );
 
     const [isOpen, setIsOpen] = useState(false);
     const [selectedFont, setSelectedFont] = useState(null);
+    injectStylesheet(cssFile);
 
     useEffect(() => {
         if (!value) {
@@ -139,14 +153,23 @@ function FontFamily({ id, value, commit, options, highlight, i18nRegistry, onEnt
                             !value && styles.placeholder,
                             styles.fontWithFallback,
                             value && styles.font(value, selectedFont?.fontWeight, selectedFont?.fontStyle),
-                            !value && !!placeholderFont?.name && styles.font(`${placeholderFont.name}${enableFallback && !!placeholderFont.fallback ? `, ${placeholderFont.fallback}` : ""}`),
+                            !value &&
+                                !!placeholderFont?.name &&
+                                styles.font(
+                                    `${placeholderFont.name}${enableFallback && !!placeholderFont.fallback ? `, ${placeholderFont.fallback}` : ""}`,
+                                ),
                         )}
                     >
                         <span>{selectedFont?.label || placeholder || fontPlaceholderLabel}</span>
                         {enableFallback && selectedFont?.fallback && (
-                            <small {...stylex.props(styles.font(selectedFont.fallback))}>{selectedFont.fallback}</small>
+                            <small {...stylex.props(styles.font(selectedFont.fallback), styles.fontClip)}>{selectedFont.fallback}</small>
                         )}
-                        {enableFallback && !value && !!placeholderFont.fallback && <small {...stylex.props(styles.font(placeholderFont.fallback))}>{!!placeholder && `${fontPlaceholderLabel}, `}{placeholderFont.fallback}</small>}
+                        {enableFallback && !value && !!placeholderFont.fallback && (
+                            <small {...stylex.props(styles.font(placeholderFont.fallback), styles.fontClip)}>
+                                {!!placeholder && `${fontPlaceholderLabel}, `}
+                                {placeholderFont.fallback}
+                            </small>
+                        )}
                     </span>
                     {allowEmpty && !!value && (
                         <IconButton
@@ -158,7 +181,7 @@ function FontFamily({ id, value, commit, options, highlight, i18nRegistry, onEnt
                         />
                     )}
                 </DropDown.Header>
-                <DropDown.Contents scrollable={true}>
+                <DropDown.Contents scrollable={true} className={stylex.props(isOpen && styles.block).className}>
                     {Object.entries(fonts).map(([type, items]) => (
                         <>
                             <div key={type} {...stylex.props(styles.fontGroup)}>
@@ -175,8 +198,12 @@ function FontFamily({ id, value, commit, options, highlight, i18nRegistry, onEnt
                                     <span {...stylex.props(styles.font(value, fontWeight, fontStyle), styles.bigFont)}>
                                         {label}
                                     </span>
-                                    {!!fontFile && showIcons && <Icon icon="file" title={fontFile} />}
-                                    {!!cssFile && showIcons && <Icon icon="link" title={cssFile} />}
+                                    {!!fontFile && showIcons && (
+                                        <Icon icon="file" title={fontFile !== true ? fontFile : null} />
+                                    )}
+                                    {!!cssFile && showIcons && (
+                                        <Icon icon="link" title={cssFile !== true ? cssFile : null} />
+                                    )}
                                 </button>
                             ))}
                         </>
