@@ -329,7 +329,7 @@ function BorderRadius({ id, value, commit, highlight, options, i18nRegistry, con
 
     return (
         <>
-            <DebugOutput>VALUE: "{value}"</DebugOutput>
+            <DebugOutput>VALUE: `{value}`</DebugOutput>
             <div {...stylex.props(styles.container, highlight && styles.highlight, disabled && styles.disabled)}>
                 {mode === "multiple" && (
                     <div {...stylex.props(styles.segmentedGrid)}>

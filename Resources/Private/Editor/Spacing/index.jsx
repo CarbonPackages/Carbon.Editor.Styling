@@ -289,7 +289,7 @@ function Spacing({ id, value, commit, highlight, options, i18nRegistry, config, 
 
     return (
         <>
-            <DebugOutput>VALUE: "{value}"</DebugOutput>
+            <DebugOutput>VALUE: `{value}`</DebugOutput>
             <div {...stylex.props(styles.container, highlight && styles.highlight, disabled && styles.disabled)}>
                 {mode === "multiple" ? (
                     <div {...stylex.props(styles.segmentedGrid, styles[segmentedGrid])}>

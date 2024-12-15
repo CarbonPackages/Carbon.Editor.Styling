@@ -205,7 +205,7 @@ function Border({ id, value, commit, highlight, options, i18nRegistry, config, o
 
     return (
         <>
-            <DebugOutput>VALUE: "{value}"</DebugOutput>
+            <DebugOutput>VALUE: `{value}`</DebugOutput>
             <div {...stylex.props(styles.container, highlight && styles.highlight, disabled && styles.disabled)}>
                 {allowWidth && (
                     <TextInput
