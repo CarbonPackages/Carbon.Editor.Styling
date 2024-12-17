@@ -20,7 +20,11 @@ export function injectStylesheet(file) {
     head.appendChild(link);
 }
 
-function determineFontType(fallback) {
+function determineFontType(fallback, group) {
+    if (group) {
+        if (group === "Sans Serif") return "sans-serif";
+        return group.toLowerCase();
+    }
     if (fallback.includes("sans-serif")) return "sans-serif";
     if (fallback.includes("serif")) return "serif";
     if (fallback.includes("monospace")) return "monospace";
@@ -45,7 +49,7 @@ function generateFontObject(key, item, enableFallback) {
     const label = beautifyFontOutput(item.label || key);
     const fallbackValue = item.fallback || "";
     const fallback = beautifyFontOutput(fallbackValue);
-    const type = item.type || determineFontType(fallback);
+    const type = item.type || determineFontType(fallback, item.group);
     const fontFile = item.fontFile === true ? true : getFilePath(item.fontFile);
     const cssFile = item.cssFile === true ? true : getFilePath(item.cssFile);
     const value = `${key}${enableFallback && fallbackValue ? `,${fallbackValue}` : ""}`;

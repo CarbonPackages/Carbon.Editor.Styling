@@ -33,6 +33,9 @@ importers:
       esbuild:
         specifier: ^0.24.0
         version: 0.24.0
+      fuzzysearch:
+        specifier: ^1.0.3
+        version: 1.0.3
       prettier:
         specifier: ^3.4.2
         version: 3.4.2
@@ -357,6 +360,9 @@ packages:
 
   esm-resolve@1.0.11:
     resolution: {integrity: sha512-LxF0wfUQm3ldUDHkkV2MIbvvY0TgzIpJ420jHSV1Dm+IlplBEWiJTKWM61GtxUfvjV6iD4OtTYFGAGM2uuIUWg==}
+
+  fuzzysearch@1.0.3:
+    resolution: {integrity: sha512-s+kNWQuI3mo9OALw0HJ6YGmMbLqEufCh2nX/zzV5CrICQ/y4AwPxM+6TIiF9ItFCHXFCyM/BfCCmN57NTIJuPg==}
 
   gensync@1.0.0-beta.2:
     resolution: {integrity: sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==}
@@ -779,6 +785,8 @@ snapshots:
   escalade@3.2.0: {}
 
   esm-resolve@1.0.11: {}
+
+  fuzzysearch@1.0.3: {}
 
   gensync@1.0.0-beta.2: {}
 

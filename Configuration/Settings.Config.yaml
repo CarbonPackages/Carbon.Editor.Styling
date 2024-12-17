@@ -21,6 +21,9 @@ Neos:
           # Sort the fonts by name
           sortFonts: true
 
+          # Use also the fonts from Carbon Webfonts
+          useCarbonWebfonts: true
+
           # If set to false, only the font name is stored in the database
           enableFallback: true
           # Show icon if the font has a font file or a css file
@@ -46,6 +49,8 @@ Neos:
           #   cssFile: "https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@1,600"
           #   # Optional and only used if fontFile is set: The font format. If not set the format is guessed from the file extension
           #   fontFileFormat: 'woff2'
+          #   # Optional: Group can be 'Sans Serif', Serif, Handwriting, Display or Monospace, if not set the font group is guessed by the fallback
+          #   group: 'Sans Serif'
 
         'Carbon.Editor.Styling.TextAreaWithCounter':
           disabled: false
