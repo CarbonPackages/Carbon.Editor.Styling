@@ -8,7 +8,7 @@ prettier:
 
 ### Clean up generated files
 clean:
-	rm -rf Resources/Public/Editor Resources/Public
+	rm -rf Resources/Public
 
 ## Install dependencies and build production version
 production: install prettier build
