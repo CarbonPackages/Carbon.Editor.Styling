@@ -23,10 +23,6 @@
       "require": null,
       "import": "./Resources/Private/Editor/BorderRadius/index.jsx"
     },
-    "./FontFamily": {
-      "require": null,
-      "import": "./Resources/Private/Editor/FontFamily/index.jsx"
-    },
     "./Spacing": {
       "require": null,
       "import": "./Resources/Private/Editor/Spacing/index.jsx"
@@ -77,7 +73,6 @@
     "@neos-project/neos-ui-extensibility": "~8.3.11",
     "@stylexjs/esbuild-plugin": "^0.9.3",
     "esbuild": "^0.24.0",
-    "fuzzysearch": "^1.0.3",
     "prettier": "^3.4.2"
   },
   "peerDependencies": {

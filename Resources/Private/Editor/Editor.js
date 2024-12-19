@@ -6,7 +6,6 @@ const editors = {
     BackgroundSize: () => import("./BackgroundSize"),
     Border: () => import("./Border"),
     BorderRadius: () => import("./BorderRadius"),
-    FontFamily: () => import("./FontFamily"),
     Spacing: () => import("./Spacing"),
     TextAreaWithCounter: () => import("./TextAreaWithCounter"),
 };
