@@ -172,34 +172,6 @@
                 <source>Stretches the image in the corresponding dimension to the specified length.</source>
                 <target>Dehnt das Bild in der entsprechenden Dimension auf die angegebene Länge.</target>
             </trans-unit>
-            <trans-unit id="fontType.sans-serif" xml:space="preserve">
-                <source>Sans serif font</source>
-                <target>Serifenlose Schrift</target>
-            </trans-unit>
-            <trans-unit id="fontType.serif" xml:space="preserve">
-                <source>Serif font</source>
-                <target>Serifenschrift</target>
-            </trans-unit>
-            <trans-unit id="fontType.cursive" xml:space="preserve">
-                <source>Cursive</source>
-                <target>Schreibschrift</target>
-            </trans-unit>
-            <trans-unit id="fontType.fantasy" xml:space="preserve">
-                <source>Fantasy font</source>
-                <target>Fantasieschrift</target>
-            </trans-unit>
-            <trans-unit id="fontType.monospace" xml:space="preserve">
-                <source>Monospace font</source>
-                <target>Festbreitenschrift</target>
-            </trans-unit>
-            <trans-unit id="fontType.display" xml:space="preserve">
-                <source>Font for headlines</source>
-                <target>Schriften für Überschriften</target>
-            </trans-unit>
-            <trans-unit id="search" xml:space="preserve">
-                <source>Search</source>
-                <target>Suche</target>
-            </trans-unit>
         </body>
     </file>
 </xliff>
