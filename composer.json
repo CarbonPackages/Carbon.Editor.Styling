@@ -6,9 +6,6 @@
     "require": {
         "neos/neos-ui": "^8.3 || ^9.0"
     },
-    "suggest": {
-        "carbon/webfonts": "Adds webfonts to the font family editor"
-    },
     "autoload" : {
       "psr-4" : {
         "Carbon\\Editor\\Styling\\" : "Classes/"
