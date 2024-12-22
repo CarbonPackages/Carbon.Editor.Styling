@@ -53,9 +53,9 @@
     "url": "git://github.com/CarbonPackages/Carbon.Editor.Styling.git"
   },
   "scripts": {
-    "build": "node build.js",
-    "watch": "node build.js --watch",
-    "dev": "node build.js --dev",
+    "build": "NODE_OPTIONS=--disable-warning=ExperimentalWarning node build.js",
+    "watch": "NODE_OPTIONS=--disable-warning=ExperimentalWarning node build.js --watch",
+    "dev": "NODE_OPTIONS=--disable-warning=ExperimentalWarning node build.js --dev",
     "pipeline": "pnpm install --silent;pnpm build"
   },
   "bugs": {
@@ -72,7 +72,7 @@
   "devDependencies": {
     "@neos-project/neos-ui-extensibility": "~8.3.11",
     "@stylexjs/esbuild-plugin": "^0.9.3",
-    "esbuild": "^0.24.0",
+    "esbuild": "^0.24.2",
     "prettier": "^3.4.2"
   },
   "peerDependencies": {
