@@ -16,7 +16,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
+          node-version-file: '.nvmrc'
           registry-url: 'https://registry.npmjs.org'
       - name: Bump version
         uses: BellCubeDev/update-package-version-by-release-tag@v2
