@@ -23,6 +23,7 @@ const slideDialogContents = stylex.keyframes({
 
 const styles = stylex.create({
     dialog: {
+        "--size": "calc(100% - var(--spacing-GoldenUnit))",
         position: "fixed",
         inset: 0,
         background: "var(--colors-ContrastDarker)",
@@ -31,12 +32,18 @@ const styles = stylex.create({
         color: "var(--colors-ContrastBrightest)",
         boxShadow: "0 20px 40px #0006",
         animation: `${slideDialogContents} var(--transition-Default) ease-in-out`,
+        maxWidth: "var(--size)",
+        maxHeight: "var(--size)",
         ":where([open])": {
             "::backdrop": {
                 // Not all browsers support CSS custom properties for ::backdrop
                 animation: `${backdropFadeIn} 0.3s ease-out forwards`,
             },
         },
+    },
+    fullSize: {
+        minWidth: "var(--size)",
+        minHeight: "var(--size)",
     },
     title: (hasClose) => ({
         padding: "var(--spacing-Full)",
@@ -71,6 +78,7 @@ function Dialog({
     onCloseButton,
     style,
     title,
+    fullSize = false,
     applyLabel = "Neos.Neos:Main:applyChanges",
     cancelLabel = "Neos.Neos:Main:cancel",
     closeLabel = "Neos.Neos:Main:close",
@@ -103,7 +111,7 @@ function Dialog({
     const hasClose = variableIsFunction(onCloseButton);
 
     return (
-        <dialog ref={dialog} {...stylex.props(styles.dialog, style)}>
+        <dialog ref={dialog} {...stylex.props(styles.dialog, fullSize && styles.fullSize, style)}>
             {title && <h2 {...stylex.props(styles.title(hasClose))}>{title}</h2>}
             {children}
             {(hasApply || hasCancel) && (
