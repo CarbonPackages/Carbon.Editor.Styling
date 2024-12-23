@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { TextArea } from "@neos-project/react-ui-components";
-import { neos } from "@neos-project/neos-ui-decorators";
+import { injectNeosProps } from "../Helper/Neos";
 import * as stylex from "@stylexjs/stylex";
 
 const styles = stylex.create({
@@ -113,9 +113,4 @@ function TextAreaWithCounter({ id, value, commit, className, options, i18nRegist
     );
 }
 
-const neosifier = neos((globalRegistry) => ({
-    i18nRegistry: globalRegistry.get("i18n"),
-    config: globalRegistry.get("frontendConfiguration").get("Carbon.Editor.Styling.TextAreaWithCounter"),
-}));
-
-export default neosifier(TextAreaWithCounter);
+export default injectNeosProps(TextAreaWithCounter, "TextAreaWithCounter");

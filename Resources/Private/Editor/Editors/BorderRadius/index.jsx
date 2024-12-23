@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, Suspense, lazy, useRef } from "react";
 import { Button, Icon } from "@neos-project/react-ui-components";
+import { injectNeosProps } from "../../Helper/Neos";
 import TextInput from "../../Components/TextInput";
 import RoundedBox from "../../Components/RoundedBox";
 import ButtonAsInput from "../../Components/ButtonAsInput";
@@ -10,7 +11,6 @@ import BorderRadiusBox from "./BorderRadiusBox";
 import DebugOutput from "../../Components/DebugOutput";
 import { getModeRaw, fromContentRepoToEditor, getAspectRatio, getInitState, convertForCommit } from "./Helper";
 import { getNumberAndUnit, limitToMinMax, hasNoValue } from "../../Helper";
-import { neos } from "@neos-project/neos-ui-decorators";
 import { useDebounce } from "use-debounce";
 import * as stylex from "@stylexjs/stylex";
 import LoadingAnimation from "carbon-neos-loadinganimation/LoadingWithStyleX";
@@ -627,9 +627,4 @@ function BorderRadius({ id, value, commit, highlight, options, i18nRegistry, con
     );
 }
 
-const neosifier = neos((globalRegistry) => ({
-    i18nRegistry: globalRegistry.get("i18n"),
-    config: globalRegistry.get("frontendConfiguration").get("Carbon.Editor.Styling.BorderRadius"),
-}));
-
-export default neosifier(BorderRadius);
+export default injectNeosProps(BorderRadius, "BorderRadius");

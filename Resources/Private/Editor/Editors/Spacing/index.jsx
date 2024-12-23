@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Button, Icon } from "@neos-project/react-ui-components";
+import { injectNeosProps } from "../../Helper/Neos";
 import TextInput from "../../Components/TextInput";
 import RoundedBox from "../../Components/RoundedBox";
 import SpacingBox from "../../Components/SpacingBox";
 import DebugOutput from "../../Components/DebugOutput";
 import { fromContentRepoToEditor, multipleSettings, numberOrNull } from "./Helper";
 import { convertValue, limitToMinMax, hasNoValue } from "../../Helper";
-import { neos } from "@neos-project/neos-ui-decorators";
 import { useDebounce } from "use-debounce";
 import * as stylex from "@stylexjs/stylex";
 
@@ -575,9 +575,4 @@ function Spacing({ id, value, commit, highlight, options, i18nRegistry, config, 
     );
 }
 
-const neosifier = neos((globalRegistry) => ({
-    i18nRegistry: globalRegistry.get("i18n"),
-    config: globalRegistry.get("frontendConfiguration").get("Carbon.Editor.Styling.Spacing"),
-}));
-
-export default neosifier(Spacing);
+export default injectNeosProps(Spacing, "Spacing");

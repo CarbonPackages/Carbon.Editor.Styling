@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, Suspense, lazy } from "react";
-import { neos } from "@neos-project/neos-ui-decorators";
+import { injectNeosProps } from "../../Helper/Neos";
 import { Button, Icon, CheckBox } from "@neos-project/react-ui-components";
 import Dropdown from "../../Components/Dropdown";
 import DebugOutput from "../../Components/DebugOutput";
@@ -329,9 +329,4 @@ function Border({ id, value, commit, highlight, options, i18nRegistry, config, o
     );
 }
 
-const neosifier = neos((globalRegistry) => ({
-    i18nRegistry: globalRegistry.get("i18n"),
-    config: globalRegistry.get("frontendConfiguration").get("Carbon.Editor.Styling.Border"),
-}));
-
-export default neosifier(Border);
+export default injectNeosProps(Border, "Border");

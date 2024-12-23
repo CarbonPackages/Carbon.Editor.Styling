@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Button, Icon } from "@neos-project/react-ui-components";
-import { neos } from "@neos-project/neos-ui-decorators";
+import { injectNeosProps } from "../../Helper/Neos";
 import { fromContentRepoToEditor } from "./Helper";
 import { limitToMinMax } from "../../Helper";
 import Dropdown from "../../Components/Dropdown";
@@ -250,9 +250,4 @@ function BackgroundSize({ id, value, commit, options, highlight, i18nRegistry, o
     );
 }
 
-const neosifier = neos((globalRegistry) => ({
-    i18nRegistry: globalRegistry.get("i18n"),
-    config: globalRegistry.get("frontendConfiguration").get("Carbon.Editor.Styling.BackgroundSize"),
-}));
-
-export default neosifier(BackgroundSize);
+export default injectNeosProps(BackgroundSize, "BackgroundSize");
