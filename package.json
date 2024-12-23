@@ -4,44 +4,44 @@
   "license": "GPL-3.0",
   "author": "Jon Uhlmann",
   "type": "module",
-  "main": "Resources/Private/Editor/index.js",
-  "module": "Resources/Private/Editor/index.js",
+  "main": "Resources/Private/Editor/index.mjs",
+  "module": "Resources/Private/Editor/index.mjs",
   "exports": {
     ".": {
       "require": null,
-      "import": "./Resources/Private/Editor/index.js"
+      "import": "./Resources/Private/Editor/index.mjs"
     },
     "./BackgroundSize": {
       "require": null,
-      "import": "./Resources/Private/Editor/BackgroundSize/index.jsx"
+      "import": "./Resources/Private/Editor/BackgroundSize.js"
     },
     "./Border": {
       "require": null,
-      "import": "./Resources/Private/Editor/Border/index.jsx"
+      "import": "./Resources/Private/Editor/Border.js"
     },
     "./BorderRadius": {
       "require": null,
-      "import": "./Resources/Private/Editor/BorderRadius/index.jsx"
+      "import": "./Resources/Private/Editor/BorderRadius.js"
     },
     "./Spacing": {
       "require": null,
-      "import": "./Resources/Private/Editor/Spacing/index.jsx"
+      "import": "./Resources/Private/Editor/Spacing.js"
     },
     "./TextAreaWithCounter": {
       "require": null,
-      "import": "./Resources/Private/Editor/TextAreaWithCounter.jsx"
+      "import": "./Resources/Private/Editor/TextAreaWithCounter.js"
     },
     "./Dialog": {
       "require": null,
-      "import": "./Resources/Private/Editor/Components/Dialog.jsx"
+      "import": "./Resources/Private/Editor/Dialog.js"
     },
     "./TextInput": {
       "require": null,
-      "import": "./Resources/Private/Editor/Components/TextInput.jsx"
+      "import": "./Resources/Private/Editor/TextInput.js"
     },
     "./Dropdown": {
       "require": null,
-      "import": "./Resources/Private/Editor/Components/Dropdown.jsx"
+      "import": "./Resources/Private/Editor/Dropdown.js"
     }
   },
   "files": [

@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import SvgPath from "../Components/SvgPath";
+import SvgPath from "../../Components/SvgPath";
 
 export default function BorderRadiusBox({ selected = null, organic = false, style = {}, className }) {
     const size = 12;

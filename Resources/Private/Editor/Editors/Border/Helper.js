@@ -1,4 +1,4 @@
-import { getNumberAndUnit } from "../Helper";
+import { getNumberAndUnit } from "../../Helper";
 
 export function getDefaultColor({ options, config, defaultOptions }) {
     const { defaultColor, allowCurrentColor } = {

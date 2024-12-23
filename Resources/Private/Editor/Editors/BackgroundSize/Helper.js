@@ -1,4 +1,4 @@
-import { getNumberAndUnit } from "../Helper";
+import { getNumberAndUnit } from "../../Helper";
 
 export function fromContentRepoToEditor({ value, min, max, allowPercentage, allowContain, allowAuto, allowCover }) {
     if (allowAuto && value === "auto") {

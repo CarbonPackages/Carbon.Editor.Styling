@@ -1,4 +1,4 @@
-import { getNumberAndUnit, hasNoValue } from "../Helper";
+import { getNumberAndUnit, hasNoValue } from "../../Helper";
 
 export function getModeRaw({ value, allowFullRounded, fullRoundedValue, allowOrganic, allowMultiple }) {
     if (allowFullRounded && value && (value === `${fullRoundedValue}px` || value === fullRoundedValue)) {

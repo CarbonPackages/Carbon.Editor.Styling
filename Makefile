@@ -4,7 +4,7 @@
 
 ## Prettier files
 prettier:
-	pnpm prettier --write --no-error-on-unmatched-pattern '**/*.{js,jsx,yaml,css,md}'
+	pnpm prettier --write --no-error-on-unmatched-pattern '**/*.{js,mjs,jsx,yaml,css,md}'
 
 ### Clean up generated files
 clean:

@@ -1,4 +1,4 @@
-import { convertValue, hasNoValue } from "../Helper";
+import { convertValue, hasNoValue } from "../../Helper";
 
 export function fromContentRepoToEditor({ value, min, max, allowEmpty, allowMultiple, allowSync }) {
     if (typeof value == "number") {

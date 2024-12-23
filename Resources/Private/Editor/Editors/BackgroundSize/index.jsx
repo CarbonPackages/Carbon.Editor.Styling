@@ -2,11 +2,11 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Button, Icon } from "@neos-project/react-ui-components";
 import { neos } from "@neos-project/neos-ui-decorators";
 import { fromContentRepoToEditor } from "./Helper";
-import { limitToMinMax } from "../Helper";
-import Dropdown from "../Components/Dropdown";
-import DebugOutput from "../Components/DebugOutput";
-import TextInput from "../Components/TextInput";
-import ButtonAsInput from "../Components/ButtonAsInput";
+import { limitToMinMax } from "../../Helper";
+import Dropdown from "../../Components/Dropdown";
+import DebugOutput from "../../Components/DebugOutput";
+import TextInput from "../../Components/TextInput";
+import ButtonAsInput from "../../Components/ButtonAsInput";
 import * as stylex from "@stylexjs/stylex";
 
 const styles = stylex.create({

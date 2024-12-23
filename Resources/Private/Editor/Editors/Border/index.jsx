@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback, Suspense, lazy } from "react";
 import { neos } from "@neos-project/neos-ui-decorators";
 import { Button, Icon, CheckBox } from "@neos-project/react-ui-components";
-import Dropdown from "../Components/Dropdown";
-import DebugOutput from "../Components/DebugOutput";
-import TextInput from "../Components/TextInput";
+import Dropdown from "../../Components/Dropdown";
+import DebugOutput from "../../Components/DebugOutput";
+import TextInput from "../../Components/TextInput";
 import { fromContentRepoToEditor, needDarkColor, getDefaultColor } from "./Helper";
-import { hasNoValue } from "../Helper";
+import { hasNoValue } from "../../Helper";
 import BorderPreview from "./BorderPreview";
 import { HexColorPicker, HexColorInput } from "react-colorful";
 import * as stylex from "@stylexjs/stylex";
