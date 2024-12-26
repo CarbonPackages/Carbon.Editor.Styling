@@ -21,11 +21,11 @@ const styles = stylex.create({
         paddingLeft: "var(--fontSize-Base)",
         paddingRight: unitSwitch ? 0 : "var(--fontSize-Base)",
     }),
-    input: {
+    input: (textAlign) => ({
         appearance: "none",
         width: "100%",
-        textAlign: "left",
-    },
+        textAlign,
+    }),
     hidden: {
         display: "none",
     },
@@ -78,6 +78,7 @@ function Component({
     allowFloat = false,
     setFocus = false,
     allowEmpty = false,
+    textAlign = "left",
     // neos is set as prop because we don't want to pass it to the input element
     neos,
     ...rest
@@ -249,7 +250,7 @@ function Component({
             <input
                 {...rest}
                 {...stylex.props(
-                    styles.input,
+                    styles.input(textAlign),
                     styles.basicLook,
                     isNumericInput && styles.numberInput,
                     !unit && styles.inputLook(false),
