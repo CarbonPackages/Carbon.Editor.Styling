@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, Suspense, lazy } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { injectNeosProps } from "../../Helper/Neos";
 import { Button, Icon, CheckBox } from "@neos-project/react-ui-components";
 import Dropdown from "../../Components/Dropdown";
