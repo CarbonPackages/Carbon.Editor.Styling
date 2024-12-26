@@ -22,28 +22,32 @@ const slideDialogContents = stylex.keyframes({
 });
 
 const styles = stylex.create({
-    dialog: {
-        "--size": "calc(100% - var(--spacing-GoldenUnit))",
+    dialog: (hasFooter) => ({
+        "--dialog-max-width": `calc(100vw - var(--spacing-GoldenUnit))`,
+        "--dialog-total-max-height": "calc(100vh - var(--spacing-GoldenUnit))",
+        "--dialog-max-height": `calc(100vh - var(--spacing-GoldenUnit)${hasFooter ? " - var(--spacing-GoldenUnit)" : ""})`,
         position: "fixed",
         inset: 0,
         background: "var(--colors-ContrastDarker)",
-        border: "2px solid var(--colors-ContrastDark)",
+        border: 0,
         padding: 0,
         color: "var(--colors-ContrastBrightest)",
-        boxShadow: "0 20px 40px #0006",
+        boxShadow: "0 0 0 2px var(--colors-ContrastDark), 0 20px 40px #0006",
         animation: `${slideDialogContents} var(--transition-Default) ease-in-out`,
-        maxWidth: "var(--size)",
-        maxHeight: "var(--size)",
+        maxWidth: "var(--dialog-max-width)",
+        maxHeight: "var(--dialog-total-max-height)",
         ":where([open])": {
             "::backdrop": {
                 // Not all browsers support CSS custom properties for ::backdrop
                 animation: `${backdropFadeIn} 0.3s ease-out forwards`,
             },
         },
+    }),
+    fullWidth: {
+        minWidth: "var(--dialog-max-width)",
     },
-    fullSize: {
-        minWidth: "var(--size)",
-        minHeight: "var(--size)",
+    fullHeight: {
+        minHeight: "var(--dialog-total-max-height)",
     },
     title: (hasClose) => ({
         padding: "var(--spacing-Full)",
@@ -78,10 +82,13 @@ function Dialog({
     onCloseButton,
     style,
     title,
-    fullSize = false,
+    fullWidth = false,
+    fullHeight = false,
+    disabledApply = false,
     applyLabel = "Neos.Neos:Main:applyChanges",
     cancelLabel = "Neos.Neos:Main:cancel",
     closeLabel = "Neos.Neos:Main:close",
+    footer,
 }) {
     const dialog = useRef();
     const handleClose = useCallback(() => {
@@ -109,15 +116,24 @@ function Dialog({
     const hasApply = variableIsFunction(onApply);
     const hasCancel = variableIsFunction(onCancel);
     const hasClose = variableIsFunction(onCloseButton);
+    const hasFooter = footer || hasApply || hasCancel;
 
     return (
-        <dialog ref={dialog} {...stylex.props(styles.dialog, fullSize && styles.fullSize, style)}>
+        <dialog
+            ref={dialog}
+            {...stylex.props(
+                styles.dialog(hasFooter),
+                fullWidth && styles.fullWidth,
+                fullHeight && styles.fullHeight,
+                style,
+            )}
+        >
             {title && <h2 {...stylex.props(styles.title(hasClose))}>{title}</h2>}
             {children}
-            {(hasApply || hasCancel) && (
+            {hasFooter && (
                 <div {...stylex.props(styles.footer)}>
                     {hasApply && (
-                        <Button style="success" hoverStyle="success" onClick={onApply}>
+                        <Button style="success" hoverStyle="success" onClick={onApply} disabled={disabledApply}>
                             {i18nRegistry.translate(applyLabel)}
                         </Button>
                     )}
@@ -126,6 +142,7 @@ function Dialog({
                             {i18nRegistry.translate(cancelLabel)}
                         </Button>
                     )}
+                    {footer}
                 </div>
             )}
             {showCloseButton && (
