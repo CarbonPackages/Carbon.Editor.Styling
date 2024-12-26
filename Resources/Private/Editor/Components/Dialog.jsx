@@ -22,10 +22,10 @@ const slideDialogContents = stylex.keyframes({
 });
 
 const styles = stylex.create({
-    dialog: (hasFooter) => ({
+    dialog: {
         "--dialog-max-width": `calc(100vw - var(--spacing-GoldenUnit))`,
         "--dialog-total-max-height": "calc(100vh - var(--spacing-GoldenUnit))",
-        "--dialog-max-height": `calc(100vh - var(--spacing-GoldenUnit)${hasFooter ? " - var(--spacing-GoldenUnit)" : ""})`,
+        "--dialog-max-height": "calc(100vh - var(--spacing-GoldenUnit))",
         position: "fixed",
         inset: 0,
         background: "var(--colors-ContrastDarker)",
@@ -42,7 +42,10 @@ const styles = stylex.create({
                 animation: `${backdropFadeIn} 0.3s ease-out forwards`,
             },
         },
-    }),
+    },
+    dialogWithFooter: {
+        "--dialog-max-height": "calc(100vh - var(--spacing-GoldenUnit) * 2)",
+    },
     fullWidth: {
         minWidth: "var(--dialog-max-width)",
     },
@@ -122,7 +125,8 @@ function Dialog({
         <dialog
             ref={dialog}
             {...stylex.props(
-                styles.dialog(hasFooter),
+                styles.dialog,
+                hasFooter && styles.dialogWithFooter,
                 fullWidth && styles.fullWidth,
                 fullHeight && styles.fullHeight,
                 style,
