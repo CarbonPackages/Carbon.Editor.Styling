@@ -19,10 +19,12 @@ export function getNumberAndUnit(input, min, max, allowPercentage = false, allow
         if (match) {
             let value = parseFloat(match[1]);
             let unit = match[2];
-            if (allowPercentage && unit == "%") {
+            if (allowPercentage && unit.startsWith("%")) {
                 min = 0;
                 max = 100;
-            } else if (unit == "rem" || unit == "em") {
+                unit = "%";
+            } else if (unit.startsWith("rem") || unit.startsWith("em")) {
+                unit = "rem";
                 value = value * 16;
             }
             if (!allowedUnits.includes(unit)) {
