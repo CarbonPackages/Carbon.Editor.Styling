@@ -183,7 +183,7 @@ function BackgroundSize({ id, value, commit, options, highlight, i18nRegistry, o
                             `Carbon.Editor.Styling:Main:backgroundSize.${isLength ? "length" : mode}.description`,
                         )}
                         readonly={readonly}
-                        width={165}
+                        width={180}
                         header={i18nRegistry.translate(`Carbon.Editor.Styling:Main:backgroundSize.${mode}`)}
                     >
                         {allowPixel && (
