@@ -34,6 +34,9 @@
             <trans-unit id="textColor" xml:space="preserve">
                 <source>Text color</source>
             </trans-unit>
+            <trans-unit id="transparent" xml:space="preserve">
+                <source>Transparent</source>
+            </trans-unit>
             <trans-unit id="borderStyle.solid" xml:space="preserve">
                 <source>Solid line</source>
             </trans-unit>

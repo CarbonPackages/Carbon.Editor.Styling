@@ -44,6 +44,10 @@
                 <source>Text color</source>
                 <target>Textfarbe</target>
             </trans-unit>
+            <trans-unit id="transparent" xml:space="preserve">
+                <source>Transparent</source>
+                <target>Transparent</target>
+            </trans-unit>
             <trans-unit id="borderStyle.solid" xml:space="preserve">
                 <source>Solid line</source>
                 <target>Durchgezoge Linie</target>

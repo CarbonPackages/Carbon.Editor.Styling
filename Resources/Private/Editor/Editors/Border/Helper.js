@@ -31,7 +31,7 @@ export function fromContentRepoToEditor({
 }
 
 export function needDarkColor(color) {
-    if (!color) {
+    if (!color || color === "transparent" || color === "currentColor") {
         return false;
     }
     color = color.replace("#", "");

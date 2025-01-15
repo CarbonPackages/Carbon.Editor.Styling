@@ -17,6 +17,7 @@ const defaultOptions = {
     allowWidth: true,
     allowStyle: true,
     allowCurrentColor: true,
+    allowTransparent: false,
     defaultColor: "currentColor",
     allowColorPicker: true,
     allowColorInput: true,
@@ -70,8 +71,10 @@ const styles = stylex.create({
             color: "#000 !important",
         },
     },
+    controlsGap: {
+        gap: "var(--spacing-Full)",
+    },
     colorPicker: {
-        marginTop: "var(--spacing-Full)",
         ":is(*)>.react-colorful__saturation": {
             borderRadius: "2px 2px 0 0 !important",
         },
@@ -80,7 +83,7 @@ const styles = stylex.create({
         },
     },
     colorInput: {
-        margin: "var(--spacing-Full) calc(var(--spacing-Full) * -1) 0 !important",
+        margin: "0 calc(var(--spacing-Full) * -1) 0 !important",
         height: "var(--spacing-GoldenUnit)",
         background: "var(--colors-ContrastNeutral)",
         color: "var(--colors-ContrastBrightest)",
@@ -101,7 +104,6 @@ const styles = stylex.create({
         display: "flex",
         gap: "var(--spacing-Half)",
         flexWrap: "wrap",
-        marginTop: "var(--spacing-Full)",
     },
     presetButton: (backgroundColor) => ({
         width: 30,
@@ -124,6 +126,11 @@ const styles = stylex.create({
         justifyContent: "start",
         gap: "var(--spacing-Half)",
         textAlign: "left",
+        width: "100%",
+    },
+    checkerboard: {
+        backgroundImage: `url('data:image/svg+xml, <svg xmlns="http://www.w3.org/2000/svg" width="2" height="2" fill-opacity=".25"><rect x="1" width="1" height="1" /><rect y="1" width="1" height="1" /></svg>')`,
+        backgroundSize: "16px 16px",
     },
 });
 
@@ -139,6 +146,7 @@ function Border({ id, value, commit, highlight, options, i18nRegistry, config, o
         allowWidth,
         allowStyle,
         allowCurrentColor,
+        allowTransparent,
         allowColorPicker,
         allowColorInput,
         presetColors,
@@ -176,10 +184,12 @@ function Border({ id, value, commit, highlight, options, i18nRegistry, config, o
     const [color, setColor] = useState(values.color);
     const [colorDropdownOpen, setColorDropdownOpen] = useState(false);
     const [hasPresetColor, setHasPresetColor] = useState(false);
-    const [currentColor, setSetCurrentColor] = useState(allowCurrentColor ? values.color === "currentColor" : false);
+    const [currentColor, setCurrentColor] = useState(allowCurrentColor ? values.color === "currentColor" : false);
+    const [transparent, setTransparent] = useState(allowTransparent ? values.color === "transparent" : false);
 
     useEffect(() => {
-        setSetCurrentColor(color === "currentColor");
+        setCurrentColor(color === "currentColor");
+        setTransparent(color === "transparent");
     }, [color]);
 
     useEffect(() => {
@@ -238,22 +248,23 @@ function Border({ id, value, commit, highlight, options, i18nRegistry, config, o
                         readonly={readonly}
                     >
                         {borderStyles.map((borderStyle) => (
-                            <Button
-                                key={borderStyle}
-                                className={stylex.props(styles.dropdownButton).className}
-                                onClick={() => {
-                                    setStyle(borderStyle);
-                                }}
-                            >
-                                <BorderPreview style={borderStyle} />
-                                {i18nRegistry.translate(
-                                    `borderStyle.${borderStyle}`,
-                                    borderStyle,
-                                    [],
-                                    "Carbon.Editor.Styling",
-                                    "Main",
-                                )}
-                            </Button>
+                            <li key={borderStyle}>
+                                <Button
+                                    className={stylex.props(styles.dropdownButton).className}
+                                    onClick={() => {
+                                        setStyle(borderStyle);
+                                    }}
+                                >
+                                    <BorderPreview style={borderStyle} />
+                                    {i18nRegistry.translate(
+                                        `borderStyle.${borderStyle}`,
+                                        borderStyle,
+                                        [],
+                                        "Carbon.Editor.Styling",
+                                        "Main",
+                                    )}
+                                </Button>
+                            </li>
                         ))}
                     </Dropdown>
                 )}
@@ -263,7 +274,11 @@ function Border({ id, value, commit, highlight, options, i18nRegistry, config, o
                         <Dropdown
                             headerPadding={false}
                             title={
-                                currentColor ? i18nRegistry.translate("Carbon.Editor.Styling:Main:textColor") : color
+                                currentColor
+                                    ? i18nRegistry.translate("Carbon.Editor.Styling:Main:textColor")
+                                    : transparent
+                                      ? i18nRegistry.translate("Carbon.Editor.Styling:Main:transparent")
+                                      : color
                             }
                             automaticClose={false}
                             header={
@@ -271,6 +286,7 @@ function Border({ id, value, commit, highlight, options, i18nRegistry, config, o
                                     {...stylex.props(
                                         styles.dropdownColor(color),
                                         needDarkColor(color) && styles.dropdownColorDark,
+                                        transparent && styles.checkerboard,
                                     )}
                                 ></div>
                             }
@@ -280,47 +296,71 @@ function Border({ id, value, commit, highlight, options, i18nRegistry, config, o
                             readonly={readonly}
                             open={colorDropdownOpen}
                             setOpen={setColorDropdownOpen}
+                            contentStyles={styles.controlsGap}
                         >
+                            {(allowColorPicker || allowColorInput) && allowTransparent && (
+                                <li>
+                                    <label {...stylex.props(styles.dropdownCheckbox)}>
+                                        <CheckBox
+                                            onChange={() => {
+                                                if (!transparent) {
+                                                    setColorDropdownOpen(false);
+                                                }
+                                                setColor(transparent ? "#000000" : "transparent");
+                                            }}
+                                            isChecked={transparent}
+                                        />
+                                        <span>{i18nRegistry.translate("Carbon.Editor.Styling:Main:transparent")}</span>
+                                    </label>
+                                </li>
+                            )}
                             {(allowColorPicker || allowColorInput) && allowCurrentColor && (
-                                <label {...stylex.props(styles.dropdownCheckbox)}>
-                                    <CheckBox
-                                        onChange={() => {
-                                            if (!currentColor) {
-                                                setColorDropdownOpen(false);
-                                            }
-                                            setColor(currentColor ? "#000000" : "currentColor");
-                                        }}
-                                        isChecked={currentColor}
+                                <li>
+                                    <label {...stylex.props(styles.dropdownCheckbox)}>
+                                        <CheckBox
+                                            onChange={() => {
+                                                if (!currentColor) {
+                                                    setColorDropdownOpen(false);
+                                                }
+                                                setColor(currentColor ? "#000000" : "currentColor");
+                                            }}
+                                            isChecked={currentColor}
+                                        />
+                                        <span>{i18nRegistry.translate("Carbon.Editor.Styling:Main:useTextColor")}</span>
+                                    </label>
+                                </li>
+                            )}
+                            {!currentColor && !transparent && allowColorPicker && (
+                                <li>
+                                    <HexColorPicker
+                                        color={color}
+                                        onChange={setColor}
+                                        {...stylex.props(styles.colorPicker)}
                                     />
-                                    <span>{i18nRegistry.translate("Carbon.Editor.Styling:Main:useTextColor")}</span>
-                                </label>
+                                </li>
                             )}
-                            {!currentColor && allowColorPicker && (
-                                <HexColorPicker
-                                    color={color}
-                                    onChange={setColor}
-                                    {...stylex.props(styles.colorPicker)}
-                                />
-                            )}
-                            {!currentColor && allowColorInput && (
-                                <HexColorInput
-                                    prefixed={true}
-                                    color={color}
-                                    onChange={setColor}
-                                    {...stylex.props(styles.colorInput)}
-                                />
+                            {!currentColor && !transparent && allowColorInput && (
+                                <li>
+                                    <HexColorInput
+                                        prefixed={true}
+                                        color={color}
+                                        onChange={setColor}
+                                        {...stylex.props(styles.colorInput)}
+                                    />
+                                </li>
                             )}
                             {hasPresetColor && (
-                                <div {...stylex.props(styles.presetColorContainer)}>
+                                <li {...stylex.props(styles.presetColorContainer)}>
                                     {presetColors.map((preset) => (
                                         <button
+                                            key={preset}
                                             type="button"
                                             title={preset}
                                             onClick={() => setColor(preset)}
                                             {...stylex.props(styles.presetButton(preset))}
                                         ></button>
                                     ))}
-                                </div>
+                                </li>
                             )}
                         </Dropdown>
                     )}

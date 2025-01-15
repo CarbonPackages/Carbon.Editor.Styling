@@ -39,6 +39,7 @@ Neos:
           allowColorPicker: true
           allowColorInput: true
           allowCurrentColor: true
+          allowTransparent: false
           defaultColor: 'currentColor'
           borderStyles:
             solid: true

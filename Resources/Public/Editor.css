@@ -28,9 +28,9 @@
 .editorstyling-1bhg26w:not(#\#){grid-template:"top" minmax(0,1fr) "bottom" minmax(0,1fr)  / minmax(0,1fr)}
 .editorstyling-10a8y8t:not(#\#){inset:0}
 .editorstyling-1teoei8:not(#\#){margin:-20px}
+.editorstyling-8081h:not(#\#){margin:0 calc(var(--spacing-Full) * -1) 0!important}
 .editorstyling-1ghz6dp:not(#\#){margin:0}
 .editorstyling-qjkn27:not(#\#){margin:var(--spacing-Full) auto 0}
-.editorstyling-cfiqih:not(#\#){margin:var(--spacing-Full) calc(var(--spacing-Full) * -1) 0!important}
 .editorstyling-1jnhg2m:not(#\#){margin:var(--spacing-GoldenUnit)}
 .editorstyling-s5loj3:not(#\#){padding:0 0 0 var(--fontSize-Base)}
 .editorstyling-1t8ecn8:not(#\#){padding:0 14px 0 0}
@@ -49,6 +49,7 @@
 .editorstyling-16rqkct:not(#\#):not(#\#){border-radius:50%}
 .editorstyling-1kptayx:not(#\#):not(#\#){border-radius:var(--borderRadius)}
 .editorstyling-98rzlu:not(#\#):not(#\#){flex:1}
+.editorstyling-1j08gr6:not(#\#):not(#\#){gap:var(--spacing-Full)}
 .editorstyling-1iv4zvh:not(#\#):not(#\#){gap:var(--spacing-Half)}
 .editorstyling-1xye2hm:not(#\#):not(#\#){gap:var(--spacing-Quarter)}
 .editorstyling-us49la:not(#\#):not(#\#){outline:2px solid var(--colors-Warn)}
@@ -82,6 +83,8 @@
 .editorstyling-r5ldyu:not(#\#):not(#\#):not(#\#){background-color:var(--backgroundColor)}
 .editorstyling-zyrq3l:not(#\#):not(#\#):not(#\#){background-color:var(--colors-ContrastDarker)}
 .editorstyling-1ndo24d:not(#\#):not(#\#):not(#\#){background-color:var(--colors-PrimaryBlue)}
+.editorstyling-1149thc:not(#\#):not(#\#):not(#\#){background-image:url('data:image/svg+xml, <svg xmlns="http://www.w3.org/2000/svg" width="2" height="2" fill-opacity=".25"><rect x="1" width="1" height="1" /><rect y="1" width="1" height="1" /></svg>')}
+.editorstyling-1ht9rhz:not(#\#):not(#\#):not(#\#){background-size:16px 16px}
 html:not([dir='rtl']) .editorstyling-1s7xzt0:not(#\#):not(#\#):not(#\#){box-shadow:0 0 0 2px var(--colors-ContrastDark),0 20px 40px #0006}
 html[dir='rtl'] .editorstyling-1s7xzt0:not(#\#):not(#\#):not(#\#){box-shadow:0 0 0 2px var(--colors-ContrastDark), 0 20px 40px #0006}
 .editorstyling-1heor9g:not(#\#):not(#\#):not(#\#){color:inherit}
@@ -152,10 +155,10 @@ html[dir='rtl'] .editorstyling-1p9coah:focus-visible:not(#\#):not(#\#):not(#\#){
 .editorstyling-1awz5i3:focus:not(#\#):not(#\#):not(#\#){color:var(--colors-ContrastDarkest)}
 .editorstyling-ch2mbi:active:not(#\#):not(#\#):not(#\#){cursor:grabbing}
 .editorstyling-ra8837:not(#\#):not(#\#):not(#\#):not(#\#){border-bottom-right-radius:2px}
-.editorstyling-5es6uu:not(#\#):not(#\#):not(#\#):not(#\#){border-top-color:var(--borderTopColor)}
+.editorstyling-1b4hy2t:not(#\#):not(#\#):not(#\#):not(#\#){border-top-color:currentColor}
 .editorstyling-ja2y4p:not(#\#):not(#\#):not(#\#):not(#\#){border-top-right-radius:2px}
 .editorstyling-qf06dz:not(#\#):not(#\#):not(#\#):not(#\#){border-top-style:var(--borderTopStyle)}
-.editorstyling-1pntfgx:not(#\#):not(#\#):not(#\#):not(#\#){border-top-width:var(--borderTopWidth)}
+.editorstyling-1gp4ovq:not(#\#):not(#\#):not(#\#):not(#\#){border-top-width:4px}
 .editorstyling-1n7iir3:not(#\#):not(#\#):not(#\#):not(#\#){bottom:-7px}
 .editorstyling-5yr21d:not(#\#):not(#\#):not(#\#):not(#\#){height:100%}
 .editorstyling-1v9usgg:not(#\#):not(#\#):not(#\#):not(#\#){height:14px}
@@ -174,7 +177,6 @@ html[dir='rtl'] .editorstyling-1p9coah:focus-visible:not(#\#):not(#\#):not(#\#){
 .editorstyling-5jszgg:not(#\#):not(#\#):not(#\#):not(#\#){margin-left:calc(-15% + 2px)}
 .editorstyling-d2cifw:not(#\#):not(#\#):not(#\#):not(#\#){margin-left:calc((var(--spacing-Quarter) + var(--spacing-GoldenUnit)) * -1)!important}
 .editorstyling-16z1lm9:not(#\#):not(#\#):not(#\#):not(#\#){margin-top:-7px}
-.editorstyling-p3vwao:not(#\#):not(#\#):not(#\#):not(#\#){margin-top:var(--spacing-Full)}
 .editorstyling-1ywdhnv:not(#\#):not(#\#):not(#\#):not(#\#){max-height:var(--dialog-total-max-height)}
 .editorstyling-a3dg91:not(#\#):not(#\#):not(#\#):not(#\#){max-width:var(--dialog-max-width)}
 .editorstyling-gdlz2r:not(#\#):not(#\#):not(#\#):not(#\#){max-width:var(--dropdown-content-width)!important}

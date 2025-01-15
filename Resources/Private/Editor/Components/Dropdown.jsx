@@ -49,6 +49,7 @@ export default function Dropdown({
     headerWidth,
     headerPadding = true,
     automaticClose = true,
+    contentStyles = {},
 }) {
     const [isOpen, setIsOpen] = useState(false);
     if (typeof headerWidth !== "number") {
@@ -109,7 +110,7 @@ export default function Dropdown({
                     {header}
                 </DropDown.Header>
                 <DropDown.Contents
-                    className={stylex.props(styles.content, padding && styles.padding).className}
+                    className={stylex.props(styles.content, padding && styles.padding, contentStyles).className}
                     scrollable={true}
                 >
                     {children}
