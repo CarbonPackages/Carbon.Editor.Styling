@@ -9,39 +9,6 @@ import TextInput from "../../Components/TextInput";
 import ButtonAsInput from "../../Components/ButtonAsInput";
 import * as stylex from "@stylexjs/stylex";
 
-const styles = stylex.create({
-    container: {
-        display: "flex",
-        gap: "var(--spacing-Quarter)",
-    },
-    column: {
-        flexDirection: "column",
-    },
-    inputContainer: {
-        flex: 1,
-    },
-    highlight: {
-        borderRadius: 2,
-        outline: "2px solid var(--colors-Warn)",
-        outlineOffset: 2,
-    },
-    disabled: {
-        cursor: "not-allowed",
-        opacity: 0.65,
-        ":where(*)>*": {
-            pointerEvents: "none",
-        },
-    },
-    dropdownButton: {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "start",
-        gap: "var(--spacing-Half)",
-        textAlign: "left",
-        paddingRight: "0 !important",
-    },
-});
-
 const defaultOptions = {
     disabled: false,
     readonly: false,
@@ -249,5 +216,38 @@ function BackgroundSize({ id, value, commit, options, highlight, i18nRegistry, o
         </>
     );
 }
+
+var styles = stylex.create({
+    container: {
+        display: "flex",
+        gap: "var(--spacing-Quarter)",
+    },
+    column: {
+        flexDirection: "column",
+    },
+    inputContainer: {
+        flex: 1,
+    },
+    highlight: {
+        borderRadius: 2,
+        outline: "2px solid var(--colors-Warn)",
+        outlineOffset: 2,
+    },
+    disabled: {
+        cursor: "not-allowed",
+        opacity: 0.65,
+        ":where(*)>*": {
+            pointerEvents: "none",
+        },
+    },
+    dropdownButton: {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "start",
+        gap: "var(--spacing-Half)",
+        textAlign: "left",
+        paddingRight: "0 !important",
+    },
+});
 
 export default injectNeosProps(BackgroundSize, "BackgroundSize");

@@ -10,133 +10,6 @@ import { convertValue, limitToMinMax, hasNoValue } from "../../Helper";
 import { useDebounce } from "use-debounce";
 import * as stylex from "@stylexjs/stylex";
 
-const styles = stylex.create({
-    container: {
-        display: "flex",
-        gap: "var(--spacing-Quarter)",
-    },
-    flexColumn: {
-        flexDirection: "column",
-    },
-    highlight: {
-        borderRadius: 2,
-        outline: "2px solid var(--colors-Warn)",
-        outlineOffset: 2,
-    },
-    segmentedGrid: {
-        display: "grid",
-        gap: "var(--spacing-Quarter)",
-        width: "100%",
-    },
-    segmentedGridAll: {
-        gridTemplate: `". top ." minmax(0, 1fr)
-            "left middle right" minmax(0, 1fr)
-            ". bottom ." minmax(0, 1fr) / minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr)`,
-    },
-    segmentedGridOneLineSync: {
-        gridTemplate: `"left middle right" minmax(0, 1fr) / minmax(0, 2fr) minmax(0, 1fr) minmax(0, 2fr)`,
-    },
-    segmentedGridOneLine: {
-        gridTemplate: `"left right" minmax(0, 1fr) / minmax(0, 1fr) minmax(0, 1fr)`,
-    },
-    segmentedGridTwoLinesTop: {
-        gridTemplate: `". top ." minmax(0, 1fr)
-            "left middle right" minmax(0, 1fr) / minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr)`,
-    },
-    segmentedGridTwoLinesBottom: {
-        gridTemplate: `"left middle right" minmax(0, 1fr)
-            ". bottom ." minmax(0, 1fr) / minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr)`,
-    },
-    segmentedGridTwoLinesTopBottom: {
-        gridTemplate: `"top" minmax(0, 1fr) "bottom" minmax(0, 1fr) / minmax(0, 1fr)`,
-    },
-    segmentedGridTwoLinesTopBottomSync: {
-        gridTemplate: `"top middle" minmax(0, 1fr)
-            "bottom middle" minmax(0, 1fr) / minmax(0, 4fr) minmax(0, 1fr)`,
-    },
-    area: (area) => ({
-        gridArea: area,
-    }),
-    syncButton: {
-        display: "grid",
-        background: "var(--colors-ContrastDarker)",
-        color: "var(--colors-ContrastBrightest)",
-        cursor: "pointer",
-        border: 0,
-        padding: 0,
-        borderRadius: 0,
-        gridTemplate: `"content" minmax(0, 1fr) / minmax(0, 1fr)`,
-        placeItems: "center",
-        fill: "currentColor",
-        ":where(:hover,:focus)": {
-            color: "var(--colors-PrimaryBlue) !important",
-            outline: 0,
-        },
-        ":focus-visible": {
-            outline: "1px solid var(--colors-PrimaryBlue) !important",
-        },
-        ":where(*)>*": {
-            gridArea: "content",
-        },
-    },
-    syncButtonRight: {
-        height: "65%",
-        alignSelf: "center",
-    },
-    syncLineBackground: {
-        background: "var(--colors-ContrastDarker)",
-        height: "calc(100% - 15px)",
-        width: "calc(100% - 15px)",
-    },
-    syncLineX: {
-        background: "currentColor",
-        height: "1px",
-        width: "100%",
-    },
-    syncLineYRight: {
-        border: "1px solid currentColor",
-        background: "transparent",
-        height: "100%",
-        width: "15%",
-        borderLeft: "0",
-        marginLeft: "calc(-15% + 2px)",
-        borderTopRightRadius: 2,
-        borderBottomRightRadius: 2,
-    },
-    syncLineY: {
-        background: "currentColor",
-        height: "100%",
-        width: "1px",
-    },
-    centerContent: {
-        padding: 0,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    fullInput: {
-        flex: 1,
-    },
-    disabled: {
-        cursor: "not-allowed",
-        opacity: 0.65,
-        ":where(*)>*": {
-            pointerEvents: "none",
-        },
-    },
-    readonly: {
-        pointerEvents: "none",
-    },
-    svgButton: (active) => ({
-        ":where(*)>svg": {
-            opacity: active ? 1 : 0.2,
-        },
-        ":is(:hover,:focus)>svg": {
-            opacity: 1,
-        },
-    }),
-});
-
 const defaultOptions = {
     disabled: false,
     readonly: false,
@@ -574,5 +447,132 @@ function Spacing({ id, value, commit, highlight, options, i18nRegistry, config, 
         </>
     );
 }
+
+var styles = stylex.create({
+    container: {
+        display: "flex",
+        gap: "var(--spacing-Quarter)",
+    },
+    flexColumn: {
+        flexDirection: "column",
+    },
+    highlight: {
+        borderRadius: 2,
+        outline: "2px solid var(--colors-Warn)",
+        outlineOffset: 2,
+    },
+    segmentedGrid: {
+        display: "grid",
+        gap: "var(--spacing-Quarter)",
+        width: "100%",
+    },
+    segmentedGridAll: {
+        gridTemplate: `". top ." minmax(0, 1fr)
+            "left middle right" minmax(0, 1fr)
+            ". bottom ." minmax(0, 1fr) / minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr)`,
+    },
+    segmentedGridOneLineSync: {
+        gridTemplate: `"left middle right" minmax(0, 1fr) / minmax(0, 2fr) minmax(0, 1fr) minmax(0, 2fr)`,
+    },
+    segmentedGridOneLine: {
+        gridTemplate: `"left right" minmax(0, 1fr) / minmax(0, 1fr) minmax(0, 1fr)`,
+    },
+    segmentedGridTwoLinesTop: {
+        gridTemplate: `". top ." minmax(0, 1fr)
+            "left middle right" minmax(0, 1fr) / minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr)`,
+    },
+    segmentedGridTwoLinesBottom: {
+        gridTemplate: `"left middle right" minmax(0, 1fr)
+            ". bottom ." minmax(0, 1fr) / minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr)`,
+    },
+    segmentedGridTwoLinesTopBottom: {
+        gridTemplate: `"top" minmax(0, 1fr) "bottom" minmax(0, 1fr) / minmax(0, 1fr)`,
+    },
+    segmentedGridTwoLinesTopBottomSync: {
+        gridTemplate: `"top middle" minmax(0, 1fr)
+            "bottom middle" minmax(0, 1fr) / minmax(0, 4fr) minmax(0, 1fr)`,
+    },
+    area: (area) => ({
+        gridArea: area,
+    }),
+    syncButton: {
+        display: "grid",
+        background: "var(--colors-ContrastDarker)",
+        color: "var(--colors-ContrastBrightest)",
+        cursor: "pointer",
+        border: 0,
+        padding: 0,
+        borderRadius: 0,
+        gridTemplate: `"content" minmax(0, 1fr) / minmax(0, 1fr)`,
+        placeItems: "center",
+        fill: "currentColor",
+        ":where(:hover,:focus)": {
+            color: "var(--colors-PrimaryBlue) !important",
+            outline: 0,
+        },
+        ":focus-visible": {
+            outline: "1px solid var(--colors-PrimaryBlue) !important",
+        },
+        ":where(*)>*": {
+            gridArea: "content",
+        },
+    },
+    syncButtonRight: {
+        height: "65%",
+        alignSelf: "center",
+    },
+    syncLineBackground: {
+        background: "var(--colors-ContrastDarker)",
+        height: "calc(100% - 15px)",
+        width: "calc(100% - 15px)",
+    },
+    syncLineX: {
+        background: "currentColor",
+        height: "1px",
+        width: "100%",
+    },
+    syncLineYRight: {
+        border: "1px solid currentColor",
+        background: "transparent",
+        height: "100%",
+        width: "15%",
+        borderLeft: "0",
+        marginLeft: "calc(-15% + 2px)",
+        borderTopRightRadius: 2,
+        borderBottomRightRadius: 2,
+    },
+    syncLineY: {
+        background: "currentColor",
+        height: "100%",
+        width: "1px",
+    },
+    centerContent: {
+        padding: 0,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    fullInput: {
+        flex: 1,
+    },
+    disabled: {
+        cursor: "not-allowed",
+        opacity: 0.65,
+        ":where(*)>*": {
+            pointerEvents: "none",
+        },
+    },
+    readonly: {
+        pointerEvents: "none",
+    },
+    svgButton: (active) => ({
+        ":where(*)>svg": {
+            opacity: active ? 1 : 0.2,
+        },
+        ":is(:hover,:focus)>svg": {
+            opacity: 1,
+        },
+    }),
+});
 
 export default injectNeosProps(Spacing, "Spacing");

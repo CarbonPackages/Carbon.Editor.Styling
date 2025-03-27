@@ -26,74 +26,6 @@ const initialHandlePositions = {
     },
 };
 
-const styles = stylex.create({
-    box: (borderRadius, size) => ({
-        backgroundColor: "var(--colors-PrimaryBlue)",
-        position: "relative",
-        borderRadius: borderRadius,
-        width: size.width,
-        height: size.height,
-        margin: "var(--spacing-GoldenUnit)",
-    }),
-    handle: (grabbing) => ({
-        position: "absolute",
-        border: "3px solid #fff",
-        width: 14,
-        height: 14,
-        borderRadius: "50%",
-        cursor: "grab",
-        opacity: grabbing ? 1 : 0.8,
-        transition: "opacity var(--transition-Default)",
-        ":is(:hover,:focus)": {
-            opacity: 1,
-        },
-        ":is(:hover,:focus)>*": {
-            opacity: 1,
-        },
-        ":not(:hover)>*": {
-            opacity: grabbing ? 1 : 0,
-        },
-        ":active": {
-            cursor: "grabbing",
-        },
-    }),
-    handleTop: {
-        top: -7,
-        left: "50%",
-        marginLeft: -7,
-    },
-    handleBottom: {
-        bottom: -7,
-        left: "50%",
-        marginLeft: -7,
-    },
-    handleLeft: {
-        top: "50%",
-        marginTop: -7,
-        left: -7,
-    },
-    handleRight: {
-        right: -7,
-        top: "50%",
-        marginTop: -7,
-    },
-    tooltip: {
-        position: "absolute",
-        display: "block",
-        padding: "var(--spacing-Quarter) var(--spacing-Half)",
-        backgroundColor: "var(--colors-ContrastDarker)",
-        color: "var(--colors-ContrastBrightest)",
-        borderRadius: 2,
-        zIndex: 1,
-        pointerEvents: "none",
-        transform: "translate(-50%, calc(-100% - 6px))",
-        transition: "opacity var(--transition-Default)",
-    },
-    grabbing: {
-        cursor: "grabbing",
-    },
-});
-
 const fallbackValue = ["30% 70% 70% 30%", "30% 30% 70% 70%"];
 const renderTooltip = (percent) => <span {...stylex.props(styles.tooltip)}>{percent}%</span>;
 
@@ -262,3 +194,71 @@ export default function OrganicEditor({ onChange = () => {}, value }) {
         </div>
     );
 }
+
+var styles = stylex.create({
+    box: (borderRadius, size) => ({
+        backgroundColor: "var(--colors-PrimaryBlue)",
+        position: "relative",
+        borderRadius: borderRadius,
+        width: size.width,
+        height: size.height,
+        margin: "var(--spacing-GoldenUnit)",
+    }),
+    handle: (grabbing) => ({
+        position: "absolute",
+        border: "3px solid #fff",
+        width: 14,
+        height: 14,
+        borderRadius: "50%",
+        cursor: "grab",
+        opacity: grabbing ? 1 : 0.8,
+        transition: "opacity var(--transition-Default)",
+        ":is(:hover,:focus)": {
+            opacity: 1,
+        },
+        ":is(:hover,:focus)>*": {
+            opacity: 1,
+        },
+        ":not(:hover)>*": {
+            opacity: grabbing ? 1 : 0,
+        },
+        ":active": {
+            cursor: "grabbing",
+        },
+    }),
+    handleTop: {
+        top: -7,
+        left: "50%",
+        marginLeft: -7,
+    },
+    handleBottom: {
+        bottom: -7,
+        left: "50%",
+        marginLeft: -7,
+    },
+    handleLeft: {
+        top: "50%",
+        marginTop: -7,
+        left: -7,
+    },
+    handleRight: {
+        right: -7,
+        top: "50%",
+        marginTop: -7,
+    },
+    tooltip: {
+        position: "absolute",
+        display: "block",
+        padding: "var(--spacing-Quarter) var(--spacing-Half)",
+        backgroundColor: "var(--colors-ContrastDarker)",
+        color: "var(--colors-ContrastBrightest)",
+        borderRadius: 2,
+        zIndex: 1,
+        pointerEvents: "none",
+        transform: "translate(-50%, calc(-100% - 6px))",
+        transition: "opacity var(--transition-Default)",
+    },
+    grabbing: {
+        cursor: "grabbing",
+    },
+});

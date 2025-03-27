@@ -32,10 +32,6 @@ const options = {
             dev: false,
             generatedCSSFileName: path.resolve(__dirname, "Resources/Public/Editor.css"),
             stylexImports: ["@stylexjs/stylex"],
-            unstable_moduleResolution: {
-                type: "commonJS",
-                rootDir: __dirname,
-            },
         }),
     ],
 };

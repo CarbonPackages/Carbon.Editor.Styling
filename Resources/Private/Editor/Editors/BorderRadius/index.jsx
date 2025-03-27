@@ -17,96 +17,6 @@ import LoadingAnimation from "carbon-neos-loadinganimation/LoadingWithStyleX";
 
 const LazyOrganicEditor = lazy(() => import("./OrganicEditor"));
 
-const styles = stylex.create({
-    container: {
-        display: "flex",
-        gap: "var(--spacing-Quarter)",
-    },
-    flexColumn: {
-        flexDirection: "column",
-    },
-    highlight: {
-        borderRadius: 2,
-        outline: "2px solid var(--colors-Warn)",
-        outlineOffset: 2,
-    },
-    segmentedGrid: {
-        display: "grid",
-        gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-        gap: "var(--spacing-Quarter)",
-        width: "100%",
-    },
-    centerContent: {
-        padding: 0,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    fullInput: {
-        flex: 1,
-    },
-    disabled: {
-        cursor: "not-allowed",
-        opacity: 0.65,
-        ":where(*)>*": {
-            pointerEvents: "none",
-        },
-    },
-    preview: (borderRadius, rounded) => ({
-        transition: "border-radius var(--transition-Slow) ease, width var(--transition-Slow) ease",
-        background: "var(--colors-PrimaryBlue)",
-        height: 80,
-        borderRadius: rounded ? "50%" : borderRadius,
-    }),
-    previewBig: (rounded, aspectRatio) => ({
-        margin: "var(--spacing-Full) auto 0",
-        display: "block",
-        aspectRatio: aspectRatio || null,
-        width: aspectRatio && aspectRatio < 3.4 ? null : rounded ? 80 : "100%",
-        height: !aspectRatio || aspectRatio < 3.4 ? 80 : null,
-    }),
-    previewSmall: {
-        aspectRatio: 1,
-        transform: "scale(0.5)",
-        margin: -20,
-    },
-    bigPreviewContainer: (show) => ({
-        display: "grid",
-        gridTemplateRows: show ? "1fr" : "0fr",
-        transition: "grid-template-rows var(--transition-Default) ease-in-out",
-    }),
-    previewButton: {
-        transition:
-            "opacity var(--transition-Default) ease var(--transition-Default), margin-left var(--transition-Default) ease",
-    },
-    previewButtonInvisible: {
-        transition:
-            "opacity var(--transition-Default) ease, margin-left var(--transition-Default) ease var(--transition-Default)",
-        opacity: 0,
-        pointerEvents: "none",
-        marginLeft: "calc((var(--spacing-Quarter) + var(--spacing-GoldenUnit)) * -1) !important",
-    },
-    bigPreviewButton: {
-        width: "100%",
-        height: "auto",
-        overflow: "hidden",
-        background: "transparent !important",
-        outline: "none !important",
-    },
-    dropdownButton: {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "start",
-        gap: "var(--spacing-Half)",
-        textAlign: "left",
-        paddingRight: "0 !important",
-    },
-    dropdownSvg: {
-        minWidth: 15,
-        minHeight: 15,
-    },
-});
-
 const defaultOptions = {
     disabled: false,
     readonly: false,
@@ -626,5 +536,95 @@ function BorderRadius({ id, value, commit, highlight, options, i18nRegistry, con
         </>
     );
 }
+
+var styles = stylex.create({
+    container: {
+        display: "flex",
+        gap: "var(--spacing-Quarter)",
+    },
+    flexColumn: {
+        flexDirection: "column",
+    },
+    highlight: {
+        borderRadius: 2,
+        outline: "2px solid var(--colors-Warn)",
+        outlineOffset: 2,
+    },
+    segmentedGrid: {
+        display: "grid",
+        gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+        gap: "var(--spacing-Quarter)",
+        width: "100%",
+    },
+    centerContent: {
+        padding: 0,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    fullInput: {
+        flex: 1,
+    },
+    disabled: {
+        cursor: "not-allowed",
+        opacity: 0.65,
+        ":where(*)>*": {
+            pointerEvents: "none",
+        },
+    },
+    preview: (borderRadius, rounded) => ({
+        transition: "border-radius var(--transition-Slow) ease, width var(--transition-Slow) ease",
+        background: "var(--colors-PrimaryBlue)",
+        height: 80,
+        borderRadius: rounded ? "50%" : borderRadius,
+    }),
+    previewBig: (rounded, aspectRatio) => ({
+        margin: "var(--spacing-Full) auto 0",
+        display: "block",
+        aspectRatio: aspectRatio || null,
+        width: aspectRatio && aspectRatio < 3.4 ? null : rounded ? 80 : "100%",
+        height: !aspectRatio || aspectRatio < 3.4 ? 80 : null,
+    }),
+    previewSmall: {
+        aspectRatio: 1,
+        transform: "scale(0.5)",
+        margin: -20,
+    },
+    bigPreviewContainer: (show) => ({
+        display: "grid",
+        gridTemplateRows: show ? "1fr" : "0fr",
+        transition: "grid-template-rows var(--transition-Default) ease-in-out",
+    }),
+    previewButton: {
+        transition:
+            "opacity var(--transition-Default) ease var(--transition-Default), margin-left var(--transition-Default) ease",
+    },
+    previewButtonInvisible: {
+        transition:
+            "opacity var(--transition-Default) ease, margin-left var(--transition-Default) ease var(--transition-Default)",
+        opacity: 0,
+        pointerEvents: "none",
+        marginLeft: "calc((var(--spacing-Quarter) + var(--spacing-GoldenUnit)) * -1) !important",
+    },
+    bigPreviewButton: {
+        width: "100%",
+        height: "auto",
+        overflow: "hidden",
+        background: "transparent !important",
+        outline: "none !important",
+    },
+    dropdownButton: {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "start",
+        gap: "var(--spacing-Half)",
+        textAlign: "left",
+        paddingRight: "0 !important",
+    },
+    dropdownSvg: {
+        minWidth: 15,
+        minHeight: 15,
+    },
+});
 
 export default injectNeosProps(BorderRadius, "BorderRadius");

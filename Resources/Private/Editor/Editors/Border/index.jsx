@@ -38,102 +38,6 @@ const defaultBorderStyles = {
     outset: false,
 };
 
-const styles = stylex.create({
-    container: {
-        display: "flex",
-        gap: "var(--spacing-Quarter)",
-    },
-    highlight: {
-        borderRadius: 2,
-        outline: "2px solid var(--colors-Warn)",
-        outlineOffset: 2,
-    },
-    fullInput: {
-        flex: 1,
-    },
-    disabled: {
-        cursor: "not-allowed",
-        opacity: 0.65,
-        ":where(*)>*": {
-            pointerEvents: "none",
-        },
-    },
-    dropdownColor: (color) => ({
-        backgroundColor: color !== "currentColor" ? color : "transparent",
-        position: "absolute",
-        inset: 0,
-        ":is(*)~svg": {
-            transition: "color var(--transition-Default)",
-        },
-    }),
-    dropdownColorDark: {
-        ":is(*)~svg": {
-            color: "#000 !important",
-        },
-    },
-    controlsGap: {
-        gap: "var(--spacing-Full)",
-    },
-    colorPicker: {
-        ":is(*)>.react-colorful__saturation": {
-            borderRadius: "2px 2px 0 0 !important",
-        },
-        ":is(*)>.react-colorful__last-control": {
-            borderRadius: "0 0 2px 2px !important",
-        },
-    },
-    colorInput: {
-        margin: "0 calc(var(--spacing-Full) * -1) 0 !important",
-        height: "var(--spacing-GoldenUnit)",
-        background: "var(--colors-ContrastNeutral)",
-        color: "var(--colors-ContrastBrightest)",
-        border: 0,
-        fontSize: "var(--fontSize-Base)",
-        cursor: "text",
-        padding: "0 var(--fontSize-Base)",
-        appearance: "none",
-        width: "calc(var(--spacing-Full) * 2 + 100%)",
-        textAlign: "left",
-        ":focus": {
-            outline: "none",
-            color: "var(--colors-ContrastDarkest)",
-            background: "var(--colors-ContrastBrightest)",
-        },
-    },
-    presetColorContainer: {
-        display: "flex",
-        gap: "var(--spacing-Half)",
-        flexWrap: "wrap",
-    },
-    presetButton: (backgroundColor) => ({
-        width: 30,
-        height: 30,
-        padding: "0 !important",
-        backgroundColor,
-        border: 0,
-        outline: "var(--colors-ContrastNeutral) solid 1px",
-        borderRadius: 2,
-        cursor: "pointer",
-    }),
-    dropdownCheckbox: {
-        display: "flex",
-        gap: "var(--spacing-Quarter)",
-        cursor: "pointer",
-    },
-    dropdownButton: {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "start",
-        gap: "var(--spacing-Half)",
-        textAlign: "left",
-        width: "100%",
-    },
-    checkerboard: {
-        backgroundImage: `url('data:image/svg+xml, <svg xmlns="http://www.w3.org/2000/svg" width="2" height="2" fill-opacity=".25"><rect x="1" width="1" height="1" /><rect y="1" width="1" height="1" /></svg>')`,
-        backgroundSize: "16px 16px",
-    },
-});
-
 function Border({ id, value, commit, highlight, options, i18nRegistry, config, onEnterKey }) {
     const {
         disabled,
@@ -368,5 +272,101 @@ function Border({ id, value, commit, highlight, options, i18nRegistry, config, o
         </>
     );
 }
+
+var styles = stylex.create({
+    container: {
+        display: "flex",
+        gap: "var(--spacing-Quarter)",
+    },
+    highlight: {
+        borderRadius: 2,
+        outline: "2px solid var(--colors-Warn)",
+        outlineOffset: 2,
+    },
+    fullInput: {
+        flex: 1,
+    },
+    disabled: {
+        cursor: "not-allowed",
+        opacity: 0.65,
+        ":where(*)>*": {
+            pointerEvents: "none",
+        },
+    },
+    dropdownColor: (color) => ({
+        backgroundColor: color !== "currentColor" ? color : "transparent",
+        position: "absolute",
+        inset: 0,
+        ":is(*)~svg": {
+            transition: "color var(--transition-Default)",
+        },
+    }),
+    dropdownColorDark: {
+        ":is(*)~svg": {
+            color: "#000 !important",
+        },
+    },
+    controlsGap: {
+        gap: "var(--spacing-Full)",
+    },
+    colorPicker: {
+        ":is(*)>.react-colorful__saturation": {
+            borderRadius: "2px 2px 0 0 !important",
+        },
+        ":is(*)>.react-colorful__last-control": {
+            borderRadius: "0 0 2px 2px !important",
+        },
+    },
+    colorInput: {
+        margin: "0 calc(var(--spacing-Full) * -1) 0 !important",
+        height: "var(--spacing-GoldenUnit)",
+        background: "var(--colors-ContrastNeutral)",
+        color: "var(--colors-ContrastBrightest)",
+        border: 0,
+        fontSize: "var(--fontSize-Base)",
+        cursor: "text",
+        padding: "0 var(--fontSize-Base)",
+        appearance: "none",
+        width: "calc(var(--spacing-Full) * 2 + 100%)",
+        textAlign: "left",
+        ":focus": {
+            outline: "none",
+            color: "var(--colors-ContrastDarkest)",
+            background: "var(--colors-ContrastBrightest)",
+        },
+    },
+    presetColorContainer: {
+        display: "flex",
+        gap: "var(--spacing-Half)",
+        flexWrap: "wrap",
+    },
+    presetButton: (backgroundColor) => ({
+        width: 30,
+        height: 30,
+        padding: "0 !important",
+        backgroundColor,
+        border: 0,
+        outline: "var(--colors-ContrastNeutral) solid 1px",
+        borderRadius: 2,
+        cursor: "pointer",
+    }),
+    dropdownCheckbox: {
+        display: "flex",
+        gap: "var(--spacing-Quarter)",
+        cursor: "pointer",
+    },
+    dropdownButton: {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "start",
+        gap: "var(--spacing-Half)",
+        textAlign: "left",
+        width: "100%",
+    },
+    checkerboard: {
+        backgroundImage: `url('data:image/svg+xml, <svg xmlns="http://www.w3.org/2000/svg" width="2" height="2" fill-opacity=".25"><rect x="1" width="1" height="1" /><rect y="1" width="1" height="1" /></svg>')`,
+        backgroundSize: "16px 16px",
+    },
+});
 
 export default injectNeosProps(Border, "Border");

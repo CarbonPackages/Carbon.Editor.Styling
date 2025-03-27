@@ -3,20 +3,6 @@ import { TextArea } from "@neos-project/react-ui-components";
 import { injectNeosProps } from "../Helper/Neos";
 import * as stylex from "@stylexjs/stylex";
 
-const styles = stylex.create({
-    charCounter: (type, focus) => ({
-        display: "block",
-        textAlign: "right",
-        fontSize: "var(--fontSize-Small)",
-        marginBottom: "-1.1em",
-        lineHeight: 1.1,
-        userSelect: "none",
-        transition: "color var(--transition-Default), opacity var(--transition-Default)",
-        opacity: focus ? 1 : 0.8,
-        color: type ? `var(--colors-${type})` : null,
-    }),
-});
-
 const defaultOptions = {
     disabled: false,
     maxlength: null,
@@ -112,5 +98,19 @@ function TextAreaWithCounter({ id, value, commit, className, options, i18nRegist
         </>
     );
 }
+
+var styles = stylex.create({
+    charCounter: (type, focus) => ({
+        display: "block",
+        textAlign: "right",
+        fontSize: "var(--fontSize-Small)",
+        marginBottom: "-1.1em",
+        lineHeight: 1.1,
+        userSelect: "none",
+        transition: "color var(--transition-Default), opacity var(--transition-Default)",
+        opacity: focus ? 1 : 0.8,
+        color: type ? `var(--colors-${type})` : null,
+    }),
+});
 
 export default injectNeosProps(TextAreaWithCounter, "TextAreaWithCounter");
