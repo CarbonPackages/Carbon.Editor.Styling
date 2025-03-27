@@ -2,6 +2,21 @@ Neos:
   Neos:
     Ui:
       frontendConfiguration:
+        'Carbon.Editor.Styling.TextInput':
+          # allowEmpty false is only working for type number
+          allowEmpty: true
+          allowFloat: false
+          debounce: 500
+          disabled: false
+          max: null
+          min: null
+          placeholder: ''
+          setFocus: false
+          title: null
+          type: 'text'
+          unit: null
+          # If type = password, allowMakePasswordVisible we can switch the input type
+          allowMakePasswordVisible: true
         'Carbon.Editor.Styling.TextAreaWithCounter':
           disabled: false
           maxlength: null
