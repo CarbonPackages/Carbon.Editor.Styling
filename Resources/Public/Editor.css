@@ -1,3 +1,20 @@
+@property --opacity { syntax: "*"; inherits: false;}
+@property --color { syntax: "*"; inherits: false;}
+@property --paddingRight { syntax: "*"; inherits: false;}
+@property --borderRadius { syntax: "*"; inherits: false;}
+@property --aspectRatio { syntax: "*"; inherits: false;}
+@property --width { syntax: "*"; inherits: false;}
+@property --height { syntax: "*"; inherits: false;}
+@property --gridTemplateRows { syntax: "*"; inherits: false;}
+@property --textAlign { syntax: "*"; inherits: false;}
+@property --backgroundColor { syntax: "*"; inherits: false;}
+@property --gridArea { syntax: "*"; inherits: false;}
+@property --1ifsx55 { syntax: "*"; inherits: false;}
+@property --minHeight { syntax: "*"; inherits: false;}
+@property --transform { syntax: "*"; inherits: false;}
+@property --cursor { syntax: "*"; inherits: false;}
+@property --borderTopStyle { syntax: "*"; inherits: false;}
+@property --1lsze8t { syntax: "*"; inherits: false;}
 .editorstyling-1d1d8sr{--dialog-max-height:calc(100vh - var(--spacing-GoldenUnit) * 2)}
 .editorstyling-meyex9{--dialog-max-height:calc(100vh - var(--spacing-GoldenUnit))}
 .editorstyling-1wq08gs{--dialog-max-width:calc(100vw - var(--spacing-GoldenUnit))}
@@ -144,6 +161,7 @@ html[dir='rtl'] .editorstyling-1s7xzt0:not(#\#):not(#\#):not(#\#){box-shadow:0 0
 html:not([dir='rtl']) .editorstyling-1p9coah:focus-visible:not(#\#):not(#\#):not(#\#){box-shadow:-14px 0 0 0 var(--colors-ContrastNeutral),-14px 0 0 1px var(--colors-PrimaryBlue),0 0 0 1px var(--colors-PrimaryBlue)}
 html[dir='rtl'] .editorstyling-1p9coah:focus-visible:not(#\#):not(#\#):not(#\#){box-shadow:14px 0 0 0 var(--colors-ContrastNeutral), 14px 0 0 1px var(--colors-PrimaryBlue), 0 0 0 1px var(--colors-PrimaryBlue)}
 .editorstyling-166kiew:is(*)~svg:not(#\#):not(#\#):not(#\#){color:#000!important}
+.editorstyling-dnrdwn:is(*) .neos-svg-inline--fa:not(#\#):not(#\#):not(#\#){color:currentColor}
 .editorstyling-1yasepr:focus-visible:not(#\#):not(#\#):not(#\#){color:inherit!important}
 .editorstyling-1sv5n3t:where(:hover,:focus):not(#\#):not(#\#):not(#\#){color:var(--colors-PrimaryBlue)!important}
 .editorstyling-1p3htkq:is(:hover,:focus)>svg:not(#\#):not(#\#):not(#\#){opacity:1}
