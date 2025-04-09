@@ -1,19 +1,19 @@
-@property --gridArea { syntax: "*"; inherits: false;}
-@property --1ifsx55 { syntax: "*"; inherits: false;}
-@property --backgroundColor { syntax: "*"; inherits: false;}
-@property --paddingRight { syntax: "*"; inherits: false;}
-@property --textAlign { syntax: "*"; inherits: false;}
 @property --borderRadius { syntax: "*"; inherits: false;}
 @property --aspectRatio { syntax: "*"; inherits: false;}
 @property --width { syntax: "*"; inherits: false;}
 @property --height { syntax: "*"; inherits: false;}
 @property --gridTemplateRows { syntax: "*"; inherits: false;}
+@property --paddingRight { syntax: "*"; inherits: false;}
+@property --backgroundColor { syntax: "*"; inherits: false;}
+@property --textAlign { syntax: "*"; inherits: false;}
 @property --opacity { syntax: "*"; inherits: false;}
 @property --color { syntax: "*"; inherits: false;}
+@property --gridArea { syntax: "*"; inherits: false;}
+@property --1ifsx55 { syntax: "*"; inherits: false;}
 @property --minHeight { syntax: "*"; inherits: false;}
 @property --transform { syntax: "*"; inherits: false;}
-@property --cursor { syntax: "*"; inherits: false;}
 @property --borderTopStyle { syntax: "*"; inherits: false;}
+@property --cursor { syntax: "*"; inherits: false;}
 @property --1lsze8t { syntax: "*"; inherits: false;}
 .editorstyling-1d1d8sr{--dialog-max-height:calc(100vh - var(--spacing-GoldenUnit) * 2)}
 .editorstyling-meyex9{--dialog-max-height:calc(100vh - var(--spacing-GoldenUnit))}

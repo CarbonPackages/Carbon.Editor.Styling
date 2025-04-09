@@ -73,7 +73,7 @@
   "devDependencies": {
     "@neos-project/neos-ui-extensibility": "~8.3.11",
     "@stylexjs/esbuild-plugin": "^0.11.1",
-    "esbuild": "^0.25.1",
+    "esbuild": "^0.25.2",
     "prettier": "^3.5.3"
   },
   "peerDependencies": {
