@@ -165,6 +165,7 @@ var styles = stylex.create({
         position: "absolute !important",
         top: 0,
         right: 0,
+        zIndex: 1000,
     },
 });
 
