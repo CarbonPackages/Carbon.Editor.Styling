@@ -1,19 +1,19 @@
+@property --paddingRight { syntax: "*"; inherits: false;}
+@property --opacity { syntax: "*"; inherits: false;}
+@property --color { syntax: "*"; inherits: false;}
+@property --textAlign { syntax: "*"; inherits: false;}
+@property --backgroundColor { syntax: "*"; inherits: false;}
+@property --gridArea { syntax: "*"; inherits: false;}
+@property --1ifsx55 { syntax: "*"; inherits: false;}
 @property --borderRadius { syntax: "*"; inherits: false;}
 @property --aspectRatio { syntax: "*"; inherits: false;}
 @property --width { syntax: "*"; inherits: false;}
 @property --height { syntax: "*"; inherits: false;}
 @property --gridTemplateRows { syntax: "*"; inherits: false;}
-@property --paddingRight { syntax: "*"; inherits: false;}
-@property --backgroundColor { syntax: "*"; inherits: false;}
-@property --textAlign { syntax: "*"; inherits: false;}
-@property --opacity { syntax: "*"; inherits: false;}
-@property --color { syntax: "*"; inherits: false;}
-@property --gridArea { syntax: "*"; inherits: false;}
-@property --1ifsx55 { syntax: "*"; inherits: false;}
 @property --minHeight { syntax: "*"; inherits: false;}
 @property --transform { syntax: "*"; inherits: false;}
-@property --borderTopStyle { syntax: "*"; inherits: false;}
 @property --cursor { syntax: "*"; inherits: false;}
+@property --borderTopStyle { syntax: "*"; inherits: false;}
 @property --1lsze8t { syntax: "*"; inherits: false;}
 .editorstyling-1d1d8sr{--dialog-max-height:calc(100vh - var(--spacing-GoldenUnit) * 2)}
 .editorstyling-meyex9{--dialog-max-height:calc(100vh - var(--spacing-GoldenUnit))}
@@ -97,6 +97,7 @@
 .editorstyling-jyslct:not(#\#):not(#\#):not(#\#){appearance:none}
 .editorstyling-1plog1:not(#\#):not(#\#):not(#\#){aspect-ratio:1}
 .editorstyling-1f7gzso:not(#\#):not(#\#):not(#\#){aspect-ratio:var(--aspectRatio)}
+.editorstyling-1ydx4q1:not(#\#):not(#\#):not(#\#){backdrop-filter:blur(6px)}
 .editorstyling-r5ldyu:not(#\#):not(#\#):not(#\#){background-color:var(--backgroundColor)}
 .editorstyling-zyrq3l:not(#\#):not(#\#):not(#\#){background-color:var(--colors-ContrastDarker)}
 .editorstyling-1ndo24d:not(#\#):not(#\#):not(#\#){background-color:var(--colors-PrimaryBlue)}
@@ -158,6 +159,7 @@ html[dir='rtl'] .editorstyling-1s7xzt0:not(#\#):not(#\#):not(#\#){box-shadow:0 0
 .editorstyling-87ps6o:not(#\#):not(#\#):not(#\#){user-select:none}
 .editorstyling-uxw1ft:not(#\#):not(#\#):not(#\#){white-space:nowrap}
 .editorstyling-1vjfegm:not(#\#):not(#\#):not(#\#){z-index:1}
+.editorstyling-fo81ep:not(#\#):not(#\#):not(#\#){z-index:1000}
 html:not([dir='rtl']) .editorstyling-1p9coah:focus-visible:not(#\#):not(#\#):not(#\#){box-shadow:-14px 0 0 0 var(--colors-ContrastNeutral),-14px 0 0 1px var(--colors-PrimaryBlue),0 0 0 1px var(--colors-PrimaryBlue)}
 html[dir='rtl'] .editorstyling-1p9coah:focus-visible:not(#\#):not(#\#):not(#\#){box-shadow:14px 0 0 0 var(--colors-ContrastNeutral), 14px 0 0 1px var(--colors-PrimaryBlue), 0 0 0 1px var(--colors-PrimaryBlue)}
 .editorstyling-166kiew:is(*)~svg:not(#\#):not(#\#):not(#\#){color:#000!important}
@@ -178,6 +180,7 @@ html[dir='rtl'] .editorstyling-1p9coah:focus-visible:not(#\#):not(#\#):not(#\#){
 .editorstyling-qf06dz:not(#\#):not(#\#):not(#\#):not(#\#){border-top-style:var(--borderTopStyle)}
 .editorstyling-1gp4ovq:not(#\#):not(#\#):not(#\#):not(#\#){border-top-width:4px}
 .editorstyling-1n7iir3:not(#\#):not(#\#):not(#\#):not(#\#){bottom:-7px}
+.editorstyling-1ey2m1c:not(#\#):not(#\#):not(#\#):not(#\#){bottom:0}
 .editorstyling-5yr21d:not(#\#):not(#\#):not(#\#):not(#\#){height:100%}
 .editorstyling-1v9usgg:not(#\#):not(#\#):not(#\#):not(#\#){height:14px}
 .editorstyling-jm9jq1:not(#\#):not(#\#):not(#\#):not(#\#){height:1px}
@@ -189,6 +192,7 @@ html[dir='rtl'] .editorstyling-1p9coah:focus-visible:not(#\#):not(#\#):not(#\#){
 .editorstyling-1f5funs:not(#\#):not(#\#):not(#\#):not(#\#){height:var(--height)}
 .editorstyling-1i66d86:not(#\#):not(#\#):not(#\#):not(#\#){height:var(--spacing-GoldenUnit)}
 .editorstyling-cf9131:not(#\#):not(#\#):not(#\#):not(#\#){left:-7px}
+.editorstyling-u96u03:not(#\#):not(#\#):not(#\#):not(#\#){left:0}
 .editorstyling-1nrll8i:not(#\#):not(#\#):not(#\#):not(#\#){left:50%}
 .editorstyling-1yg5f08:not(#\#):not(#\#):not(#\#):not(#\#){margin-bottom:-1.1em}
 .editorstyling-1b973y9:not(#\#):not(#\#):not(#\#):not(#\#){margin-left:-7px}
