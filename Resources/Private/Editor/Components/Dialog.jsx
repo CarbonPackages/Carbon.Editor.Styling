@@ -41,6 +41,7 @@ function Dialog({
     cancelLabel = "Neos.Neos:Main:cancel",
     closeLabel = "Neos.Neos:Main:close",
     footer,
+    blurFooterBackground = false,
 }) {
     const dialog = useRef();
     const handleClose = useCallback(() => {
@@ -75,7 +76,7 @@ function Dialog({
             ref={dialog}
             {...stylex.props(
                 styles.dialog,
-                hasFooter && styles.dialogWithFooter,
+                hasFooter && !blurFooterBackground && styles.dialogWithFooter,
                 fullWidth && styles.fullWidth,
                 fullHeight && styles.fullHeight,
                 style,
@@ -83,8 +84,8 @@ function Dialog({
         >
             {title && <h2 {...stylex.props(styles.title(hasClose))}>{title}</h2>}
             {children}
-            {hasFooter && (
-                <div {...stylex.props(styles.footer)}>
+            {Boolean(hasFooter) && (
+                <div {...stylex.props(styles.footer, blurFooterBackground && styles.blurFooterBackground)}>
                     {hasApply && (
                         <Button style="success" hoverStyle="success" onClick={onApply} disabled={disabledApply}>
                             {i18nRegistry.translate(applyLabel)}
@@ -160,6 +161,14 @@ var styles = stylex.create({
         display: "flex",
         justifyContent: "end",
         flexDirection: "row-reverse",
+    },
+    blurFooterBackground: {
+        position: "absolute",
+        bottom: 0,
+        left: 0,
+        right: 0,
+        zIndex: 1000,
+        backdropFilter: "blur(6px)",
     },
     closeButton: {
         position: "absolute !important",
