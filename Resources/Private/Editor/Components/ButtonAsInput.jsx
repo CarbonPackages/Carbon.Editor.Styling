@@ -3,41 +3,7 @@ import * as stylex from "@stylexjs/stylex";
 
 const renderContent = (children) => <span {...stylex.props(styles.ellipsis)}>{children}</span>;
 
-export default function ButtonAsInput({
-    id,
-    onClick,
-    disabled,
-    highlight,
-    title,
-    children,
-    readonly,
-    style,
-    cursor = "text",
-}) {
-    const hasOnClick = onClick && typeof onClick === "function";
-
-    return (
-        <>
-            {hasOnClick && !readonly && !disabled ? (
-                <button
-                    type="button"
-                    onClick={onClick}
-                    id={id}
-                    title={title}
-                    {...stylex.props(styles.look, styles.button(cursor), style)}
-                >
-                    {renderContent(children)}
-                </button>
-            ) : (
-                <div id={id} {...stylex.props(styles.look, styles.text, style)}>
-                    {renderContent(children)}
-                </div>
-            )}
-        </>
-    );
-}
-
-var styles = stylex.create({
+const styles = stylex.create({
     look: {
         margin: 0,
         height: "var(--spacing-GoldenUnit)",
@@ -71,3 +37,37 @@ var styles = stylex.create({
         lineHeight: "var(--spacing-GoldenUnit)",
     },
 });
+
+export default function ButtonAsInput({
+    id,
+    onClick,
+    disabled,
+    highlight,
+    title,
+    children,
+    readonly,
+    style,
+    cursor = "text",
+}) {
+    const hasOnClick = onClick && typeof onClick === "function";
+
+    return (
+        <>
+            {hasOnClick && !readonly && !disabled ? (
+                <button
+                    type="button"
+                    onClick={onClick}
+                    id={id}
+                    title={title}
+                    {...stylex.props(styles.look, styles.button(cursor), style)}
+                >
+                    {renderContent(children)}
+                </button>
+            ) : (
+                <div id={id} {...stylex.props(styles.look, styles.text, style)}>
+                    {renderContent(children)}
+                </div>
+            )}
+        </>
+    );
+}

@@ -22,6 +22,39 @@ const defaultOptions = {
     allowCover: true,
 };
 
+const styles = stylex.create({
+    container: {
+        display: "flex",
+        gap: "var(--spacing-Quarter)",
+    },
+    column: {
+        flexDirection: "column",
+    },
+    inputContainer: {
+        flex: 1,
+    },
+    highlight: {
+        borderRadius: 2,
+        outline: "2px solid var(--colors-Warn)",
+        outlineOffset: 2,
+    },
+    disabled: {
+        cursor: "not-allowed",
+        opacity: 0.65,
+        ":where(*)>*": {
+            pointerEvents: "none",
+        },
+    },
+    dropdownButton: {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "start",
+        gap: "var(--spacing-Half)",
+        textAlign: "left",
+        paddingRight: "0 !important",
+    },
+});
+
 function BackgroundSize({ id, value, commit, options, highlight, i18nRegistry, onEnterKey, config }) {
     const {
         disabled,
@@ -216,38 +249,5 @@ function BackgroundSize({ id, value, commit, options, highlight, i18nRegistry, o
         </>
     );
 }
-
-var styles = stylex.create({
-    container: {
-        display: "flex",
-        gap: "var(--spacing-Quarter)",
-    },
-    column: {
-        flexDirection: "column",
-    },
-    inputContainer: {
-        flex: 1,
-    },
-    highlight: {
-        borderRadius: 2,
-        outline: "2px solid var(--colors-Warn)",
-        outlineOffset: 2,
-    },
-    disabled: {
-        cursor: "not-allowed",
-        opacity: 0.65,
-        ":where(*)>*": {
-            pointerEvents: "none",
-        },
-    },
-    dropdownButton: {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "start",
-        gap: "var(--spacing-Half)",
-        textAlign: "left",
-        paddingRight: "0 !important",
-    },
-});
 
 export default injectNeosProps(BackgroundSize, "BackgroundSize");

@@ -1,22 +1,7 @@
 import React, { useEffect } from "react";
 import * as stylex from "@stylexjs/stylex";
 
-export default function ButtonInInput({ children, title, onActive, onClick = () => {} }) {
-    return (
-        <button
-            type="button"
-            title={title}
-            onMouseDown={onActive ? () => onActive(true) : null}
-            onBlur={onActive ? () => onActive(false) : null}
-            onClick={onClick}
-            {...stylex.props(styles.button)}
-        >
-            {children}
-        </button>
-    );
-}
-
-var styles = stylex.create({
+const styles = stylex.create({
     button: {
         margin: 0,
         padding: "0 14px 0 0",
@@ -41,3 +26,18 @@ var styles = stylex.create({
         },
     },
 });
+
+export default function ButtonInInput({ children, title, onActive, onClick = () => {} }) {
+    return (
+        <button
+            type="button"
+            title={title}
+            onMouseDown={onActive ? () => onActive(true) : null}
+            onBlur={onActive ? () => onActive(false) : null}
+            onClick={onClick}
+            {...stylex.props(styles.button)}
+        >
+            {children}
+        </button>
+    );
+}

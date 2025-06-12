@@ -20,6 +20,20 @@ const defaultOptions = {
     errorLengthMax: null,
 };
 
+const styles = stylex.create({
+    charCounter: (type, focus) => ({
+        display: "block",
+        textAlign: "right",
+        fontSize: "var(--fontSize-Small)",
+        marginBottom: "-1.1em",
+        lineHeight: 1.1,
+        userSelect: "none",
+        transition: "color var(--transition-Default), opacity var(--transition-Default)",
+        opacity: focus ? 1 : 0.8,
+        color: type ? `var(--colors-${type})` : null,
+    }),
+});
+
 function TextAreaWithCounter({ id, value, commit, className, options, i18nRegistry, onEnterKey, config }) {
     const [focus, setFocus] = useState(false);
     const {
@@ -98,19 +112,5 @@ function TextAreaWithCounter({ id, value, commit, className, options, i18nRegist
         </>
     );
 }
-
-var styles = stylex.create({
-    charCounter: (type, focus) => ({
-        display: "block",
-        textAlign: "right",
-        fontSize: "var(--fontSize-Small)",
-        marginBottom: "-1.1em",
-        lineHeight: 1.1,
-        userSelect: "none",
-        transition: "color var(--transition-Default), opacity var(--transition-Default)",
-        opacity: focus ? 1 : 0.8,
-        color: type ? `var(--colors-${type})` : null,
-    }),
-});
 
 export default injectNeosProps(TextAreaWithCounter, "TextAreaWithCounter");

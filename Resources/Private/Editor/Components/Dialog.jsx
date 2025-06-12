@@ -23,6 +23,66 @@ const slideDialogContents = stylex.keyframes({
 
 const variableIsFunction = (variable) => variable && typeof variable === "function";
 
+const styles = stylex.create({
+    dialog: {
+        "--dialog-max-width": `calc(100vw - var(--spacing-GoldenUnit))`,
+        "--dialog-total-max-height": "calc(100vh - var(--spacing-GoldenUnit))",
+        "--dialog-max-height": "calc(100vh - var(--spacing-GoldenUnit))",
+        position: "fixed",
+        inset: 0,
+        background: "var(--colors-ContrastDarker)",
+        border: 0,
+        padding: 0,
+        color: "var(--colors-ContrastBrightest)",
+        boxShadow: "0 0 0 2px var(--colors-ContrastDark), 0 20px 40px #0006",
+        animation: `${slideDialogContents} var(--transition-Default) ease-in-out`,
+        maxWidth: "var(--dialog-max-width)",
+        maxHeight: "var(--dialog-total-max-height)",
+        ":where([open])": {
+            "::backdrop": {
+                // Not all browsers support CSS custom properties for ::backdrop
+                animation: `${backdropFadeIn} 0.3s ease-out forwards`,
+            },
+        },
+    },
+    dialogWithFooter: {
+        "--dialog-max-height": "calc(100vh - var(--spacing-GoldenUnit) * 2)",
+    },
+    fullWidth: {
+        minWidth: "var(--dialog-max-width)",
+    },
+    fullHeight: {
+        minHeight: "var(--dialog-total-max-height)",
+    },
+    title: (hasClose) => ({
+        padding: "var(--spacing-Full)",
+        paddingRight: hasClose ? "calc(var(--spacing-Full) + var(--spacing-GoldenUnit)" : null,
+        margin: 0,
+        fontSize: 20,
+        lineHeight: 1.2,
+        borderBottom: "1px solid var(--colors-ContrastDark)",
+    }),
+    footer: {
+        display: "flex",
+        justifyContent: "end",
+        flexDirection: "row-reverse",
+    },
+    blurFooterBackground: {
+        position: "absolute",
+        bottom: 0,
+        left: 0,
+        right: 0,
+        zIndex: 1000,
+        backdropFilter: "blur(6px)",
+    },
+    closeButton: {
+        position: "absolute !important",
+        top: 0,
+        right: 0,
+        zIndex: 1000,
+    },
+});
+
 function Dialog({
     open,
     setOpen,
@@ -117,66 +177,6 @@ function Dialog({
         </dialog>
     );
 }
-
-var styles = stylex.create({
-    dialog: {
-        "--dialog-max-width": `calc(100vw - var(--spacing-GoldenUnit))`,
-        "--dialog-total-max-height": "calc(100vh - var(--spacing-GoldenUnit))",
-        "--dialog-max-height": "calc(100vh - var(--spacing-GoldenUnit))",
-        position: "fixed",
-        inset: 0,
-        background: "var(--colors-ContrastDarker)",
-        border: 0,
-        padding: 0,
-        color: "var(--colors-ContrastBrightest)",
-        boxShadow: "0 0 0 2px var(--colors-ContrastDark), 0 20px 40px #0006",
-        animation: `${slideDialogContents} var(--transition-Default) ease-in-out`,
-        maxWidth: "var(--dialog-max-width)",
-        maxHeight: "var(--dialog-total-max-height)",
-        ":where([open])": {
-            "::backdrop": {
-                // Not all browsers support CSS custom properties for ::backdrop
-                animation: `${backdropFadeIn} 0.3s ease-out forwards`,
-            },
-        },
-    },
-    dialogWithFooter: {
-        "--dialog-max-height": "calc(100vh - var(--spacing-GoldenUnit) * 2)",
-    },
-    fullWidth: {
-        minWidth: "var(--dialog-max-width)",
-    },
-    fullHeight: {
-        minHeight: "var(--dialog-total-max-height)",
-    },
-    title: (hasClose) => ({
-        padding: "var(--spacing-Full)",
-        paddingRight: hasClose ? "calc(var(--spacing-Full) + var(--spacing-GoldenUnit)" : null,
-        margin: 0,
-        fontSize: 20,
-        lineHeight: 1.2,
-        borderBottom: "1px solid var(--colors-ContrastDark)",
-    }),
-    footer: {
-        display: "flex",
-        justifyContent: "end",
-        flexDirection: "row-reverse",
-    },
-    blurFooterBackground: {
-        position: "absolute",
-        bottom: 0,
-        left: 0,
-        right: 0,
-        zIndex: 1000,
-        backdropFilter: "blur(6px)",
-    },
-    closeButton: {
-        position: "absolute !important",
-        top: 0,
-        right: 0,
-        zIndex: 1000,
-    },
-});
 
 const neosifier = neos((globalRegistry) => ({
     i18nRegistry: globalRegistry.get("i18n"),

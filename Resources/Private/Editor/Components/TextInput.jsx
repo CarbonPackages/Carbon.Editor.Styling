@@ -7,6 +7,54 @@ import { useDebouncedCallback } from "use-debounce";
 import { neos } from "@neos-project/neos-ui-decorators";
 import * as stylex from "@stylexjs/stylex";
 
+const styles = stylex.create({
+    basicLook: {
+        margin: 0,
+        height: "var(--spacing-GoldenUnit)",
+        background: "var(--colors-ContrastNeutral)",
+        color: "var(--colors-ContrastBrightest)",
+        border: 0,
+        fontSize: "var(--fontSize-Base)",
+        cursor: "text",
+    },
+    inputLook: (unitSwitch) => ({
+        borderRadius: 2,
+        paddingBlock: 0,
+        paddingLeft: "var(--fontSize-Base)",
+        paddingRight: unitSwitch ? 0 : "var(--fontSize-Base)",
+    }),
+    input: (textAlign) => ({
+        appearance: "none",
+        width: "100%",
+        textAlign,
+    }),
+    hidden: {
+        display: "none",
+    },
+    flex: {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+    },
+    focus: {
+        outline: "none",
+        color: "var(--colors-ContrastDarkest)",
+        background: "var(--colors-ContrastBrightest)",
+    },
+    highlight: {
+        borderRadius: 2,
+        outline: "2px solid var(--colors-Warn)",
+        outlineOffset: 2,
+    },
+    disabled: {
+        cursor: "not-allowed",
+        opacity: 0.65,
+        ":where(*)>*": {
+            pointerEvents: "none",
+        },
+    },
+});
+
 function Component({
     debounce = 500,
     i18nRegistry,
@@ -329,54 +377,6 @@ function Component({
         </>
     );
 }
-
-var styles = stylex.create({
-    basicLook: {
-        margin: 0,
-        height: "var(--spacing-GoldenUnit)",
-        background: "var(--colors-ContrastNeutral)",
-        color: "var(--colors-ContrastBrightest)",
-        border: 0,
-        fontSize: "var(--fontSize-Base)",
-        cursor: "text",
-    },
-    inputLook: (unitSwitch) => ({
-        borderRadius: 2,
-        paddingBlock: 0,
-        paddingLeft: "var(--fontSize-Base)",
-        paddingRight: unitSwitch ? 0 : "var(--fontSize-Base)",
-    }),
-    input: (textAlign) => ({
-        appearance: "none",
-        width: "100%",
-        textAlign,
-    }),
-    hidden: {
-        display: "none",
-    },
-    flex: {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-    },
-    focus: {
-        outline: "none",
-        color: "var(--colors-ContrastDarkest)",
-        background: "var(--colors-ContrastBrightest)",
-    },
-    highlight: {
-        borderRadius: 2,
-        outline: "2px solid var(--colors-Warn)",
-        outlineOffset: 2,
-    },
-    disabled: {
-        cursor: "not-allowed",
-        opacity: 0.65,
-        ":where(*)>*": {
-            pointerEvents: "none",
-        },
-    },
-});
 
 const neosifier = neos((globalRegistry) => ({
     i18nRegistry: globalRegistry.get("i18n"),
