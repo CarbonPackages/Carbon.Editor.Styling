@@ -246,7 +246,7 @@ function Component({
     }
 
     function minMax(value) {
-        return limitToMinMax(value, min, max);
+        return limitToMinMax(value, min, max, allowFloat);
     }
 
     return (

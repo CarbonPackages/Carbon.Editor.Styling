@@ -1,1 +1,1 @@
-export { default } from "./Components/Dialog";
+export { default, DialogFooter } from "./Components/Dialog";

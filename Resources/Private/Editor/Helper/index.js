@@ -57,14 +57,16 @@ export function convertValue(input, min, max) {
 }
 
 // Return the value if it is between min and max, otherwise return the min or max value
-export function limitToMinMax(value, min, max) {
+export function limitToMinMax(value, min, max, allowFloat = false) {
     if (typeof value == "string") {
         value = parseFloat(value);
     }
     if (!value || typeof value != "number") {
         value = 0;
     }
-    value = Math.round(value);
+    if (!allowFloat) {
+        value = Math.round(value);
+    }
 
     if (typeof min == "number") {
         value = Math.max(min, value);

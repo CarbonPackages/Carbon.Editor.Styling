@@ -83,6 +83,10 @@ const styles = stylex.create({
     },
 });
 
+export function DialogFooter({children}) {
+    return <>{children}</>;
+}
+
 function Dialog({
     open,
     setOpen,
@@ -103,6 +107,9 @@ function Dialog({
     footer,
     blurFooterBackground = false,
 }) {
+    const Footer = React.Children.toArray(children).find(child => child.type === DialogFooter);
+    const Children = React.Children.toArray(children).find(child => child.type !== DialogFooter);
+
     const dialog = useRef();
     const handleClose = useCallback(() => {
         setOpen(false);
@@ -129,7 +136,7 @@ function Dialog({
     const hasApply = variableIsFunction(onApply);
     const hasCancel = variableIsFunction(onCancel);
     const hasClose = variableIsFunction(onCloseButton);
-    const hasFooter = footer || hasApply || hasCancel;
+    const hasFooter = footer || hasApply || hasCancel || Footer?.length;
 
     return (
         <dialog
@@ -143,7 +150,7 @@ function Dialog({
             )}
         >
             {title && <h2 {...stylex.props(styles.title(hasClose))}>{title}</h2>}
-            {children}
+            {Children}
             {Boolean(hasFooter) && (
                 <div {...stylex.props(styles.footer, blurFooterBackground && styles.blurFooterBackground)}>
                     {hasApply && (
@@ -157,6 +164,7 @@ function Dialog({
                         </Button>
                     )}
                     {footer}
+                    {Footer}
                 </div>
             )}
             {showCloseButton && (
