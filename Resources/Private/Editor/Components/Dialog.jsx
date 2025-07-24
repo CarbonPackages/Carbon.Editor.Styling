@@ -83,7 +83,7 @@ const styles = stylex.create({
     },
 });
 
-export function DialogFooter({children}) {
+export function DialogFooter({ children }) {
     return <>{children}</>;
 }
 
@@ -107,8 +107,8 @@ function Dialog({
     footer,
     blurFooterBackground = false,
 }) {
-    const Footer = React.Children.toArray(children).find(child => child.type === DialogFooter);
-    const Children = React.Children.toArray(children).find(child => child.type !== DialogFooter);
+    const Footer = React.Children.toArray(children).find((child) => child.type === DialogFooter);
+    const Children = React.Children.toArray(children).find((child) => child.type !== DialogFooter);
 
     const dialog = useRef();
     const handleClose = useCallback(() => {
