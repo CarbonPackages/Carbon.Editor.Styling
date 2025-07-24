@@ -63,7 +63,7 @@
   },
   "homepage": "https://github.com/CarbonPackages/Carbon.Editor.Styling#readme",
   "dependencies": {
-    "@stylexjs/stylex": "^0.13.1",
+    "@stylexjs/stylex": "^0.14.3",
     "carbon-neos-loadinganimation": "^1.2.0",
     "react-colorful": "^5.6.1",
     "react-draggable": "^4.5.0",
@@ -73,7 +73,7 @@
   "devDependencies": {
     "@neos-project/neos-ui-extensibility": "~8.3.14",
     "@stylexjs/esbuild-plugin": "^0.11.1",
-    "esbuild": "^0.25.6",
+    "esbuild": "^0.25.8",
     "prettier": "^3.6.2"
   },
   "peerDependencies": {
