@@ -298,6 +298,7 @@ function Component({
                     aria-disabled={disabled ? "true" : "false"}
                     type={isNumericInput ? "text" : type}
                     inputmode={isNumericInput ? "numeric" : null}
+                    autocomplete="off"
                     placeholder={placeholder ? i18nRegistry.translate(unescape(placeholder)) : null}
                     disabled={disabled}
                     onChange={(event) => {
