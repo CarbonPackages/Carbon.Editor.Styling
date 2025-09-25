@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, Children } from "react";
 import { TextArea } from "@neos-project/react-ui-components";
 import { injectNeosProps } from "../Helper/Neos";
 import * as stylex from "@stylexjs/stylex";
@@ -21,6 +21,11 @@ const defaultOptions = {
 };
 
 const styles = stylex.create({
+    childrenContainer: {
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+    },
     charCounter: (type, focus) => ({
         display: "block",
         textAlign: "right",
@@ -34,7 +39,7 @@ const styles = stylex.create({
     }),
 });
 
-function TextAreaWithCounter({ id, value, commit, className, options, i18nRegistry, onEnterKey, config }) {
+function TextAreaWithCounter({ id, value, commit, className, options, i18nRegistry, onEnterKey, config, children }) {
     const [focus, setFocus] = useState(false);
     const {
         disabled,
@@ -86,6 +91,8 @@ function TextAreaWithCounter({ id, value, commit, className, options, i18nRegist
         }
     };
 
+    const hasChildren = !!Children.count(children);
+
     return (
         <>
             <TextArea
@@ -108,7 +115,18 @@ function TextAreaWithCounter({ id, value, commit, className, options, i18nRegist
                 maxRows={maxRows}
                 expandedRows={expandedRows}
             />
-            {showCounter && <span {...stylex.props(styles.charCounter(charCounterType, focus))}>{charCounter}</span>}
+            {Boolean(hasChildren && showCounter) && (
+                <div {...stylex.props(styles.childrenContainer)}>
+                    <div>{children}</div>
+                    {showCounter && (
+                        <span {...stylex.props(styles.charCounter(charCounterType, focus))}>{charCounter}</span>
+                    )}
+                </div>
+            )}
+            {Boolean(!hasChildren && showCounter) && (
+                <span {...stylex.props(styles.charCounter(charCounterType, focus))}>{charCounter}</span>
+            )}
+            {Boolean(hasChildren && !showCounter) && children}
         </>
     );
 }
