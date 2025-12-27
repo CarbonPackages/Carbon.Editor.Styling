@@ -71,7 +71,7 @@ const styles = stylex.create({
     },
     preview: (borderRadius, rounded) => ({
         transition: "border-radius var(--transition-Slow) ease, width var(--transition-Slow) ease",
-        background: "var(--colors-PrimaryBlue)",
+        backgroundColor: "var(--colors-PrimaryBlue)",
         height: 80,
         borderRadius: rounded ? "50%" : borderRadius,
     }),
@@ -107,7 +107,7 @@ const styles = stylex.create({
         width: "100%",
         height: "auto",
         overflow: "hidden",
-        background: "transparent !important",
+        backgroundColor: "transparent !important",
         outline: "none !important",
     },
     dropdownButton: {

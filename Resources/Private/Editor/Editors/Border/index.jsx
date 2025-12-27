@@ -85,9 +85,9 @@ const styles = stylex.create({
     colorInput: {
         margin: "0 calc(var(--spacing-Full) * -1) 0 !important",
         height: "var(--spacing-GoldenUnit)",
-        background: "var(--colors-ContrastNeutral)",
+        backgroundColor: "var(--colors-ContrastNeutral)",
         color: "var(--colors-ContrastBrightest)",
-        border: 0,
+        borderWidth: 0,
         fontSize: "var(--fontSize-Base)",
         cursor: "text",
         padding: "0 var(--fontSize-Base)",
@@ -97,7 +97,7 @@ const styles = stylex.create({
         ":focus": {
             outline: "none",
             color: "var(--colors-ContrastDarkest)",
-            background: "var(--colors-ContrastBrightest)",
+            backgroundColor: "var(--colors-ContrastBrightest)",
         },
     },
     presetColorContainer: {
@@ -110,7 +110,7 @@ const styles = stylex.create({
         height: 30,
         padding: "0 !important",
         backgroundColor,
-        border: 0,
+        borderWidth: 0,
         outline: "var(--colors-ContrastNeutral) solid 1px",
         borderRadius: 2,
         cursor: "pointer",

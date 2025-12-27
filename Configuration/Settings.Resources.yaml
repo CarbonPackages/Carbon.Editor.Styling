@@ -14,4 +14,4 @@ Neos:
               type: 'module'
         stylesheets:
           Carbon.Editor.Styling:
-            resource: resource://Carbon.Editor.Styling/Public/Editor.css
+            resource: resource://Carbon.Editor.Styling/Public/stylex.css

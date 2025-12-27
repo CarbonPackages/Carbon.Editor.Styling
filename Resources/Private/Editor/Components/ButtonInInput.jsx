@@ -6,9 +6,9 @@ const styles = stylex.create({
         margin: 0,
         padding: "0 14px 0 0",
         height: "var(--spacing-GoldenUnit)",
-        background: "transparent",
+        backgroundColor: "transparent",
         color: "inherit",
-        border: 0,
+        borderWidth: 0,
         fontSize: "inherit",
         cursor: "pointer",
         ":where(:hover,:focus)": {

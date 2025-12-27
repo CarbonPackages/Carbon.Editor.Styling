@@ -1,6 +1,6 @@
 import esbuild from "esbuild";
 import extensibilityMap from "@neos-project/neos-ui-extensibility/extensibilityMap.json" with { type: "json" };
-import stylexPlugin from "@stylexjs/esbuild-plugin";
+import stylex from "@stylexjs/unplugin";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -25,13 +25,14 @@ const options = {
     loader: {
         ".js": "jsx",
     },
+    metafile: true,
     plugins: [
-        stylexPlugin({
-            classNamePrefix: "editorstyling-",
+        stylex.esbuild({
             useCSSLayers: false,
+            importSources: ["@stylexjs/stylex"],
+            unstable_moduleResolution: { type: "commonJS" },
+            classNamePrefix: "editorstyling-",
             dev: false,
-            generatedCSSFileName: path.resolve(__dirname, "Resources/Public/Editor.css"),
-            stylexImports: ["@stylexjs/stylex"],
         }),
     ],
 };

@@ -14,7 +14,9 @@ const styles = stylex.create({
     }),
     handle: (grabbing) => ({
         position: "absolute",
-        border: "3px solid #fff",
+        borderWidth: 3,
+        borderStyle: "solid",
+        borderColor: "#fff",
         width: 14,
         height: 14,
         borderRadius: "50%",

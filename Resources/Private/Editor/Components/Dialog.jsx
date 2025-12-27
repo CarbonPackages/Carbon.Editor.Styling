@@ -5,11 +5,11 @@ import * as stylex from "@stylexjs/stylex";
 
 const backdropFadeIn = stylex.keyframes({
     from: {
-        background: "rgb(0 0 0 / 0%)",
+        backgroundColor: "rgb(0 0 0 / 0%)",
         backdropFilter: "blur(0px)",
     },
     to: {
-        background: "rgb(0 0 0 / 80%)",
+        backgroundColor: "rgb(0 0 0 / 80%)",
         backdropFilter: "blur(1px)",
     },
 });
@@ -30,18 +30,23 @@ const styles = stylex.create({
         "--dialog-max-height": "calc(100vh - var(--spacing-GoldenUnit))",
         position: "fixed",
         inset: 0,
-        background: "var(--colors-ContrastDarker)",
-        border: 0,
+        backgroundColor: "var(--colors-ContrastDarker)",
+        borderWidth: 0,
         padding: 0,
         color: "var(--colors-ContrastBrightest)",
         boxShadow: "0 0 0 2px var(--colors-ContrastDark), 0 20px 40px #0006",
-        animation: `${slideDialogContents} var(--transition-Default) ease-in-out`,
+        animationName: slideDialogContents,
+        animationDuration: "var(--transition-Default)",
+        animationTimingFunction: "ease-in-out",
         maxWidth: "var(--dialog-max-width)",
         maxHeight: "var(--dialog-total-max-height)",
         ":where([open])": {
             "::backdrop": {
                 // Not all browsers support CSS custom properties for ::backdrop
-                animation: `${backdropFadeIn} 0.3s ease-out forwards`,
+                animationName: backdropFadeIn,
+                animationDuration: "0.3s",
+                animationTimingFunction: "ease-out",
+                animationFillMode: "forwards",
             },
         },
     },
@@ -60,7 +65,9 @@ const styles = stylex.create({
         margin: 0,
         fontSize: 20,
         lineHeight: 1.2,
-        borderBottom: "1px solid var(--colors-ContrastDark)",
+        borderBottomWidth: 1,
+        borderBottomStyle: "solid",
+        borderBottomColor: "var(--colors-ContrastDark)",
     }),
     footer: {
         display: "flex",

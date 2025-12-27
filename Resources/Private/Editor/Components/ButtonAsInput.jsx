@@ -7,9 +7,9 @@ const styles = stylex.create({
     look: {
         margin: 0,
         height: "var(--spacing-GoldenUnit)",
-        background: "var(--colors-ContrastNeutral)",
+        backgroundColor: "var(--colors-ContrastNeutral)",
         color: "var(--colors-ContrastBrightest)",
-        border: 0,
+        borderWidth: 0,
         fontSize: "var(--fontSize-Base)",
         borderRadius: 2,
         padding: "0 0 0 var(--fontSize-Base)",

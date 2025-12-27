@@ -11,9 +11,9 @@ const styles = stylex.create({
     basicLook: {
         margin: 0,
         height: "var(--spacing-GoldenUnit)",
-        background: "var(--colors-ContrastNeutral)",
+        backgroundColor: "var(--colors-ContrastNeutral)",
         color: "var(--colors-ContrastBrightest)",
-        border: 0,
+        borderWidth: 0,
         fontSize: "var(--fontSize-Base)",
         cursor: "text",
     },
@@ -39,7 +39,7 @@ const styles = stylex.create({
     focus: {
         outline: "none",
         color: "var(--colors-ContrastDarkest)",
-        background: "var(--colors-ContrastBrightest)",
+        backgroundColor: "var(--colors-ContrastBrightest)",
     },
     highlight: {
         borderRadius: 2,
