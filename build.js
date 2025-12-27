@@ -17,7 +17,7 @@ const options = {
     sourcemap: watch,
     target: "es2020",
     legalComments: "none",
-    entryPoints: ["Resources/Private/Editor/*.js"],
+    entryPoints: ["Resources/Private/Editor/*.js", "Resources/Private/Editor/Editor.jsx"],
     outdir: "Resources/Public",
     alias: extensibilityMap,
     format: "esm",

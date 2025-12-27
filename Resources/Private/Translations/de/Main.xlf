@@ -176,6 +176,18 @@
                 <source>Stretches the image in the corresponding dimension to the specified length.</source>
                 <target>Dehnt das Bild in der entsprechenden Dimension auf die angegebene Länge.</target>
             </trans-unit>
+            <trans-unit id="hours" xml:space="preserve">
+                <source>Hours</source>
+                <target>Stunden</target>
+            </trans-unit>
+            <trans-unit id="minutes" xml:space="preserve">
+                <source>Minutes</source>
+                <target>Minuten</target>
+            </trans-unit>
+            <trans-unit id="seconds" xml:space="preserve">
+                <source>Seconds</source>
+                <target>Sekunden</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

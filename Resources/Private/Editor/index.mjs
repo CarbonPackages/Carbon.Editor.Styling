@@ -6,3 +6,4 @@ export { Dropdown } from "./Components/Dropdown";
 export { Spacing } from "./Editors/Spacing";
 export { TextAreaWithCounter } from "./Editors/TextAreaWithCounter";
 export { TextInput } from "./Components/TextInput";
+export { Timestamp } from "./Editors/Timestamp";

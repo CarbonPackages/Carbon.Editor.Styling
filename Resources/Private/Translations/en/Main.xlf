@@ -130,6 +130,15 @@
             <trans-unit id="backgroundSize.length.description" xml:space="preserve">
                 <source>Stretches the image in the corresponding dimension to the specified length.</source>
             </trans-unit>
+            <trans-unit id="hours" xml:space="preserve">
+                <source>Hours</source>
+            </trans-unit>
+            <trans-unit id="minutes" xml:space="preserve">
+                <source>Minutes</source>
+            </trans-unit>
+            <trans-unit id="seconds" xml:space="preserve">
+                <source>Seconds</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>

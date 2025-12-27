@@ -9,6 +9,7 @@ const editors = {
     Spacing: () => import("./Spacing"),
     TextAreaWithCounter: () => import("./TextAreaWithCounter"),
     TextInput: () => import("./Editors/TextInput"),
+    Timestamp: () => import("./Editors/Timestamp"),
 };
 
 function generateLazyEditor(name) {
