@@ -22,3 +22,5 @@ jobs:
       - name: Bump version
         uses: BellCubeDev/update-package-version-by-release-tag@v2
       - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
