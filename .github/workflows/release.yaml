@@ -21,4 +21,4 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - name: Bump version
         uses: BellCubeDev/update-package-version-by-release-tag@v2
-      - run: npm publish --access public
+      - run: npm publish
