@@ -22,5 +22,3 @@ jobs:
         uses: BellCubeDev/update-package-version-by-release-tag@v2
       - name: Publish
         run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
