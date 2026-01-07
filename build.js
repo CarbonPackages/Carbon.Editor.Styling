@@ -1,10 +1,7 @@
 import esbuild from "esbuild";
 import extensibilityMap from "@neos-project/neos-ui-extensibility/extensibilityMap.json" with { type: "json" };
 import stylex from "@stylexjs/unplugin";
-import path from "path";
-import { fileURLToPath } from "url";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const watch = process.argv.includes("--watch");
 const dev = process.argv.includes("--dev");
 const minify = !dev && !watch;
@@ -29,10 +26,11 @@ const options = {
     plugins: [
         stylex.esbuild({
             useCSSLayers: false,
-            importSources: ["@stylexjs/stylex"],
-            unstable_moduleResolution: { type: "commonJS" },
             classNamePrefix: "editorstyling-",
             dev: false,
+            lightningcssOptions: {
+                minify: true,
+            },
         }),
     ],
 };
