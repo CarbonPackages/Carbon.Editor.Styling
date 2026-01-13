@@ -47,9 +47,10 @@ const styles = stylex.create({
 
 function Timestamp({ id, value, commit, highlight, options, i18nRegistry, config, onEnterKey }) {
     const { disabled, readonly, min, max, subtractFromMax } = { ...defaultOptions, ...config, ...options };
-    const [hours, setHours] = useState(0);
-    const [minutes, setMinutes] = useState(0);
-    const [seconds, setSeconds] = useState(0);
+    const hms = secondsToHMS(value || 0);
+    const [hours, setHours] = useState(hms.hours);
+    const [minutes, setMinutes] = useState(hms.minutes);
+    const [seconds, setSeconds] = useState(hms.seconds);
 
     const updateHMS = (hms) => {
         if (hms.hours !== hours) {
@@ -63,17 +64,17 @@ function Timestamp({ id, value, commit, highlight, options, i18nRegistry, config
         }
     };
 
-    // Update on init
     useEffect(() => {
         updateHMS(secondsToHMS(value || 0));
-    }, []);
+    }, [value]);
 
     useEffect(() => {
         const total = minMaxSeconds(getTotalSeconds(hours, minutes, seconds), min, max, subtractFromMax);
-        updateHMS(secondsToHMS(total));
         if (total !== value) {
             commit(total);
+            return;
         }
+        updateHMS(secondsToHMS(total));
     }, [hours, minutes, seconds]);
 
     const showMinutes = enableMinutes(value, min, max);
