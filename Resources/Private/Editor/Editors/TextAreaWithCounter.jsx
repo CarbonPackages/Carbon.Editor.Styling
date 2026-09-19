@@ -86,7 +86,9 @@ function TextAreaWithCounter({ id, value, commit, className, options, i18nRegist
 
     const onKeyPress = (event) => {
         if (!allowLineBreaks && event.key === "Enter") {
-            onEnterKey();
+            if (typeof onEnterKey === "function") {
+                onEnterKey();
+            }
             event.preventDefault();
         }
     };
