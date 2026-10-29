@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useCallback } from "react";
+import ReactDOM from "react-dom";
 import { Button, IconButton } from "@neos-project/react-ui-components";
 import { neos } from "@neos-project/neos-ui-decorators";
 import * as stylex from "@stylexjs/stylex";
@@ -88,6 +89,23 @@ const styles = stylex.create({
         right: 0,
         zIndex: 1000,
     },
+    // Styles for the non-modal mode: the dialog stays out of the browser's
+    // top layer, so portaled UI (e.g. SelectBox dropdowns rendered on
+    // document.body with z-index 70) can appear above it
+    nonModal: {
+        margin: "auto",
+        zIndex: 69,
+    },
+    nonModalBackdrop: {
+        position: "fixed",
+        inset: 0,
+        zIndex: 69,
+        backgroundColor: "rgb(0 0 0 / 80%)",
+        backdropFilter: "blur(1px)",
+        animationName: backdropFadeIn,
+        animationDuration: "0.3s",
+        animationTimingFunction: "ease-out",
+    },
 });
 
 export function DialogFooter({ children }) {
@@ -113,6 +131,7 @@ function Dialog({
     closeLabel = "Neos.Neos:Main:close",
     footer,
     blurFooterBackground = false,
+    modal = true,
 }) {
     const Footer = React.Children.toArray(children).find((child) => child.type === DialogFooter);
     const Children = React.Children.toArray(children).find((child) => child.type !== DialogFooter);
@@ -134,18 +153,38 @@ function Dialog({
             return;
         }
         if (open) {
-            dialog.current.showModal();
+            if (modal) {
+                dialog.current.showModal();
+            } else {
+                dialog.current.show();
+            }
         } else {
             dialog.current.close();
         }
-    }, [open]);
+    }, [open, modal]);
+
+    // Non-modal dialogs do not close on Escape by themselves
+    useEffect(() => {
+        if (modal || !open) {
+            return;
+        }
+        const handleKeyDown = (event) => {
+            if (event.key === "Escape") {
+                setOpen(false);
+            }
+        };
+        document.addEventListener("keydown", handleKeyDown);
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [modal, open, setOpen]);
 
     const hasApply = variableIsFunction(onApply);
     const hasCancel = variableIsFunction(onCancel);
     const hasClose = variableIsFunction(onCloseButton);
     const hasFooter = footer || hasApply || hasCancel || Footer?.length;
 
-    return (
+    const dialogElement = (
         <dialog
             ref={dialog}
             {...stylex.props(
@@ -153,6 +192,7 @@ function Dialog({
                 hasFooter && !blurFooterBackground && styles.dialogWithFooter,
                 fullWidth && styles.fullWidth,
                 fullHeight && styles.fullHeight,
+                !modal && styles.nonModal,
                 style,
             )}
         >
@@ -190,6 +230,20 @@ function Dialog({
                 />
             )}
         </dialog>
+    );
+
+    if (modal) {
+        return dialogElement;
+    }
+
+    // Render outside of the inspector's stacking context, but without the
+    // browser top layer, so dropdowns portaled to document.body stay visible
+    return ReactDOM.createPortal(
+        <>
+            {open && <div {...stylex.props(styles.nonModalBackdrop)} />}
+            {dialogElement}
+        </>,
+        document.body,
     );
 }
 
