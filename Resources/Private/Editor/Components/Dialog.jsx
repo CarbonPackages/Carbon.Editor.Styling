@@ -106,6 +106,10 @@ const styles = stylex.create({
         animationDuration: "0.3s",
         animationTimingFunction: "ease-out",
     },
+    nonModalFooter: {
+        position: "relative",
+        zIndex: -1,
+    },
 });
 
 export function DialogFooter({ children }) {
@@ -199,7 +203,13 @@ function Dialog({
             {title && <h2 {...stylex.props(styles.title(hasClose))}>{title}</h2>}
             {Children}
             {Boolean(hasFooter) && (
-                <div {...stylex.props(styles.footer, blurFooterBackground && styles.blurFooterBackground)}>
+                <div
+                    {...stylex.props(
+                        styles.footer,
+                        blurFooterBackground && styles.blurFooterBackground,
+                        !modal && styles.nonModalFooter,
+                    )}
+                >
                     {hasApply && (
                         <Button style="success" hoverStyle="success" onClick={onApply} disabled={disabledApply}>
                             {i18nRegistry.translate(applyLabel)}
