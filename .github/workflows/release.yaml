@@ -30,7 +30,6 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       # Trusted publishing requires npm >= 11.5.1
       - run: npm install -g npm@latest
-      - run: npm ci
       - name: Bump version
         uses: BellCubeDev/update-package-version-by-release-tag@v2
         with:
