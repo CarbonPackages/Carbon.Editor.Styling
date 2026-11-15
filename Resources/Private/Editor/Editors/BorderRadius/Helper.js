@@ -31,14 +31,14 @@ export function getAspectRatio(input) {
 
 export function convertForCommit(number, unit, convertPxToRem, allowEmpty = false) {
     if (hasNoValue(number)) {
-        return allowEmpty ? "" : "0";
+        return allowEmpty ? "" : "0px";
     }
 
     const divider = !unit || unit === "px" ? (convertPxToRem ? 16 : 1) : 1;
     unit = !unit || unit === "px" ? (convertPxToRem ? "rem" : "px") : unit;
 
     const convertedNumber = number / divider;
-    return convertedNumber === 0 ? "0" : `${convertedNumber}${unit}`;
+    return convertedNumber === 0 ? "0px" : `${convertedNumber}${unit}`;
 }
 
 export function getInitState(values, direction, key, fallback = null) {
