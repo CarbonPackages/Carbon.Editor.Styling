@@ -95,13 +95,12 @@ Neos:
           # Has only a affect on big preview (after the user has clicked on the small preview)
           previewAspectRatio: null
 
-          # min, max and fullRoundedValue are always in px, even if convertPxToRem is true
-          # The full rounded value will be saved with the pixel unit in the database
+          # min, max are always in px, even if convertPxToRem is true
           # The other values will be converted and saved with the rem unit in the database if convertPxToRem is true
           # If in percentage mode, min and max have no effect, there is always the range between 0 and 100
           min: 0
           max: 24
-          fullRoundedValue: 9999
+          fullRoundedValue: 'calc(infinity * 1px)'
         'Carbon.Editor.Styling.Spacing':
           placeholder: ''
           disabled: false

@@ -31,7 +31,7 @@ const defaultOptions = {
     min: 0,
     max: 24,
     placeholder: "",
-    fullRoundedValue: 9999,
+    fullRoundedValue: "calc(infinity * 1px)",
 };
 
 const styles = stylex.create({
@@ -277,6 +277,10 @@ function BorderRadius({ id, value, commit, highlight, options, i18nRegistry, con
 
     useEffect(() => {
         if (mode === "rounded") {
+            if (typeof fullRoundedValue === "string") {
+                commitIfChanged(fullRoundedValue);
+                return;
+            }
             commitIfChanged(`${fullRoundedValue}px`);
         }
     }, [mode, fullRoundedValue]);
